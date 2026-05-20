@@ -1,0 +1,1407 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Capa 02 · Servicio al Cliente — Plataforma Avon</title>
+<style>
+:root[data-theme="dark"] {
+  --bg: #0F0E1A;
+  --bg-2: #1A1830;
+  --bg-3: #252244;
+  --surface: #1E1B36;
+  --surface-2: #28244A;
+  --border: #3A3560;
+  --text: #F0EDFA;
+  --text-muted: #A29CC0;
+  --text-subtle: #7670A0;
+  --shadow: rgba(0, 0, 0, 0.5);
+}
+:root[data-theme="light"] {
+  --bg: #F8F5FA;
+  --bg-2: #FFFFFF;
+  --bg-3: #EFEAF5;
+  --surface: #FFFFFF;
+  --surface-2: #F5F1FA;
+  --border: #E0DAEC;
+  --text: #1A1730;
+  --text-muted: #5A5470;
+  --text-subtle: #8A86A0;
+  --shadow: rgba(45, 27, 78, 0.12);
+}
+:root {
+  --avon: #E91E63;
+  --avon-deep: #C2185B;
+  --pdc-navy: #0A2472;
+  --pdc-navy-2: #1A3A8C;
+  --pdc-blue: #5BC0EB;
+  --pdc-blue-soft: #E3F2FD;
+  --gold: #FFB300;
+  --gold-soft: #FFF8E1;
+  --green: #16A085;
+  --green-soft: #E8F8F3;
+  --red: #E53E3E;
+  --red-soft: #FEEBEB;
+  --orange: #F57C00;
+  --orange-soft: #FFF3E0;
+  --purple: #7C3AED;
+  --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  /* ACCENT for this capa */
+  --accent: var(--pdc-navy-2);
+  --accent-deep: var(--pdc-navy);
+  --accent-soft: var(--pdc-blue-soft);
+  --accent-gradient: linear-gradient(135deg, #1A3A8C 0%, #0A2472 100%);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.55;
+  transition: background 0.3s ease, color 0.3s ease;
+  min-height: 100vh;
+}
+
+/* ===== LAYOUT ===== */
+.app {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  min-height: 100vh;
+}
+
+.sidebar {
+  background: var(--bg-2);
+  border-right: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+}
+.sidebar::-webkit-scrollbar { width: 6px; }
+.sidebar::-webkit-scrollbar-track { background: transparent; }
+.sidebar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+.brand {
+  padding: 20px 18px;
+  background: var(--accent-gradient);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-bottom: 3px solid var(--gold);
+}
+.brand-icon {
+  width: 38px; height: 38px;
+  background: white;
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px;
+  box-shadow: 0 4px 12px var(--shadow);
+  color: var(--accent);
+  font-weight: 900;
+}
+.brand-text { flex: 1; color: white; line-height: 1.15; }
+.brand-text h1 { font-size: 14px; font-weight: 800; letter-spacing: -0.2px; }
+.brand-text p { font-size: 10.5px; opacity: 0.85; margin-top: 3px; letter-spacing: 0.4px; text-transform: uppercase; font-weight: 600; }
+
+.back-link {
+  margin: 14px 14px 8px;
+  padding: 10px 12px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: var(--transition);
+}
+.back-link:hover { background: var(--surface-2); color: var(--text); border-color: var(--accent); }
+
+.nav-list { list-style: none; padding: 8px 10px; flex: 1; }
+.nav-item { margin-bottom: 4px; }
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 10px 12px;
+  border-radius: 9px;
+  cursor: pointer;
+  transition: var(--transition);
+  color: var(--text-muted);
+  font-weight: 600;
+  font-size: 13px;
+  text-decoration: none;
+  border: 1px solid transparent;
+}
+.nav-link:hover { background: var(--surface); color: var(--text); }
+.nav-link.active {
+  background: var(--accent-gradient);
+  color: white;
+  box-shadow: 0 4px 14px rgba(26, 58, 140, 0.4);
+}
+.nav-link.active .nav-num {
+  background: rgba(255, 255, 255, 0.25);
+  color: white;
+}
+.nav-num {
+  width: 24px; height: 24px;
+  background: var(--bg-3);
+  color: var(--text-muted);
+  border-radius: 7px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10.5px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.nav-icon { font-size: 13px; }
+
+.sidebar-footer {
+  padding: 14px 16px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.theme-toggle {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 22px;
+  padding: 6px 12px;
+  cursor: pointer;
+  display: flex; align-items: center; gap: 6px;
+  font-size: 12px;
+  color: var(--text-muted);
+  font-weight: 600;
+  transition: var(--transition);
+}
+.theme-toggle:hover { border-color: var(--accent); color: var(--text); }
+.logos-mini {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: white;
+  padding: 5px 10px;
+  border-radius: 7px;
+  font-weight: 800;
+  font-size: 11.5px;
+  letter-spacing: 0.4px;
+}
+.logos-mini .pdc { color: var(--pdc-navy); }
+.logos-mini .sep { width: 1px; height: 12px; background: #ccc; }
+.logos-mini .av { color: var(--avon); }
+
+/* ===== MAIN CONTENT ===== */
+.content { padding: 0; min-width: 0; }
+.main-header {
+  background: var(--bg-2);
+  border-bottom: 1px solid var(--border);
+  padding: 16px 32px;
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+.breadcrumb a { color: var(--text-muted); text-decoration: none; }
+.breadcrumb a:hover { color: var(--accent); }
+.breadcrumb-current { color: var(--text); font-weight: 700; }
+.progress-wrap { display: flex; align-items: center; gap: 12px; font-size: 12px; color: var(--text-muted); }
+.progress-bar { width: 140px; height: 6px; background: var(--bg-3); border-radius: 3px; overflow: hidden; }
+.progress-fill { height: 100%; background: var(--accent-gradient); border-radius: 3px; transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
+.menu-btn { display: none; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px; cursor: pointer; color: var(--text); font-size: 18px; }
+
+.module {
+  padding: 32px;
+  display: none;
+  animation: fadeIn 0.4s ease;
+  max-width: 1300px;
+  margin: 0 auto;
+}
+.module.active { display: block; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+
+.module-header {
+  margin-bottom: 28px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: flex-start;
+  gap: 18px;
+}
+.module-num {
+  width: 56px; height: 56px;
+  border-radius: 14px;
+  background: var(--accent-gradient);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px;
+  font-weight: 800;
+  color: white;
+  flex-shrink: 0;
+  box-shadow: 0 6px 18px rgba(26, 58, 140, 0.3);
+}
+.module-title h2 { font-size: 28px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 4px; color: var(--text); }
+.module-title p { font-size: 14.5px; color: var(--text-muted); }
+
+/* ===== CARDS ===== */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 22px;
+  transition: var(--transition);
+}
+.card-hover:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 28px var(--shadow);
+  border-color: var(--accent);
+}
+.card-title {
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--text);
+}
+.card-icon {
+  width: 36px; height: 36px;
+  border-radius: 9px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 17px;
+  flex-shrink: 0;
+}
+.card-text { color: var(--text-muted); font-size: 13.5px; line-height: 1.65; }
+
+.grid { display: grid; gap: 18px; }
+.grid-2 { grid-template-columns: repeat(2, 1fr); }
+.grid-3 { grid-template-columns: repeat(3, 1fr); }
+.grid-4 { grid-template-columns: repeat(4, 1fr); }
+
+@media (max-width: 1100px) {
+  .grid-3, .grid-4 { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 720px) {
+  .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+  .app { grid-template-columns: 1fr; }
+  .sidebar { position: fixed; left: -300px; top: 0; width: 280px; transition: left 0.3s ease; }
+  .sidebar.open { left: 0; box-shadow: 0 0 40px var(--shadow); }
+  .menu-btn { display: block; }
+  .module { padding: 18px; }
+  .module-num { width: 44px; height: 44px; font-size: 18px; }
+  .module-title h2 { font-size: 22px; }
+}
+
+/* ===== ALERTS ===== */
+.alert {
+  border-radius: 12px;
+  padding: 16px 20px;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  margin: 16px 0;
+  border-left: 4px solid;
+}
+.alert-icon { font-size: 22px; flex-shrink: 0; }
+.alert-text { flex: 1; font-size: 14px; line-height: 1.55; }
+.alert-text strong { font-weight: 700; }
+.alert-warning { background: var(--orange-soft); border-color: var(--orange); color: #5C3A00; }
+.alert-success { background: var(--green-soft); border-color: var(--green); color: #0E5C4A; }
+.alert-danger  { background: var(--red-soft); border-color: var(--red); color: #6B1A1A; }
+.alert-info    { background: var(--accent-soft); border-color: var(--accent); color: var(--accent-deep); }
+.alert-tip     { background: var(--gold-soft); border-color: var(--gold); color: #5C3F00; }
+:root[data-theme="dark"] .alert-warning { background: rgba(245, 124, 0, 0.13); color: #FFD699; }
+:root[data-theme="dark"] .alert-success { background: rgba(22, 160, 133, 0.13); color: #7EE2C5; }
+:root[data-theme="dark"] .alert-danger  { background: rgba(229, 62, 62, 0.13); color: #FFB0B0; }
+:root[data-theme="dark"] .alert-info    { background: rgba(91, 192, 235, 0.13); color: #B6E0F5; }
+:root[data-theme="dark"] .alert-tip     { background: rgba(255, 179, 0, 0.13); color: #FFE082; }
+
+/* ===== BADGES ===== */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 14px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+}
+.badge-accent { background: var(--accent); color: white; }
+.badge-avon { background: var(--avon); color: white; }
+.badge-gold { background: var(--gold); color: #1A1730; }
+.badge-green { background: var(--green); color: white; }
+.badge-red { background: var(--red); color: white; }
+
+/* ===== HERO CARD ===== */
+.hero-card {
+  background: var(--accent-gradient);
+  color: white;
+  border-radius: 18px;
+  padding: 32px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 22px;
+}
+.hero-card::before {
+  content: '';
+  position: absolute;
+  top: -100px; right: -100px;
+  width: 280px; height: 280px;
+  background: radial-gradient(circle, var(--avon) 0%, transparent 70%);
+  opacity: 0.4;
+  filter: blur(40px);
+}
+.hero-card > * { position: relative; z-index: 1; }
+.hero-card h3 { font-size: 26px; font-weight: 800; letter-spacing: -0.5px; line-height: 1.15; }
+.hero-card p { font-size: 14.5px; opacity: 0.92; line-height: 1.6; max-width: 700px; }
+
+/* ===== STAT BLOCKS ===== */
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 14px;
+  margin-top: 18px;
+}
+.stat-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 20px;
+  text-align: left;
+  position: relative;
+  overflow: hidden;
+}
+.stat-card .v {
+  font-size: 32px;
+  font-weight: 900;
+  letter-spacing: -1px;
+  color: var(--accent);
+  line-height: 1;
+}
+.stat-card .l {
+  font-size: 12.5px;
+  color: var(--text-muted);
+  margin-top: 8px;
+  line-height: 1.4;
+}
+.stat-card .accent-bar {
+  position: absolute;
+  top: 0; left: 0;
+  width: 4px; height: 100%;
+}
+.stat-card.v-avon .v { color: var(--avon); }
+.stat-card.v-avon .accent-bar { background: var(--avon); }
+.stat-card.v-pdc .v { color: var(--accent); }
+.stat-card.v-pdc .accent-bar { background: var(--accent); }
+.stat-card.v-green .v { color: var(--green); }
+.stat-card.v-green .accent-bar { background: var(--green); }
+.stat-card.v-gold .v { color: var(--orange); }
+.stat-card.v-gold .accent-bar { background: var(--orange); }
+
+/* ===== Two column compare ===== */
+.compare-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+@media (max-width: 720px) {
+  .compare-row { grid-template-columns: 1fr; }
+}
+.compare-card {
+  border-radius: 14px;
+  padding: 22px;
+  border: 1px solid var(--border);
+}
+.compare-card.ok {
+  background: var(--green-soft);
+  border-color: var(--green);
+}
+.compare-card.bad {
+  background: var(--red-soft);
+  border-color: var(--red);
+}
+:root[data-theme="dark"] .compare-card.ok { background: rgba(22, 160, 133, 0.1); }
+:root[data-theme="dark"] .compare-card.bad { background: rgba(229, 62, 62, 0.1); }
+.compare-card .head {
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  margin-bottom: 14px;
+  display: flex; align-items: center; gap: 8px;
+}
+.compare-card.ok .head { color: var(--green); }
+.compare-card.bad .head { color: var(--red); }
+:root[data-theme="dark"] .compare-card.ok .head { color: #7EE2C5; }
+:root[data-theme="dark"] .compare-card.bad .head { color: #FFB0B0; }
+.compare-card ul { list-style: none; }
+.compare-card li {
+  font-size: 13.5px;
+  line-height: 1.5;
+  padding: 7px 0;
+  display: flex;
+  gap: 9px;
+}
+.compare-card.ok li::before {
+  content: '✓';
+  color: var(--green);
+  font-weight: 900;
+  flex-shrink: 0;
+}
+.compare-card.bad li::before {
+  content: '✕';
+  color: var(--red);
+  font-weight: 900;
+  flex-shrink: 0;
+}
+
+/* ===== Quote box ===== */
+.quote-box {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 22px 26px;
+  border-left: 4px solid var(--accent);
+  margin: 18px 0;
+  position: relative;
+}
+.quote-box::before {
+  content: '"';
+  position: absolute;
+  top: -10px;
+  right: 18px;
+  font-size: 90px;
+  font-family: Georgia, serif;
+  color: var(--accent);
+  opacity: 0.15;
+  line-height: 1;
+}
+.quote-box .q {
+  font-size: 16px;
+  font-style: italic;
+  color: var(--text);
+  line-height: 1.6;
+  margin-bottom: 10px;
+}
+.quote-box .a {
+  font-size: 12.5px;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+/* ===== Step list ===== */
+.steps-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  counter-reset: step;
+}
+.step-item {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 20px 22px 20px 70px;
+  position: relative;
+  counter-increment: step;
+}
+.step-item::before {
+  content: counter(step, decimal-leading-zero);
+  position: absolute;
+  left: 18px;
+  top: 18px;
+  width: 38px; height: 38px;
+  background: var(--accent-gradient);
+  color: white;
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 800;
+  font-size: 13px;
+}
+.step-item h4 { font-size: 15.5px; font-weight: 800; margin-bottom: 6px; }
+.step-item p { font-size: 13.5px; color: var(--text-muted); line-height: 1.55; }
+
+/* ===== Channel grid ===== */
+.channel-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 22px 20px;
+  text-align: left;
+  transition: var(--transition);
+}
+.channel-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 28px var(--shadow);
+  border-color: var(--accent);
+}
+.channel-card .ch-icon {
+  width: 48px; height: 48px;
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px;
+  margin-bottom: 14px;
+}
+.channel-card h4 { font-size: 15px; font-weight: 800; margin-bottom: 6px; }
+.channel-card p { font-size: 13px; color: var(--text-muted); line-height: 1.5; }
+
+/* ===== Difficult client cards ===== */
+.diff-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 20px;
+  border-left: 4px solid;
+}
+.diff-card .dc-head {
+  font-size: 14.5px;
+  font-weight: 800;
+  margin-bottom: 8px;
+}
+.diff-card .dc-quote {
+  font-size: 13px;
+  color: var(--text-muted);
+  font-style: italic;
+  margin-bottom: 12px;
+  padding: 10px 14px;
+  background: var(--bg-3);
+  border-radius: 8px;
+}
+.diff-card .dc-action {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--text);
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+}
+.diff-card .dc-action::before {
+  content: '▸';
+  color: inherit;
+  font-weight: 900;
+  flex-shrink: 0;
+}
+.diff-card.t-red { border-color: var(--red); }
+.diff-card.t-red .dc-head, .diff-card.t-red .dc-action::before { color: var(--red); }
+.diff-card.t-orange { border-color: var(--orange); }
+.diff-card.t-orange .dc-head, .diff-card.t-orange .dc-action::before { color: var(--orange); }
+.diff-card.t-purple { border-color: var(--purple); }
+.diff-card.t-purple .dc-head, .diff-card.t-purple .dc-action::before { color: var(--purple); }
+.diff-card.t-avon { border-color: var(--avon); }
+.diff-card.t-avon .dc-head, .diff-card.t-avon .dc-action::before { color: var(--avon); }
+
+/* ===== TECNIQUE banner ===== */
+.technique-banner {
+  background: var(--accent-gradient);
+  border-radius: 14px;
+  padding: 22px 28px;
+  color: white;
+  text-align: center;
+  font-weight: 800;
+  font-size: 17px;
+  letter-spacing: 0.5px;
+  margin-top: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+.technique-banner .arrow { opacity: 0.6; font-weight: 400; }
+
+/* ===== Principles grid ===== */
+.principle-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 22px;
+  text-align: center;
+  transition: var(--transition);
+  border-top: 4px solid;
+}
+.principle-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 24px var(--shadow);
+}
+.principle-card .p-icon {
+  font-size: 36px;
+  margin-bottom: 10px;
+}
+.principle-card h4 { font-size: 15px; font-weight: 800; margin-bottom: 6px; }
+.principle-card p { font-size: 12.5px; color: var(--text-muted); }
+.principle-card.t-avon { border-top-color: var(--avon); }
+.principle-card.t-pdc { border-top-color: var(--accent); }
+.principle-card.t-green { border-top-color: var(--green); }
+.principle-card.t-purple { border-top-color: var(--purple); }
+.principle-card.t-orange { border-top-color: var(--orange); }
+
+/* ===== Phrases ===== */
+.phrase {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--accent);
+  border-radius: 12px;
+  padding: 14px 18px;
+  font-size: 14.5px;
+  font-style: italic;
+  margin-bottom: 10px;
+  color: var(--text);
+}
+.phrase.t-avon { border-left-color: var(--avon); }
+.phrase.t-green { border-left-color: var(--green); }
+.phrase.t-purple { border-left-color: var(--purple); }
+
+/* ===== Workshop / exercise rows ===== */
+.ex-row {
+  display: grid;
+  grid-template-columns: 70px 1fr 1fr 1fr;
+  gap: 14px;
+  margin-bottom: 12px;
+  align-items: stretch;
+}
+.ex-row > div {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px 16px;
+  font-size: 13px;
+}
+.ex-row .ex-num {
+  background: var(--accent);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 900;
+  font-size: 18px;
+  border: none;
+}
+.ex-row .ex-case h5 { font-size: 13.5px; font-weight: 800; margin-bottom: 4px; }
+.ex-row .ex-case p { font-size: 12.5px; color: var(--text-muted); font-style: italic; }
+.ex-row .ex-ok {
+  background: var(--green-soft);
+  border-color: var(--green);
+  color: #0E5C4A;
+  font-weight: 600;
+}
+.ex-row .ex-bad {
+  background: var(--red-soft);
+  border-color: var(--red);
+  color: #6B1A1A;
+  font-weight: 600;
+}
+:root[data-theme="dark"] .ex-row .ex-ok { background: rgba(22, 160, 133, 0.13); color: #7EE2C5; }
+:root[data-theme="dark"] .ex-row .ex-bad { background: rgba(229, 62, 62, 0.13); color: #FFB0B0; }
+@media (max-width: 900px) {
+  .ex-row { grid-template-columns: 1fr; }
+  .ex-row .ex-num { padding: 8px; font-size: 14px; }
+}
+
+/* ===== Dynamic activity card ===== */
+.dynamic-card {
+  background: var(--accent-gradient);
+  color: white;
+  border-radius: 18px;
+  padding: 28px;
+  position: relative;
+  overflow: hidden;
+  margin: 22px 0;
+}
+.dynamic-card::after {
+  content: '';
+  position: absolute;
+  top: -50px; right: -50px;
+  width: 220px; height: 220px;
+  background: radial-gradient(circle, var(--avon) 0%, transparent 70%);
+  opacity: 0.3;
+  filter: blur(40px);
+}
+.dynamic-card > * { position: relative; z-index: 1; }
+.dynamic-card h4 {
+  font-size: 13px;
+  letter-spacing: 1.5px;
+  font-weight: 800;
+  opacity: 0.85;
+  margin-bottom: 6px;
+}
+.dynamic-card h3 {
+  font-size: 22px;
+  font-weight: 900;
+  letter-spacing: -0.3px;
+  margin-bottom: 18px;
+}
+.dynamic-card .steps-mini {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+.dynamic-card .step-mini {
+  background: rgba(255,255,255,0.12);
+  border-radius: 10px;
+  padding: 12px 14px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  font-size: 13.5px;
+}
+.dynamic-card .step-mini b {
+  width: 24px; height: 24px;
+  background: white;
+  color: var(--accent-deep);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px;
+  font-weight: 900;
+  flex-shrink: 0;
+}
+.dynamic-card .footer-row {
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px dashed rgba(255,255,255,0.25);
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  opacity: 0.9;
+  font-weight: 600;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+/* ===== Closing card ===== */
+.closing-card {
+  background: var(--accent-gradient);
+  color: white;
+  border-radius: 18px;
+  padding: 40px 32px;
+  position: relative;
+  overflow: hidden;
+  text-align: center;
+}
+.closing-card::before {
+  content: '';
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 600px; height: 600px;
+  background: radial-gradient(circle, var(--avon) 0%, transparent 60%);
+  opacity: 0.25;
+  filter: blur(60px);
+}
+.closing-card > * { position: relative; z-index: 1; }
+.closing-card .trophy { font-size: 56px; margin-bottom: 16px; }
+.closing-card h3 { font-size: 26px; font-weight: 900; margin-bottom: 14px; letter-spacing: -0.4px; }
+.closing-card .q-block {
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 14px;
+  padding: 22px;
+  margin: 18px auto;
+  max-width: 600px;
+  font-style: italic;
+  font-size: 16px;
+  line-height: 1.55;
+}
+.closing-card .q-author { display: block; margin-top: 10px; font-size: 12.5px; opacity: 0.85; font-style: normal; font-weight: 700; letter-spacing: 0.5px; }
+.closing-card .three-pillars {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin-top: 22px;
+}
+.closing-card .pillar {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 16px 12px;
+  font-size: 13px;
+  font-weight: 700;
+}
+.closing-card .pillar .ico { display: block; font-size: 24px; margin-bottom: 8px; }
+@media (max-width: 720px) {
+  .closing-card .three-pillars { grid-template-columns: 1fr; }
+  .dynamic-card .steps-mini { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<div class="app">
+  <!-- ============ SIDEBAR ============ -->
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <div class="brand-icon">02</div>
+      <div class="brand-text">
+        <h1>Servicio al Cliente</h1>
+        <p>Capa 02 · Avon</p>
+      </div>
+    </div>
+
+    <a class="back-link" href="index.html">← Volver al hub principal</a>
+
+    <ul class="nav-list">
+      <li class="nav-item"><a class="nav-link active" data-module="01"><span class="nav-num">01</span><span class="nav-icon">👋</span>Bienvenida</a></li>
+      <li class="nav-item"><a class="nav-link" data-module="02"><span class="nav-num">02</span><span class="nav-icon">⭐</span>La base de todo</a></li>
+      <li class="nav-item"><a class="nav-link" data-module="03"><span class="nav-num">03</span><span class="nav-icon">📚</span>Comportamientos clave</a></li>
+      <li class="nav-item"><a class="nav-link" data-module="04"><span class="nav-num">04</span><span class="nav-icon">💡</span>Principios</a></li>
+      <li class="nav-item"><a class="nav-link" data-module="05"><span class="nav-num">05</span><span class="nav-icon">📡</span>Canales de cobro</a></li>
+      <li class="nav-item"><a class="nav-link" data-module="06"><span class="nav-num">06</span><span class="nav-icon">⚡</span>Clientes difíciles</a></li>
+      <li class="nav-item"><a class="nav-link" data-module="07"><span class="nav-num">07</span><span class="nav-icon">🎭</span>Rompehielo</a></li>
+      <li class="nav-item"><a class="nav-link" data-module="08"><span class="nav-num">08</span><span class="nav-icon">🛠️</span>Workshop</a></li>
+      <li class="nav-item"><a class="nav-link" data-module="09"><span class="nav-num">09</span><span class="nav-icon">💬</span>Frases poderosas</a></li>
+      <li class="nav-item"><a class="nav-link" data-module="10"><span class="nav-num">10</span><span class="nav-icon">🏆</span>Cierre</a></li>
+    </ul>
+
+    <div class="sidebar-footer">
+      <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn">
+        <span id="themeIcon">☀️</span><span id="themeLabel">Claro</span>
+      </button>
+      <div class="logos-mini"><span class="pdc">PDC</span><span class="sep"></span><span class="av">AVON</span></div>
+    </div>
+  </aside>
+
+  <!-- ============ CONTENT ============ -->
+  <main class="content">
+    <header class="main-header">
+      <button class="menu-btn" onclick="document.getElementById('sidebar').classList.toggle('open')">☰</button>
+      <nav class="breadcrumb">
+        <a href="index.html">Plataforma</a>
+        <span>›</span>
+        <span>Capa 02</span>
+        <span>›</span>
+        <span class="breadcrumb-current" id="bcCurrent">Bienvenida</span>
+      </nav>
+      <div class="progress-wrap">
+        <span id="progressLbl">1/10</span>
+        <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:10%"></div></div>
+      </div>
+    </header>
+
+    <!-- ============ MÓDULO 01: BIENVENIDA ============ -->
+    <section class="module active" id="module-01">
+      <div class="module-header">
+        <div class="module-num">01</div>
+        <div class="module-title">
+          <h2>Bienvenida e Introducción</h2>
+          <p>Primer día de formación · Equipo de cobros profesional</p>
+        </div>
+      </div>
+
+      <div class="hero-card">
+        <span class="badge badge-gold" style="align-self:flex-start">EXCELENCIA EN SERVICIO AL CLIENTE</span>
+        <h3>Eres el rostro de la empresa<br>en cada llamada.</h3>
+        <p>Esta capa te prepara para representar a Avon con profesionalismo, empatía y firmeza. Cada interacción cuenta — y cada cliente recordará cómo lo hiciste sentir mucho más que lo que le dijiste.</p>
+      </div>
+
+      <div class="grid grid-3" style="margin-top:24px">
+        <div class="card card-hover">
+          <div class="card-title"><div class="card-icon" style="background:var(--accent-soft);color:var(--accent)">💗</div>¿Qué es Servicio al Cliente?</div>
+          <p class="card-text">Es la experiencia total que vive el cliente en cada contacto con nuestra empresa. En cobros, implica resolver con respeto y empatía — no es un departamento, es una cultura.</p>
+        </div>
+        <div class="card card-hover">
+          <div class="card-title"><div class="card-icon" style="background:rgba(233,30,99,0.15);color:var(--avon)">💼</div>Importancia del área de cobros</div>
+          <p class="card-text">El equipo de cobros es el motor financiero de la empresa. Recuperar cartera con excelencia protege el negocio y fideliza a las representantes a largo plazo.</p>
+        </div>
+        <div class="card card-hover">
+          <div class="card-title"><div class="card-icon" style="background:rgba(22,160,133,0.15);color:var(--green)">🎯</div>Rol estratégico del gestor</div>
+          <p class="card-text">Eres el embajador de la empresa. Tu actitud, tono y soluciones definen la relación a largo plazo con cada cliente. Lo que digas pesa, pero cómo lo digas pesa más.</p>
+        </div>
+      </div>
+
+      <div class="alert alert-tip" style="margin-top:24px">
+        <span class="alert-icon">🎯</span>
+        <div class="alert-text"><strong>Dinámica rápida — Preséntate en 30 segundos:</strong> Nombre · ¿De dónde vienes? · Una palabra que te describe. Esto no es solo romper el hielo: estás practicando la primera impresión que un cliente recibirá al teléfono.</div>
+      </div>
+    </section>
+
+    <!-- ============ MÓDULO 02: SERVICIO AL CLIENTE — LA BASE ============ -->
+    <section class="module" id="module-02">
+      <div class="module-header">
+        <div class="module-num">02</div>
+        <div class="module-title">
+          <h2>Servicio al Cliente — La base de todo</h2>
+          <p>Por qué importa, y por qué importa especialmente en cobros</p>
+        </div>
+      </div>
+
+      <div class="grid grid-2">
+        <div class="card">
+          <div class="card-title"><div class="card-icon" style="background:var(--accent-soft);color:var(--accent)">✨</div>¿Qué es realmente?</div>
+          <p class="card-text">Es el conjunto de acciones, actitudes y comunicación que una empresa brinda al cliente antes, durante y después de cada interacción. No es un departamento — es una cultura que cada gestor lleva consigo en cada llamada.</p>
+        </div>
+        <div class="card">
+          <div class="card-title"><div class="card-icon" style="background:rgba(233,30,99,0.15);color:var(--avon)">💸</div>¿Por qué importa en cobros?</div>
+          <p class="card-text">Un cliente bien atendido paga más rápido, recomienda la empresa y regresa. Un cliente mal atendido se convierte en un problema legal, reputacional y financiero — muchas veces sin siquiera quejarse, simplemente se va.</p>
+        </div>
+      </div>
+
+      <h3 style="font-size:18px; font-weight:800; margin: 26px 0 14px;">Los números que importan</h3>
+
+      <div class="stat-grid">
+        <div class="stat-card v-pdc"><div class="accent-bar"></div><div class="v">70%</div><div class="l">de las decisiones de compra se basan en cómo el cliente se siente atendido</div></div>
+        <div class="stat-card v-avon"><div class="accent-bar"></div><div class="v">×5</div><div class="l">más caro conseguir un cliente nuevo que retener uno existente</div></div>
+        <div class="stat-card v-gold"><div class="accent-bar"></div><div class="v">91%</div><div class="l">de clientes insatisfechos nunca se quejan — simplemente se van</div></div>
+        <div class="stat-card v-green"><div class="accent-bar"></div><div class="v">×3</div><div class="l">más probabilidad de pago cuando el cobro se hace con empatía real</div></div>
+      </div>
+
+      <div class="quote-box">
+        <div class="q">El objetivo de un negocio es crear un cliente.</div>
+        <div class="a">— Peter Drucker, <em>The Practice of Management</em> (1954)</div>
+      </div>
+
+      <div class="alert alert-info">
+        <span class="alert-icon">💡</span>
+        <div class="alert-text"><strong>Lee esto despacio:</strong> Un cliente molesto que no se queja es más peligroso que uno que sí lo hace. El que se queja te da la oportunidad de arreglar la relación; el que se va en silencio se lleva su negocio y se lo cuenta a 9 personas más.</div>
+      </div>
+    </section>
+
+    <!-- ============ MÓDULO 03: COMPORTAMIENTOS Y ERRORES ============ -->
+    <section class="module" id="module-03">
+      <div class="module-header">
+        <div class="module-num">03</div>
+        <div class="module-title">
+          <h2>Comportamientos de Excelencia</h2>
+          <p>Qué hacer · Qué evitar · Y por qué cada decisión cuenta</p>
+        </div>
+      </div>
+
+      <div class="compare-row">
+        <div class="compare-card ok">
+          <div class="head">✓ Comportamientos clave</div>
+          <ul>
+            <li>Saludar siempre por el nombre del cliente</li>
+            <li>Escuchar sin interrumpir los primeros 30 segundos</li>
+            <li>Reconocer el problema antes de ofrecer solución</li>
+            <li>Mantener tono cálido aunque el cliente sea hostil</li>
+            <li>Cerrar con un acuerdo claro y verificable</li>
+          </ul>
+        </div>
+        <div class="compare-card bad">
+          <div class="head">✕ Errores que destruyen la relación</div>
+          <ul>
+            <li>Usar lenguaje técnico o frío sin contexto</li>
+            <li>Interrumpir o apresurar al cliente</li>
+            <li>Culpar a otros departamentos frente al cliente</li>
+            <li>Prometer lo que no se puede cumplir</li>
+            <li>Colgar sin confirmar los acuerdos del llamado</li>
+          </ul>
+        </div>
+      </div>
+
+      <h3 style="font-size:18px; font-weight:800; margin: 28px 0 14px;">Lecturas clave que inspiraron esta capa</h3>
+
+      <div class="grid grid-3">
+        <div class="card card-hover">
+          <div class="card-title"><div class="card-icon" style="background:var(--accent-soft);color:var(--accent)">📘</div>Robert Spector · 1995</div>
+          <p class="card-text">La cultura interna define el trato al cliente — sin excepción.</p>
+        </div>
+        <div class="card card-hover">
+          <div class="card-title"><div class="card-icon" style="background:rgba(233,30,99,0.15);color:var(--avon)">📘</div>Tony Hsieh · 2010</div>
+          <p class="card-text">Construir felicidad para clientes y empleados como modelo de negocio.</p>
+        </div>
+        <div class="card card-hover">
+          <div class="card-title"><div class="card-icon" style="background:rgba(22,160,133,0.15);color:var(--green)">📘</div>Jack Mitchell · 2003</div>
+          <p class="card-text">Las relaciones personales generan lealtad que el precio no puede comprar.</p>
+        </div>
+      </div>
+
+      <div class="quote-box" style="margin-top:24px">
+        <div class="q">La forma en que tratas a tus empleados es la forma en que ellos tratarán a tus clientes.</div>
+        <div class="a">— Richard Branson</div>
+      </div>
+    </section>
+
+    <!-- ============ MÓDULO 04: PRINCIPIOS ============ -->
+    <section class="module" id="module-04">
+      <div class="module-header">
+        <div class="module-num">04</div>
+        <div class="module-title">
+          <h2>Los 5 Principios del Servicio al Cliente</h2>
+          <p>Los fundamentos no negociables de cada llamada de cobro</p>
+        </div>
+      </div>
+
+      <div class="grid grid-3">
+        <div class="principle-card t-avon">
+          <div class="p-icon">💗</div>
+          <h4>Empatía</h4>
+          <p>Ponerse en el lugar del cliente — su realidad, su contexto, su día.</p>
+        </div>
+        <div class="principle-card t-pdc">
+          <div class="p-icon">👂</div>
+          <h4>Escucha activa</h4>
+          <p>Entender antes de responder. No estés esperando tu turno para hablar.</p>
+        </div>
+        <div class="principle-card t-green">
+          <div class="p-icon">💬</div>
+          <h4>Comunicación efectiva</h4>
+          <p>Mensaje claro, tono correcto. Lo que dices y cómo lo dices.</p>
+        </div>
+        <div class="principle-card t-purple">
+          <div class="p-icon">🧠</div>
+          <h4>Inteligencia emocional</h4>
+          <p>Manejar emociones propias y ajenas — sin contagiarte del enojo del cliente.</p>
+        </div>
+        <div class="principle-card t-orange">
+          <div class="p-icon">🎙️</div>
+          <h4>Tono de voz</h4>
+          <p>Cálido, seguro y profesional. Tu voz transmite más que tus palabras.</p>
+        </div>
+      </div>
+
+      <div class="quote-box" style="margin-top:24px">
+        <div class="q">El éxito no es definitivo, el fracaso no es fatal: es el coraje de continuar lo que cuenta.</div>
+        <div class="a">— Dale Carnegie | John Maxwell | Tony Hsieh | Simon Sinek</div>
+      </div>
+
+      <div class="alert alert-success">
+        <span class="alert-icon">🌟</span>
+        <div class="alert-text"><strong>Pregúntate antes de cada llamada:</strong> ¿Estoy listo emocionalmente para servir? Si la respuesta es no, respira 3 veces profundo y reinicia. El cliente al otro lado merece tu mejor versión, no la que viene del estrés de la llamada anterior.</div>
+      </div>
+    </section>
+
+    <!-- ============ MÓDULO 05: CANALES ============ -->
+    <section class="module" id="module-05">
+      <div class="module-header">
+        <div class="module-num">05</div>
+        <div class="module-title">
+          <h2>Canales de Cobranza</h2>
+          <p>Cómo se cobra hoy — cada canal tiene sus reglas y su tono</p>
+        </div>
+      </div>
+
+      <div class="grid grid-3">
+        <div class="channel-card">
+          <div class="ch-icon" style="background:var(--accent-soft);color:var(--accent)">📞</div>
+          <h4>Cobro telefónico</h4>
+          <p>Claro, empático, con guión. El canal más directo y el más exigente — exige tono, ritmo y empatía.</p>
+        </div>
+        <div class="channel-card">
+          <div class="ch-icon" style="background:rgba(22,160,133,0.15);color:var(--green)">💬</div>
+          <h4>WhatsApp</h4>
+          <p>Mensaje breve, formal y claro. Nunca abusar del canal — no es para acosar, es para recordar.</p>
+        </div>
+        <div class="channel-card">
+          <div class="ch-icon" style="background:rgba(233,30,99,0.15);color:var(--avon)">📧</div>
+          <h4>Correo electrónico</h4>
+          <p>Profesional, con asunto directo. Útil para dejar constancia escrita de acuerdos y montos.</p>
+        </div>
+        <div class="channel-card">
+          <div class="ch-icon" style="background:rgba(245,124,0,0.15);color:var(--orange)">📄</div>
+          <h4>Cartas de cobro</h4>
+          <p>Formal, con fechas y montos. La forma escrita más seria — siempre revisada antes de enviar.</p>
+        </div>
+        <div class="channel-card">
+          <div class="ch-icon" style="background:rgba(124,58,237,0.15);color:var(--purple)">📍</div>
+          <h4>Visitas de campo</h4>
+          <p>Presencia, puntualidad, respeto. Solo cuando los otros canales fallan o el caso lo amerita.</p>
+        </div>
+        <div class="channel-card">
+          <div class="ch-icon" style="background:rgba(255,179,0,0.15);color:#B07A00">📋</div>
+          <h4>Rendición de cuentas</h4>
+          <p>Reportes diarios al gerente. No es opcional — es la base del control de la cartera.</p>
+        </div>
+      </div>
+
+      <div class="alert alert-info" style="margin-top:24px">
+        <span class="alert-icon">🧭</span>
+        <div class="alert-text"><strong>Regla de oro multicanal:</strong> nunca uses dos canales para presionar al mismo cliente al mismo tiempo. Si llamaste a las 9am y no contestó, el WhatsApp a las 9:05 se siente como acoso. Espacia, varía el horario y respeta el ritmo del cliente.</div>
+      </div>
+    </section>
+
+    <!-- ============ MÓDULO 06: CLIENTES DIFÍCILES ============ -->
+    <section class="module" id="module-06">
+      <div class="module-header">
+        <div class="module-num">06</div>
+        <div class="module-title">
+          <h2>Cómo manejar clientes difíciles</h2>
+          <p>4 perfiles · 4 estrategias · 1 técnica que funciona siempre</p>
+        </div>
+      </div>
+
+      <div class="grid grid-2">
+        <div class="diff-card t-red">
+          <div class="dc-head">🔥 Cliente agresivo</div>
+          <div class="dc-quote">"¡No me llamen más, ya les dije que no tengo!"</div>
+          <div class="dc-action">Mantén la calma. Baja el tono. No respondas con agresividad — eso solo escala el conflicto.</div>
+        </div>
+
+        <div class="diff-card t-orange">
+          <div class="dc-head">🌫️ Cliente evasivo</div>
+          <div class="dc-quote">"Sí, sí... llámame mañana" (y no contesta)</div>
+          <div class="dc-action">Varía el horario y canal. Deja mensajes concretos con compromisos específicos y fechas.</div>
+        </div>
+
+        <div class="diff-card t-purple">
+          <div class="dc-head">📅 Promete y no paga</div>
+          <div class="dc-quote">"El viernes pago, te lo juro"</div>
+          <div class="dc-action">Confirma por escrito. Haz seguimiento. Pide compromisos específicos con día, hora y método.</div>
+        </div>
+
+        <div class="diff-card t-avon">
+          <div class="dc-head">😤 Cliente molesto</div>
+          <div class="dc-quote">"¡Esta deuda ya estaba pagada!"</div>
+          <div class="dc-action">Escucha completa. Valida su emoción. Revisa el caso con detalle antes de defender la postura.</div>
+        </div>
+      </div>
+
+      <div class="technique-banner">
+        🔑 <span>ESCUCHAR</span> <span class="arrow">→</span> <span>VALIDAR</span> <span class="arrow">→</span> <span>RESOLVER</span>
+      </div>
+
+      <div class="alert alert-warning" style="margin-top:18px">
+        <span class="alert-icon">⚠️</span>
+        <div class="alert-text"><strong>Nunca olvides:</strong> el cliente difícil casi siempre está pasando por algo que no te está contando. Salud, despido, problema familiar — la deuda suele ser solo el síntoma. Trata el síntoma con respeto y descubrirás la causa.</div>
+      </div>
+    </section>
+
+    <!-- ============ MÓDULO 07: ROMPEHIELO ============ -->
+    <section class="module" id="module-07">
+      <div class="module-header">
+        <div class="module-num">07</div>
+        <div class="module-title">
+          <h2>Rompehielo: "Cliente vs. Gestor"</h2>
+          <p>Dinámica práctica para soltar el cuerpo antes del trabajo real</p>
+        </div>
+      </div>
+
+      <div class="dynamic-card">
+        <h4>🎭 ROMPEHIELO DINÁMICO</h4>
+        <h3>"Cliente vs. Gestor"</h3>
+        <div class="steps-mini">
+          <div class="step-mini"><b>1</b>Dividir al grupo en equipos de 4 personas</div>
+          <div class="step-mini"><b>2</b>Simular una llamada de cobro real</div>
+          <div class="step-mini"><b>3</b>Un grupo observa y evalúa empatía y técnica</div>
+          <div class="step-mini"><b>4</b>¡Premiar la mejor actuación!</div>
+        </div>
+        <div class="footer-row">
+          <span>⏱ Tiempo: 15 minutos</span>
+          <span>🏆 Premio: Reconocimiento como Mejor Gestor del Día</span>
+        </div>
+      </div>
+
+      <div class="grid grid-2" style="margin-top:24px">
+        <div class="card">
+          <div class="card-title"><div class="card-icon" style="background:var(--accent-soft);color:var(--accent)">🎯</div>Qué evaluar</div>
+          <ul style="list-style:none; padding:0">
+            <li style="padding:6px 0; font-size:13.5px; color:var(--text-muted)">▸ Saludo y uso del nombre del cliente</li>
+            <li style="padding:6px 0; font-size:13.5px; color:var(--text-muted)">▸ Empatía real (no scripted)</li>
+            <li style="padding:6px 0; font-size:13.5px; color:var(--text-muted)">▸ Manejo de la objeción</li>
+            <li style="padding:6px 0; font-size:13.5px; color:var(--text-muted)">▸ Cierre con acuerdo claro</li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="card-title"><div class="card-icon" style="background:rgba(245,124,0,0.15);color:var(--orange)">⚠️</div>Qué penalizar</div>
+          <ul style="list-style:none; padding:0">
+            <li style="padding:6px 0; font-size:13.5px; color:var(--text-muted)">▸ Interrumpir al "cliente"</li>
+            <li style="padding:6px 0; font-size:13.5px; color:var(--text-muted)">▸ Tono frío o amenazante</li>
+            <li style="padding:6px 0; font-size:13.5px; color:var(--text-muted)">▸ Promesas vagas o imposibles</li>
+            <li style="padding:6px 0; font-size:13.5px; color:var(--text-muted)">▸ Cerrar sin confirmación verbal</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ MÓDULO 08: WORKSHOP ============ -->
+    <section class="module" id="module-08">
+      <div class="module-header">
+        <div class="module-num">08</div>
+        <div class="module-title">
+          <h2>Ejercicios prácticos · Workshop</h2>
+          <p>3 escenarios reales · Identifica qué hacer y qué no hacer</p>
+        </div>
+      </div>
+
+      <div class="ex-row">
+        <div class="ex-num">01</div>
+        <div class="ex-case">
+          <h5>Cliente con mora leve</h5>
+          <p>15 días de atraso. Es su primera vez en mora.</p>
+        </div>
+        <div class="ex-ok">✓ Tono amigable, recordatorio gentil, ofrecer opciones de pago</div>
+        <div class="ex-bad">✕ Amenazar, usar lenguaje técnico frío</div>
+      </div>
+
+      <div class="ex-row">
+        <div class="ex-num">02</div>
+        <div class="ex-case">
+          <h5>Cliente molesto</h5>
+          <p>Dice que ya pagó y que la empresa está equivocada.</p>
+        </div>
+        <div class="ex-ok">✓ Validar su emoción, investigar antes de responder, disculparse si hay error</div>
+        <div class="ex-bad">✕ Contradecir, ponerse a la defensiva</div>
+      </div>
+
+      <div class="ex-row">
+        <div class="ex-num">03</div>
+        <div class="ex-case">
+          <h5>Cliente que no contesta</h5>
+          <p>3 llamadas sin respuesta. El correo rebota.</p>
+        </div>
+        <div class="ex-ok">✓ WhatsApp + carta formal + nota de visita programada</div>
+        <div class="ex-bad">✕ Abandonar el caso, dejar mensajes amenazantes</div>
+      </div>
+
+      <div class="alert alert-tip" style="margin-top:24px">
+        <span class="alert-icon">📝</span>
+        <div class="alert-text"><strong>Tarea en pareja:</strong> con un compañero, agrega 3 escenarios más basados en llamadas reales que hayas escuchado esta semana. Definan juntos el "qué sí" y el "qué no". Esto multiplica el aprendizaje del grupo.</div>
+      </div>
+    </section>
+
+    <!-- ============ MÓDULO 09: FRASES PODEROSAS ============ -->
+    <section class="module" id="module-09">
+      <div class="module-header">
+        <div class="module-num">09</div>
+        <div class="module-title">
+          <h2>Frases poderosas y técnicas de negociación</h2>
+          <p>Lenguaje que abre puertas en lugar de cerrarlas</p>
+        </div>
+      </div>
+
+      <h3 style="font-size:17px; font-weight:800; margin-bottom:14px;">Frases que cambian la conversación</h3>
+
+      <div class="phrase t-pdc">"Estoy aquí para ayudarle a encontrar la mejor solución."</div>
+      <div class="phrase t-avon">"Entiendo perfectamente su situación y juntos podemos resolverlo."</div>
+      <div class="phrase t-green">"Busquemos juntos una opción que funcione para ambas partes."</div>
+      <div class="phrase t-purple">"Aprecio su honestidad, eso nos permite avanzar más rápido."</div>
+
+      <h3 style="font-size:17px; font-weight:800; margin: 28px 0 14px;">Las 3 técnicas clave</h3>
+
+      <div class="grid grid-3">
+        <div class="card card-hover">
+          <div class="card-title"><div class="card-icon" style="background:var(--accent-soft);color:var(--accent)">🔗</div>Conexión</div>
+          <p class="card-text"><strong>Conectar antes de cobrar.</strong> Usa el nombre del cliente. Pregunta cómo está. Reconoce algo positivo antes de entrar al motivo de la llamada. Esto baja barreras inmediatamente.</p>
+        </div>
+        <div class="card card-hover">
+          <div class="card-title"><div class="card-icon" style="background:rgba(233,30,99,0.15);color:var(--avon)">✅</div>Cierre positivo</div>
+          <p class="card-text"><strong>Terminar con acuerdo verbal.</strong> <em>"¿Le confirmo entonces el pago para el viernes a las 3pm por TigoMoney?"</em> El cierre confirma el compromiso y deja constancia.</p>
+        </div>
+        <div class="card card-hover">
+          <div class="card-title"><div class="card-icon" style="background:rgba(22,160,133,0.15);color:var(--green)">🤝</div>Win-Win</div>
+          <p class="card-text"><strong>Solución donde ambas partes ganan.</strong> Plan de pagos, convenio, abono parcial. El cliente no pierde la cara, la empresa recupera. Todos ganan.</p>
+        </div>
+      </div>
+
+      <div class="alert alert-success" style="margin-top:24px">
+        <span class="alert-icon">💎</span>
+        <div class="alert-text"><strong>Frase prohibida en cobros:</strong> "Eso no es mi problema". Aunque sea técnicamente cierto, comunica desinterés y rompe la relación. En su lugar: <em>"Permítame revisar quién puede ayudarle con eso — no la dejo sin respuesta."</em></div>
+      </div>
+    </section>
+
+    <!-- ============ MÓDULO 10: CIERRE ============ -->
+    <section class="module" id="module-10">
+      <div class="module-header">
+        <div class="module-num">10</div>
+        <div class="module-title">
+          <h2>¡Bienvenidos al equipo!</h2>
+          <p>Cierre del primer día · Espacio para preguntas</p>
+        </div>
+      </div>
+
+      <div class="closing-card">
+        <div class="trophy">🏆</div>
+        <h3>¡Bienvenidos al equipo de excelencia!</h3>
+        <div class="q-block">
+          "El cliente puede olvidar lo que dijiste,<br>pero nunca cómo lo hiciste sentir."
+          <span class="q-author">— Maya Angelou</span>
+        </div>
+
+        <div class="three-pillars">
+          <div class="pillar"><span class="ico">🚀</span>Con actitud y propósito</div>
+          <div class="pillar"><span class="ico">🛡️</span>Con ética y profesionalismo</div>
+          <div class="pillar"><span class="ico">⭐</span>Con excelencia en cada llamada</div>
+        </div>
+      </div>
+
+      <div class="alert alert-tip" style="margin-top:24px">
+        <span class="alert-icon">❓</span>
+        <div class="alert-text"><strong>Espacio para preguntas:</strong> Tómate un momento ahora — anota las 2 dudas que más te quedaron de esta capa. Llévalas a tu líder o pregúntalas en el siguiente check-in del equipo. No hay pregunta tonta el primer día.</div>
+      </div>
+
+      <div style="text-align:center; margin-top:30px">
+        <a href="index.html" style="display:inline-flex; align-items:center; gap:10px; background:var(--accent-gradient); color:white; padding:14px 28px; border-radius:12px; text-decoration:none; font-weight:700; font-size:14px; box-shadow:0 8px 24px rgba(26,58,140,0.3);">
+          ← Volver al hub principal
+        </a>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<script>
+const titles = {
+  '01': 'Bienvenida',
+  '02': 'La base de todo',
+  '03': 'Comportamientos clave',
+  '04': 'Principios',
+  '05': 'Canales de cobro',
+  '06': 'Clientes difíciles',
+  '07': 'Rompehielo',
+  '08': 'Workshop',
+  '09': 'Frases poderosas',
+  '10': 'Cierre'
+};
+const total = 10;
+
+function showModule(id) {
+  document.querySelectorAll('.module').forEach(m => m.classList.remove('active'));
+  document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+  document.getElementById('module-' + id).classList.add('active');
+  const link = document.querySelector(`.nav-link[data-module="${id}"]`);
+  if (link) link.classList.add('active');
+  document.getElementById('bcCurrent').textContent = titles[id] || id;
+  const num = parseInt(id, 10);
+  const pct = Math.round((num / total) * 100);
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressLbl').textContent = num + '/' + total;
+  window.scrollTo({top: 0, behavior: 'smooth'});
+  if (window.innerWidth <= 720) document.getElementById('sidebar').classList.remove('open');
+}
+
+document.querySelectorAll('.nav-link[data-module]').forEach(link => {
+  link.addEventListener('click', () => showModule(link.dataset.module));
+});
+
+function toggleTheme() {
+  const html = document.documentElement;
+  const cur = html.getAttribute('data-theme');
+  const next = cur === 'dark' ? 'light' : 'dark';
+  html.setAttribute('data-theme', next);
+  document.getElementById('themeIcon').textContent = next === 'dark' ? '☀️' : '🌙';
+  document.getElementById('themeLabel').textContent = next === 'dark' ? 'Claro' : 'Oscuro';
+  try { localStorage.setItem('avon-theme', next); } catch(e) {}
+}
+(function() {
+  try {
+    const saved = localStorage.getItem('avon-theme');
+    if (saved) {
+      document.documentElement.setAttribute('data-theme', saved);
+      document.getElementById('themeIcon').textContent = saved === 'dark' ? '☀️' : '🌙';
+      document.getElementById('themeLabel').textContent = saved === 'dark' ? 'Claro' : 'Oscuro';
+    }
+  } catch(e) {}
+})();
+</script>
+
+</body>
+</html>

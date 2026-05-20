@@ -1,0 +1,1765 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Visor de Capacitaciones · Plataforma Avon</title>
+<style>
+:root[data-theme="dark"] {
+  --bg: #0F0E1A;
+  --bg-2: #1A1830;
+  --bg-3: #252244;
+  --surface: #1E1B36;
+  --surface-2: #28244A;
+  --border: #3A3560;
+  --text: #F0EDFA;
+  --text-muted: #A29CC0;
+  --text-subtle: #7670A0;
+  --shadow: rgba(0, 0, 0, 0.5);
+}
+:root[data-theme="light"] {
+  --bg: #F8F5FA;
+  --bg-2: #FFFFFF;
+  --bg-3: #EFEAF5;
+  --surface: #FFFFFF;
+  --surface-2: #F5F1FA;
+  --border: #E0DAEC;
+  --text: #1A1730;
+  --text-muted: #5A5470;
+  --text-subtle: #8A86A0;
+  --shadow: rgba(45, 27, 78, 0.15);
+}
+:root {
+  --avon: #E91E63;
+  --avon-deep: #C2185B;
+  --avon-soft: #FCE4EC;
+  --pdc-navy: #0A2472;
+  --pdc-navy-2: #1A3A8C;
+  --pdc-blue: #5BC0EB;
+  --pdc-blue-soft: #E3F2FD;
+  --gold: #FFB300;
+  --green: #16A085;
+  --red: #E53E3E;
+  --orange: #F59E0B;
+  --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.5;
+  min-height: 100vh;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+/* ============ TOPBAR ============ */
+.topbar {
+  background: var(--bg-2);
+  border-bottom: 1px solid var(--border);
+  padding: 14px 24px;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+.brand-mark {
+  width: 36px; height: 36px;
+  background: linear-gradient(135deg, var(--avon), var(--pdc-navy));
+  color: white;
+  border-radius: 9px;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 800;
+  font-size: 16px;
+  box-shadow: 0 3px 10px rgba(233, 30, 99, 0.3);
+}
+.brand-text h1 {
+  font-size: 14.5px;
+  font-weight: 800;
+  letter-spacing: -0.2px;
+}
+.brand-text p {
+  font-size: 11.5px;
+  color: var(--text-muted);
+  margin-top: 1px;
+}
+
+.breadcrumb {
+  font-size: 13px;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.breadcrumb a {
+  color: var(--text-muted);
+  text-decoration: none;
+  transition: var(--transition);
+}
+.breadcrumb a:hover { color: var(--avon); }
+.breadcrumb .sep { color: var(--text-subtle); }
+.breadcrumb .current { color: var(--text); font-weight: 700; }
+
+.topbar-spacer { flex: 1; }
+
+.theme-toggle {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-weight: 600;
+  font-size: 13px;
+  padding: 7px 13px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  transition: var(--transition);
+}
+.theme-toggle:hover { background: var(--surface-2); }
+
+.back-link {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 13px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-decoration: none;
+  transition: var(--transition);
+}
+.back-link:hover { background: var(--surface-2); color: var(--text); border-color: var(--avon); }
+
+/* ============ SYSTEM STATUS BANNER ============ */
+.system-banner {
+  background: linear-gradient(135deg, var(--orange), var(--red));
+  color: white;
+  padding: 12px 24px;
+  font-size: 13px;
+  font-weight: 600;
+  text-align: center;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+.system-banner.show { display: flex; }
+.system-banner .icon { font-size: 18px; }
+.system-banner button {
+  background: rgba(255,255,255,0.2);
+  border: 1px solid rgba(255,255,255,0.3);
+  color: white;
+  padding: 4px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  margin-left: 10px;
+}
+.system-banner button:hover {
+  background: rgba(255,255,255,0.3);
+}
+
+/* ============ MAIN ============ */
+.page {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 36px 24px 60px;
+}
+.page-header {
+  margin-bottom: 30px;
+}
+.page-header h2 {
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: -0.4px;
+  margin-bottom: 8px;
+}
+.page-header p {
+  font-size: 14.5px;
+  color: var(--text-muted);
+  max-width: 720px;
+}
+
+/* ============ SYSTEM INFO BOX ============ */
+.info-box {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--pdc-blue);
+  border-radius: 12px;
+  padding: 16px 20px;
+  margin-bottom: 30px;
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+.info-box.warning {
+  border-left-color: var(--orange);
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.05), rgba(245, 158, 11, 0));
+}
+.info-box.error {
+  border-left-color: var(--red);
+  background: linear-gradient(135deg, rgba(229, 62, 62, 0.05), rgba(229, 62, 62, 0));
+}
+.info-box .icon {
+  font-size: 20px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.info-box-content {
+  flex: 1;
+}
+.info-box-title {
+  font-size: 14px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+.info-box-desc {
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+/* ============ UPLOAD ZONE ============ */
+.upload-zone {
+  background: var(--surface);
+  border: 2px dashed var(--border);
+  border-radius: 16px;
+  padding: 36px 28px;
+  text-align: center;
+  margin-bottom: 30px;
+  cursor: pointer;
+  transition: var(--transition);
+  position: relative;
+}
+.upload-zone:hover, .upload-zone.dragover {
+  border-color: var(--avon);
+  background: var(--surface-2);
+}
+.upload-zone.dragover {
+  border-style: solid;
+  transform: scale(1.005);
+}
+.upload-zone.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+.upload-icon {
+  font-size: 38px;
+  margin-bottom: 10px;
+  display: block;
+}
+.upload-title {
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+.upload-desc {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+.upload-zone input[type=file] {
+  display: none;
+}
+.upload-status {
+  margin-top: 14px;
+  font-size: 13px;
+  color: var(--avon);
+  font-weight: 600;
+  display: none;
+}
+.upload-status.show { display: block; }
+.upload-progress {
+  margin-top: 10px;
+  height: 4px;
+  background: var(--bg-3);
+  border-radius: 2px;
+  overflow: hidden;
+  display: none;
+}
+.upload-progress.show { display: block; }
+.upload-progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--avon), var(--pdc-blue));
+  width: 0%;
+  transition: width 0.3s ease;
+}
+
+/* ============ LIBRARY GRID ============ */
+.library-section {
+  margin-bottom: 30px;
+}
+.library-heading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 18px;
+}
+.library-heading h3 {
+  font-size: 18px;
+  font-weight: 800;
+}
+.library-count {
+  font-size: 12.5px;
+  color: var(--text-subtle);
+  font-weight: 600;
+}
+
+.library-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 18px;
+}
+.pdf-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: var(--transition);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+.pdf-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--avon);
+  box-shadow: 0 8px 20px var(--shadow);
+}
+.pdf-card-corrupt {
+  opacity: 0.7;
+  border-color: var(--orange);
+  cursor: not-allowed;
+}
+.pdf-card-corrupt:hover {
+  border-color: var(--red);
+  transform: none;
+}
+.corrupt-badge {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  background: var(--orange);
+  color: white;
+  font-size: 16px;
+  width: 28px;
+  height: 28px;
+  border-radius: 7px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+.pdf-thumb {
+  aspect-ratio: 4/5;
+  background: var(--bg-3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  position: relative;
+}
+.pdf-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.pdf-thumb-placeholder {
+  font-size: 36px;
+  color: var(--text-subtle);
+}
+.pdf-card-info {
+  padding: 13px 14px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.pdf-card-name {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.3;
+  word-break: break-word;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.pdf-card-meta {
+  font-size: 11.5px;
+  color: var(--text-subtle);
+  display: flex;
+  gap: 8px;
+}
+.pdf-card-meta .dot { opacity: 0.5; }
+
+.pdf-card-actions {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: flex;
+  gap: 6px;
+  opacity: 0;
+  transition: var(--transition);
+}
+.pdf-card:hover .pdf-card-actions { opacity: 1; }
+.pdf-action-btn {
+  width: 28px; height: 28px;
+  border-radius: 7px;
+  background: rgba(0,0,0,0.7);
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(6px);
+  transition: var(--transition);
+}
+.pdf-action-btn:hover { background: var(--red); }
+.pdf-action-btn.rename:hover { background: var(--pdc-blue); }
+
+.empty-library {
+  text-align: center;
+  padding: 50px 24px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  color: var(--text-muted);
+}
+.empty-library .icon { font-size: 44px; margin-bottom: 12px; opacity: 0.4; }
+.empty-library .title { font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+.empty-library .desc { font-size: 13.5px; }
+
+/* ============ VIEWER OVERLAY ============ */
+.viewer-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.92);
+  z-index: 9999;
+  display: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.viewer-overlay.active {
+  display: flex;
+  flex-direction: column;
+  opacity: 1;
+}
+
+.viewer-header {
+  background: rgba(26, 24, 48, 0.95);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-shrink: 0;
+}
+.viewer-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: white;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.viewer-page-info {
+  font-size: 13px;
+  color: rgba(255,255,255,0.7);
+  font-weight: 600;
+  min-width: 120px;
+  text-align: right;
+}
+.viewer-close {
+  width: 32px; height: 32px;
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.2);
+  color: white;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition);
+  flex-shrink: 0;
+}
+.viewer-close:hover { background: var(--red); }
+
+.viewer-stage {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  overflow: hidden;
+  position: relative;
+}
+
+#flipbook {
+  position: relative;
+}
+
+.viewer-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  color: white;
+}
+.viewer-loading .spinner {
+  width: 50px; height: 50px;
+  border: 4px solid rgba(255,255,255,0.1);
+  border-top-color: var(--avon);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+.viewer-loading .msg {
+  font-size: 14px;
+  color: rgba(255,255,255,0.8);
+  font-weight: 600;
+}
+
+.viewer-controls {
+  background: rgba(26, 24, 48, 0.95);
+  backdrop-filter: blur(10px);
+  border-top: 1px solid rgba(255,255,255,0.1);
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+.viewer-btn {
+  padding: 8px 14px;
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.2);
+  color: white;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.viewer-btn:hover:not(:disabled) { background: rgba(255,255,255,0.15); }
+.viewer-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+.page-input-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.page-input-wrapper input {
+  width: 60px;
+  padding: 6px 10px;
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.2);
+  color: white;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  text-align: center;
+}
+
+/* ============ MODALS ============ */
+.modal {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.7);
+  backdrop-filter: blur(4px);
+  z-index: 10000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+.modal.active {
+  display: flex;
+  opacity: 1;
+}
+.modal-box {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 24px;
+  max-width: 460px;
+  width: 100%;
+  box-shadow: 0 20px 40px var(--shadow);
+}
+.modal-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.modal-icon {
+  font-size: 24px;
+}
+.modal-title {
+  font-size: 18px;
+  font-weight: 800;
+}
+.modal-content {
+  font-size: 13.5px;
+  color: var(--text-muted);
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+.modal-input {
+  width: 100%;
+  padding: 10px 14px;
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: 10px;
+  font-size: 14px;
+  margin-bottom: 20px;
+}
+.modal-input:focus {
+  outline: none;
+  border-color: var(--avon);
+}
+.modal-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+.modal-btn {
+  padding: 9px 18px;
+  border-radius: 9px;
+  font-size: 13.5px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: var(--transition);
+  border: none;
+}
+.modal-btn.cancel {
+  background: var(--surface-2);
+  color: var(--text-muted);
+}
+.modal-btn.cancel:hover {
+  background: var(--bg-3);
+  color: var(--text);
+}
+.modal-btn.confirm {
+  background: var(--avon);
+  color: white;
+}
+.modal-btn.confirm:hover {
+  background: var(--avon-deep);
+}
+.modal-btn.danger {
+  background: var(--red);
+  color: white;
+}
+.modal-btn.danger:hover {
+  background: #C53030;
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand">
+    <div class="brand-mark">📚</div>
+    <div class="brand-text">
+      <h1>Visor de Capacitaciones</h1>
+      <p>Plataforma Avon · Equipo de Cobros</p>
+    </div>
+  </div>
+  
+  <div class="breadcrumb">
+    <a href="index.html">Plataforma</a>
+    <span class="sep">›</span>
+    <span class="current">Visor de Revistas</span>
+  </div>
+  
+  <div class="topbar-spacer"></div>
+  
+  <button class="theme-toggle" onclick="toggleTheme()">
+    <span id="themeIcon">☀️</span>
+    <span id="themeLabel">Claro</span>
+  </button>
+  
+  <a href="index.html" class="back-link">
+    <span>←</span>
+    <span>Hub principal</span>
+  </a>
+</div>
+
+<!-- System Status Banner -->
+<div class="system-banner" id="systemBanner">
+  <span class="icon">⚠️</span>
+  <span id="bannerMessage">Cargando librerías del sistema...</span>
+  <button onclick="retryLoadLibraries()">Reintentar</button>
+</div>
+
+<div class="page">
+  <div class="page-header">
+    <h2>Visor de Capacitaciones</h2>
+    <p>Sube cualquier PDF de capacitación y léelo como una revista digital. Las páginas se voltean igual que el folleto de Avon. Los archivos se guardan en este navegador — no salen de tu dispositivo.</p>
+  </div>
+
+  <!-- System Status Info Box -->
+  <div class="info-box" id="infoBox" style="display: none;">
+    <div class="icon" id="infoIcon">💡</div>
+    <div class="info-box-content">
+      <div class="info-box-title" id="infoTitle">Cómo funciona</div>
+      <div class="info-box-desc" id="infoDesc">arrastra un PDF a la zona de abajo o haz clic para seleccionarlo. El archivo se procesa localmente en tu navegador y se guarda en memoria del dispositivo. No se sube a ningún servidor. Para verlo en otro equipo, súbelo ahí también.</div>
+    </div>
+  </div>
+
+  <div class="upload-zone" id="uploadZone" onclick="document.getElementById('pdfInput').click()">
+    <span class="upload-icon">📄</span>
+    <div class="upload-title">Arrastra un PDF o PowerPoint aquí o haz clic para seleccionarlo</div>
+    <div class="upload-desc">Capacitaciones, manuales, presentaciones · hasta ~50 MB por archivo · Formatos: PDF, PPTX</div>
+    <input type="file" id="pdfInput" accept=".pdf,.pptx" onchange="handleFile(this.files[0])">
+    <div class="upload-status" id="uploadStatus"></div>
+    <div class="upload-progress" id="uploadProgress">
+      <div class="upload-progress-bar" id="uploadProgressBar"></div>
+    </div>
+  </div>
+
+  <div class="library-section">
+    <div class="library-heading">
+      <h3>biblioteca</h3>
+      <div class="library-count" id="libraryCount">0 capacitaciones</div>
+    </div>
+    <div class="empty-library" id="emptyState">
+      <div class="icon">📭</div>
+      <div class="title">Tu biblioteca está vacía</div>
+      <div class="desc">Sube tu primer PDF para comenzar</div>
+    </div>
+    <div class="library-grid" id="libraryGrid"></div>
+  </div>
+</div>
+
+<!-- VIEWER OVERLAY -->
+<div class="viewer-overlay" id="viewerOverlay">
+  <div class="viewer-header">
+    <div class="viewer-title" id="viewerTitle">—</div>
+    <div class="viewer-page-info" id="viewerPageInfo">— / —</div>
+    <button class="viewer-close" onclick="closeViewer()">×</button>
+  </div>
+  
+  <div class="viewer-stage" id="viewerStage">
+    <div class="viewer-loading" id="viewerLoading">
+      <div class="spinner"></div>
+      <div class="msg" id="loadingMsg">Cargando...</div>
+    </div>
+    <div id="flipbook"></div>
+  </div>
+  
+  <div class="viewer-controls">
+    <button class="viewer-btn" id="firstBtn" onclick="goFirst()">
+      <span>⏮</span> Primera
+    </button>
+    <button class="viewer-btn" id="prevBtn" onclick="goPrev()">
+      <span>◀</span> Anterior
+    </button>
+    <div class="page-input-wrapper">
+      <input type="number" id="pageInput" min="1" value="1">
+    </div>
+    <button class="viewer-btn" id="nextBtn" onclick="goNext()">
+      Siguiente <span>▶</span>
+    </button>
+    <button class="viewer-btn" id="lastBtn" onclick="goLast()">
+      Última <span>⏭</span>
+    </button>
+    <button class="viewer-btn" id="toggleViewBtn" onclick="toggleViewMode()" title="Cambiar a página única para letras más grandes">
+      <span id="toggleViewIcon">📄</span> <span id="toggleViewLabel">Página única</span>
+    </button>
+  </div>
+</div>
+
+<!-- RENAME MODAL -->
+<div class="modal" id="renameModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-icon">✎</div>
+      <div class="modal-title">Renombrar capacitación</div>
+    </div>
+    <input type="text" class="modal-input" id="renameInput" placeholder="Nuevo nombre">
+    <div class="modal-actions">
+      <button class="modal-btn cancel" onclick="closeRename()">Cancelar</button>
+      <button class="modal-btn confirm" onclick="confirmRename()">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<!-- DELETE MODAL -->
+<div class="modal" id="deleteModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-icon">🗑</div>
+      <div class="modal-title">Eliminar capacitación</div>
+    </div>
+    <div class="modal-content" id="deleteMsg"></div>
+    <div class="modal-actions">
+      <button class="modal-btn cancel" onclick="closeDelete()">Cancelar</button>
+      <button class="modal-btn danger" onclick="confirmDelete()">Eliminar</button>
+    </div>
+  </div>
+</div>
+
+<!-- LIBRARIES (loaded from CDN) -->
+<script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/page-flip@2.0.7/dist/js/page-flip.browser.js"></script>
+
+<script>
+// ============ SYSTEM VALIDATION & STATUS ============
+const SystemStatus = {
+  pdfjsReady: false,
+  pageFlipReady: false,
+  maxRetries: 3,
+  currentRetries: 0,
+  
+  init() {
+    this.checkLibraries();
+    // Auto-retry after 2 seconds if libraries didn't load
+    setTimeout(() => {
+      if (!this.isReady()) {
+        this.showBanner('Las librerías no se cargaron correctamente. Verifica tu conexión a internet.', 'error');
+      }
+    }, 2000);
+  },
+  
+  checkLibraries() {
+    // Check PDF.js
+    if (window['pdfjsLib']) {
+      try {
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.worker.min.js';
+        this.pdfjsReady = true;
+        console.log('✓ PDF.js cargado correctamente');
+      } catch (e) {
+        console.error('✗ Error configurando PDF.js:', e);
+        this.pdfjsReady = false;
+      }
+    } else {
+      console.error('✗ PDF.js no se pudo cargar desde el CDN');
+      this.pdfjsReady = false;
+    }
+    
+    // Check PageFlip
+    const PF = (window.St && window.St.PageFlip) || window.PageFlip;
+    if (PF) {
+      this.pageFlipReady = true;
+      console.log('✓ PageFlip cargado correctamente');
+    } else {
+      console.error('✗ PageFlip no se pudo cargar desde el CDN');
+      this.pageFlipReady = false;
+    }
+    
+    // Update UI
+    this.updateUI();
+  },
+  
+  updateUI() {
+    const uploadZone = document.getElementById('uploadZone');
+    const infoBox = document.getElementById('infoBox');
+    
+    if (this.isReady()) {
+      // All good - hide banner, enable upload
+      this.hideBanner();
+      uploadZone.classList.remove('disabled');
+      infoBox.style.display = 'flex';
+      infoBox.classList.remove('warning', 'error');
+      document.getElementById('infoIcon').textContent = '💡';
+      document.getElementById('infoTitle').textContent = 'Cómo funciona';
+      document.getElementById('infoDesc').textContent = 'arrastra un PDF a la zona de abajo o haz clic para seleccionarlo. El archivo se procesa localmente en tu navegador y se guarda en memoria del dispositivo. No se sube a ningún servidor. Para verlo en otro equipo, súbelo ahí también.';
+    } else {
+      // Something's wrong - show warning/error
+      uploadZone.classList.add('disabled');
+      infoBox.style.display = 'flex';
+      
+      const missing = [];
+      if (!this.pdfjsReady) missing.push('PDF.js');
+      if (!this.pageFlipReady) missing.push('PageFlip');
+      
+      if (this.currentRetries >= this.maxRetries) {
+        // Max retries reached - show error
+        infoBox.classList.remove('warning');
+        infoBox.classList.add('error');
+        document.getElementById('infoIcon').textContent = '⚠️';
+        document.getElementById('infoTitle').textContent = 'Error cargando librerías';
+        document.getElementById('infoDesc').innerHTML = `No se pudieron cargar las librerías necesarias (${missing.join(', ')}). <strong>Verifica tu conexión a internet</strong> y recarga la página. Si el problema persiste, es posible que el CDN esté bloqueado en tu red.`;
+      } else {
+        // Still trying - show warning
+        infoBox.classList.remove('error');
+        infoBox.classList.add('warning');
+        document.getElementById('infoIcon').textContent = '⏳';
+        document.getElementById('infoTitle').textContent = 'Cargando librerías del sistema';
+        document.getElementById('infoDesc').textContent = `Esperando que se carguen las librerías necesarias (${missing.join(', ')})... Si esto tarda mucho, verifica tu conexión a internet.`;
+      }
+    }
+  },
+  
+  showBanner(message, type = 'info') {
+    const banner = document.getElementById('systemBanner');
+    const messageEl = document.getElementById('bannerMessage');
+    messageEl.textContent = message;
+    banner.classList.add('show');
+  },
+  
+  hideBanner() {
+    const banner = document.getElementById('systemBanner');
+    banner.classList.remove('show');
+  },
+  
+  isReady() {
+    return this.pdfjsReady && this.pageFlipReady;
+  },
+  
+  retry() {
+    if (this.currentRetries < this.maxRetries) {
+      this.currentRetries++;
+      console.log(`Reintentando cargar librerías (intento ${this.currentRetries}/${this.maxRetries})...`);
+      this.checkLibraries();
+    } else {
+      console.error('Máximo de reintentos alcanzado. No se pudieron cargar las librerías.');
+    }
+  }
+};
+
+function retryLoadLibraries() {
+  SystemStatus.retry();
+}
+
+// ============ THEME ============
+function toggleTheme() {
+  const html = document.documentElement;
+  const cur = html.getAttribute('data-theme');
+  const next = cur === 'dark' ? 'light' : 'dark';
+  html.setAttribute('data-theme', next);
+  document.getElementById('themeIcon').textContent = next === 'dark' ? '☀️' : '🌙';
+  document.getElementById('themeLabel').textContent = next === 'dark' ? 'Claro' : 'Oscuro';
+  try { localStorage.setItem('avon-theme', next); } catch(e) {}
+}
+(function() {
+  try {
+    const saved = localStorage.getItem('avon-theme');
+    if (saved) {
+      document.documentElement.setAttribute('data-theme', saved);
+      document.getElementById('themeIcon').textContent = saved === 'dark' ? '☀️' : '🌙';
+      document.getElementById('themeLabel').textContent = saved === 'dark' ? 'Claro' : 'Oscuro';
+    }
+  } catch(e) {}
+})();
+
+// ============ INDEXEDDB WRAPPER ============
+const DB_NAME = 'avon-platform';
+const DB_VERSION = 1;
+const STORE = 'pdfs';
+let db = null;
+
+function openDb() {
+  return new Promise((resolve, reject) => {
+    const req = indexedDB.open(DB_NAME, DB_VERSION);
+    req.onupgradeneeded = (e) => {
+      const idb = e.target.result;
+      if (!idb.objectStoreNames.contains(STORE)) {
+        idb.createObjectStore(STORE, { keyPath: 'id' });
+      }
+    };
+    req.onsuccess = (e) => { db = e.target.result; resolve(db); };
+    req.onerror = (e) => reject(e.target.error);
+  });
+}
+
+function dbPut(record) {
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(STORE, 'readwrite');
+    tx.objectStore(STORE).put(record);
+    tx.oncomplete = () => resolve();
+    tx.onerror = (e) => reject(e.target.error);
+  });
+}
+function dbGetAll() {
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(STORE, 'readonly');
+    const req = tx.objectStore(STORE).getAll();
+    req.onsuccess = () => resolve(req.result || []);
+    req.onerror = (e) => reject(e.target.error);
+  });
+}
+function dbGet(id) {
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(STORE, 'readonly');
+    const req = tx.objectStore(STORE).get(id);
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = (e) => reject(e.target.error);
+  });
+}
+function dbDelete(id) {
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(STORE, 'readwrite');
+    tx.objectStore(STORE).delete(id);
+    tx.oncomplete = () => resolve();
+    tx.onerror = (e) => reject(e.target.error);
+  });
+}
+
+// ============ UPLOAD & FILE HANDLING ============
+const uploadZone = document.getElementById('uploadZone');
+const pdfInput = document.getElementById('pdfInput');
+
+['dragenter', 'dragover', 'dragleave', 'drop'].forEach(ev => {
+  uploadZone.addEventListener(ev, e => {
+    e.preventDefault();
+    e.stopPropagation();
+  });
+});
+['dragenter', 'dragover'].forEach(ev => {
+  uploadZone.addEventListener(ev, () => uploadZone.classList.add('dragover'));
+});
+['dragleave', 'drop'].forEach(ev => {
+  uploadZone.addEventListener(ev, () => uploadZone.classList.remove('dragover'));
+});
+uploadZone.addEventListener('drop', e => {
+  const file = e.dataTransfer.files[0];
+  if (file && file.type === 'application/pdf') {
+    handleFile(file);
+  }
+});
+
+function showStatus(msg, color = 'var(--avon)') {
+  const st = document.getElementById('uploadStatus');
+  st.textContent = msg;
+  st.style.color = color;
+  st.classList.add('show');
+}
+function hideStatus() {
+  document.getElementById('uploadStatus').classList.remove('show');
+}
+function showProgress(pct) {
+  const pg = document.getElementById('uploadProgress');
+  const bar = document.getElementById('uploadProgressBar');
+  pg.classList.add('show');
+  bar.style.width = pct + '%';
+}
+function hideProgress() {
+  document.getElementById('uploadProgress').classList.remove('show');
+  document.getElementById('uploadProgressBar').style.width = '0%';
+}
+
+async function handleFile(file) {
+  // Validate libraries are loaded
+  if (!SystemStatus.isReady()) {
+    showStatus('❌ Error: Librerías no cargadas. Recarga la página e intenta de nuevo.', 'var(--red)');
+    return;
+  }
+  
+  if (!file) return;
+  
+  // Detect file type
+  const fileName = file.name.toLowerCase();
+  const isPDF = fileName.endsWith('.pdf') || file.type === 'application/pdf';
+  const isPPTX = fileName.endsWith('.pptx') || file.type === 'application/vnd.openxmlformats-officedocument.presentationml.presentation';
+  
+  if (!isPDF && !isPPTX) {
+    showStatus('❌ Solo se aceptan archivos PDF o PPTX', 'var(--red)');
+    return;
+  }
+  
+  if (file.size > 50 * 1024 * 1024) {
+    showStatus('❌ El archivo es muy grande (máximo 50 MB)', 'var(--red)');
+    return;
+  }
+
+  if (isPPTX) {
+    // Handle PowerPoint file
+    await handlePowerPoint(file);
+  } else {
+    // Handle PDF file
+    await handlePDF(file);
+  }
+}
+
+async function handlePDF(file) {
+  showStatus('Procesando PDF...');
+  showProgress(10);
+
+  try {
+    // Read file as ArrayBuffer
+    const originalBuffer = await file.arrayBuffer();
+    showProgress(20);
+    
+    // ===== CRITICAL FIX =====
+    // Clone the buffer IMMEDIATELY, BEFORE pdf.js processes it
+    // pdf.js may transfer/detach the buffer when used in a worker
+    const storageBuffer = originalBuffer.slice(0);  // Copy for IndexedDB storage
+    const pdfBuffer = originalBuffer.slice(0);       // Separate copy for pdf.js
+    showProgress(30);
+
+    // Validate PDF can be loaded (uses pdfBuffer, may detach it - that's OK)
+    showStatus('Validando PDF...');
+    let pdf;
+    try {
+      pdf = await pdfjsLib.getDocument({data: new Uint8Array(pdfBuffer)}).promise;
+    } catch (err) {
+      throw new Error('El archivo PDF está corrupto o no se puede leer: ' + err.message);
+    }
+    
+    if (pdf.numPages === 0) {
+      throw new Error('El PDF no tiene páginas');
+    }
+    showProgress(50);
+
+    // Generate thumbnail from first page
+    showStatus('Generando portada...');
+    const page1 = await pdf.getPage(1);
+    const vp = page1.getViewport({ scale: 0.7 });
+    const canvas = document.createElement('canvas');
+    canvas.width = vp.width;
+    canvas.height = vp.height;
+    
+    const ctx = canvas.getContext('2d');
+    if (!ctx) {
+      throw new Error('No se pudo crear el contexto del canvas');
+    }
+    
+    await page1.render({ canvasContext: ctx, viewport: vp }).promise;
+    
+    const thumbnail = canvas.toDataURL('image/jpeg', 0.78);
+    
+    if (!thumbnail || thumbnail === 'data:,') {
+      throw new Error('No se pudo generar la imagen de portada');
+    }
+    
+    showProgress(80);
+    
+    // Clean up pdf.js resources
+    page1.cleanup();
+    pdf.cleanup();
+    pdf.destroy();
+
+    // Convert storageBuffer to Uint8Array for reliable IndexedDB storage
+    // Uint8Array is more reliable than raw ArrayBuffer in IndexedDB
+    const storageData = new Uint8Array(storageBuffer);
+    
+    // Verify storage data is valid
+    if (storageData.byteLength === 0) {
+      throw new Error('Error interno: buffer de almacenamiento vacío');
+    }
+    
+    console.log(`PDF listo para guardar: ${storageData.byteLength} bytes`);
+
+    // Build record
+    const record = {
+      id: 'pdf_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8),
+      name: file.name.replace(/\.pdf$/i, ''),
+      size: file.size,
+      pageCount: pdf.numPages,
+      thumbnail,
+      uploadedAt: new Date().toISOString(),
+      pdfData: storageData,  // Uint8Array - reliable in IndexedDB
+      sourceType: 'pdf'
+    };
+
+    await dbPut(record);
+    showProgress(100);
+    showStatus('✓ ' + record.name + ' añadida a tu biblioteca', 'var(--green)');
+    setTimeout(() => { hideStatus(); hideProgress(); }, 2500);
+
+    await refreshLibrary();
+  } catch (err) {
+    console.error('Error procesando PDF:', err);
+    showStatus('❌ Error: ' + err.message, 'var(--red)');
+    hideProgress();
+  }
+}
+
+async function handlePowerPoint(file) {
+  showStatus('Procesando PowerPoint...');
+  showProgress(10);
+  
+  try {
+    showStatus('⚠️ Conversión de PPTX: Abriendo guía...');
+    
+    // Show instructions modal for PPTX conversion
+    const shouldContinue = confirm(
+      '🎯 Para usar presentaciones de PowerPoint:\n\n' +
+      '1. Abre tu PPTX en PowerPoint\n' +
+      '2. Ve a Archivo > Guardar como\n' +
+      '3. Selecciona formato "PDF"\n' +
+      '4. Guarda el archivo\n' +
+      '5. Sube el PDF aquí\n\n' +
+      '💡 Esto conserva todas las animaciones y diseño como imágenes.\n\n' +
+      '¿Quieres ver instrucciones más detalladas?'
+    );
+    
+    if (shouldContinue) {
+      // Show detailed instructions
+      showDetailedPPTXInstructions();
+    }
+    
+    hideStatus();
+    hideProgress();
+    
+  } catch (err) {
+    console.error('Error con PowerPoint:', err);
+    showStatus('❌ Error: ' + err.message, 'var(--red)');
+    hideProgress();
+  }
+}
+
+function showDetailedPPTXInstructions() {
+  const modal = document.createElement('div');
+  modal.style.cssText = `
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 99999;
+    padding: 20px;
+  `;
+  
+  modal.innerHTML = `
+    <div style="
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 30px;
+      max-width: 600px;
+      max-height: 80vh;
+      overflow-y: auto;
+    ">
+      <h2 style="font-size: 22px; margin-bottom: 16px; color: var(--text);">
+        📖 Cómo Convertir PowerPoint a PDF
+      </h2>
+      
+      <div style="color: var(--text-muted); line-height: 1.6; font-size: 14px;">
+        <h3 style="color: var(--avon); margin: 16px 0 8px; font-size: 16px;">
+          Opción 1: PowerPoint (Windows/Mac)
+        </h3>
+        <ol style="margin-left: 20px;">
+          <li>Abre tu presentación .pptx</li>
+          <li>Haz clic en <strong>Archivo</strong> → <strong>Guardar como</strong></li>
+          <li>En "Tipo", selecciona <strong>"PDF"</strong></li>
+          <li>Haz clic en <strong>Guardar</strong></li>
+          <li>Sube el PDF aquí 🎉</li>
+        </ol>
+        
+        <h3 style="color: var(--avon); margin: 16px 0 8px; font-size: 16px;">
+          Opción 2: Google Slides
+        </h3>
+        <ol style="margin-left: 20px;">
+          <li>Sube tu PPTX a Google Drive</li>
+          <li>Ábrelo con Google Slides</li>
+          <li>Ve a <strong>Archivo</strong> → <strong>Descargar</strong> → <strong>PDF</strong></li>
+          <li>Sube el PDF aquí 🎉</li>
+        </ol>
+        
+        <h3 style="color: var(--avon); margin: 16px 0 8px; font-size: 16px;">
+          Opción 3: Herramientas Online (sin instalar nada)
+        </h3>
+        <ul style="margin-left: 20px;">
+          <li><strong>ilovepdf.com/es/powerpoint_a_pdf</strong> (gratis, sin registro)</li>
+          <li><strong>smallpdf.com</strong> (gratis, sin registro)</li>
+          <li>Sube tu PPTX, descarga el PDF, súbelo aquí 🎉</li>
+        </ul>
+        
+        <div style="
+          background: var(--bg-3);
+          border-left: 4px solid var(--pdc-blue);
+          padding: 12px;
+          margin-top: 16px;
+          border-radius: 8px;
+        ">
+          💡 <strong>Tip:</strong> La conversión a PDF conserva todo el diseño, fuentes, y animaciones como imágenes estáticas, perfecto para capacitaciones.
+        </div>
+      </div>
+      
+      <button onclick="this.parentElement.parentElement.remove()" style="
+        margin-top: 20px;
+        padding: 10px 24px;
+        background: var(--avon);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        font-weight: 700;
+        font-size: 14px;
+        cursor: pointer;
+        width: 100%;
+      ">
+        Entendido 👍
+      </button>
+    </div>
+  `;
+  
+  document.body.appendChild(modal);
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) modal.remove();
+  });
+}
+
+// ============ LIBRARY RENDERING ============
+function fmtSize(bytes) {
+  if (bytes < 1024) return bytes + ' B';
+  if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(0) + ' KB';
+  return (bytes / 1024 / 1024).toFixed(1) + ' MB';
+}
+function fmtDate(iso) {
+  try {
+    const d = new Date(iso);
+    return d.toLocaleDateString('es-SV', { day: '2-digit', month: 'short', year: 'numeric' });
+  } catch { return ''; }
+}
+
+async function refreshLibrary() {
+  const items = await dbGetAll();
+  items.sort((a, b) => (b.uploadedAt || '').localeCompare(a.uploadedAt || ''));
+
+  const empty = document.getElementById('emptyState');
+  const grid = document.getElementById('libraryGrid');
+  const count = document.getElementById('libraryCount');
+
+  count.textContent = items.length === 1 ? '1 capacitación' : items.length + ' capacitaciones';
+
+  if (items.length === 0) {
+    empty.style.display = 'block';
+    grid.style.display = 'none';
+    return;
+  }
+  empty.style.display = 'none';
+  grid.style.display = 'grid';
+  
+  // Check for corrupt PDFs - support Uint8Array, ArrayBuffer (new) and Blob (old)
+  for (let item of items) {
+    let isCorrupt = false;
+    
+    if (item.pdfData) {
+      // New format: Uint8Array or ArrayBuffer
+      if (item.pdfData instanceof Uint8Array) {
+        if (item.pdfData.byteLength === 0) isCorrupt = true;
+      } else if (item.pdfData instanceof ArrayBuffer) {
+        if (item.pdfData.byteLength === 0) isCorrupt = true;
+      } else {
+        isCorrupt = true;
+      }
+    } else if (item.pdfBlob) {
+      // Old format: Blob
+      if (!item.pdfBlob || item.pdfBlob.size === 0) {
+        isCorrupt = true;
+      }
+    } else {
+      isCorrupt = true;
+    }
+    
+    if (isCorrupt) {
+      console.warn(`⚠️ PDF corrupto detectado: ${item.name} (ID: ${item.id})`);
+      item._isCorrupt = true;
+    }
+  }
+  
+  grid.innerHTML = items.map(it => {
+    const isCorrupt = it._isCorrupt || false;
+    const cardClass = isCorrupt ? 'pdf-card pdf-card-corrupt' : 'pdf-card';
+    const warningBadge = isCorrupt ? '<div class="corrupt-badge" title="Este PDF está corrupto">⚠️</div>' : '';
+    
+    return `
+    <div class="${cardClass}" onclick="${isCorrupt ? 'event.preventDefault(); alert(\'Este PDF está corrupto o vacío. Por favor, elimínalo y súbelo de nuevo.\')' : `openViewer('${it.id}')`}">
+      ${warningBadge}
+      <div class="pdf-thumb">
+        ${it.thumbnail ? `<img src="${it.thumbnail}" alt="" onerror="this.parentElement.innerHTML='<div class=\\'pdf-thumb-placeholder\\'>📄</div>'">` : `<div class="pdf-thumb-placeholder">📄</div>`}
+      </div>
+      <div class="pdf-card-info">
+        <div class="pdf-card-name" title="${escapeHtml(it.name)}">${escapeHtml(it.name)}${isCorrupt ? ' (corrupto)' : ''}</div>
+        <div class="pdf-card-meta">
+          <span>${it.pageCount} págs</span>
+          <span class="dot">·</span>
+          <span>${fmtSize(it.size)}</span>
+        </div>
+      </div>
+      <div class="pdf-card-actions">
+        <button class="pdf-action-btn rename" onclick="event.stopPropagation(); ${isCorrupt ? 'alert(\'No puedes renombrar un PDF corrupto. Elimínalo primero.\')' : `askRename('${it.id}')`}" title="Renombrar">✎</button>
+        <button class="pdf-action-btn" onclick="event.stopPropagation(); askDelete('${it.id}')" title="Eliminar">🗑</button>
+      </div>
+    </div>
+  `;
+  }).join('');
+}
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+// ============ VIEWER ============
+const overlay = document.getElementById('viewerOverlay');
+const flipbookEl = document.getElementById('flipbook');
+const viewerLoading = document.getElementById('viewerLoading');
+const viewerTitle = document.getElementById('viewerTitle');
+const viewerPageInfo = document.getElementById('viewerPageInfo');
+const pageInput = document.getElementById('pageInput');
+const loadingMsg = document.getElementById('loadingMsg');
+
+let pageFlip = null;
+let currentRecord = null;
+let currentTotalPages = 0;
+let singlePageMode = false;
+
+async function openViewer(id) {
+  // Validate libraries before opening
+  if (!SystemStatus.isReady()) {
+    alert('Error: Las librerías del sistema no están cargadas. Recarga la página e intenta de nuevo.');
+    return;
+  }
+  
+  currentRecord = await dbGet(id);
+  if (!currentRecord) {
+    alert('Error: No se encontró el PDF en la biblioteca.');
+    return;
+  }
+  
+  // Get the PDF data - support new (Uint8Array/ArrayBuffer) and old (Blob) formats
+  let pdfBytes;
+  
+  if (currentRecord.pdfData) {
+    // New format: Uint8Array or ArrayBuffer
+    if (currentRecord.pdfData instanceof Uint8Array) {
+      pdfBytes = currentRecord.pdfData;
+    } else if (currentRecord.pdfData instanceof ArrayBuffer) {
+      pdfBytes = new Uint8Array(currentRecord.pdfData);
+    } else {
+      alert('Error: Formato de datos no reconocido. Elimina este PDF y súbelo de nuevo.');
+      return;
+    }
+    
+    if (!pdfBytes || pdfBytes.byteLength === 0) {
+      alert('Error: El archivo PDF está vacío. Por favor, elimínalo y sube un PDF válido.');
+      return;
+    }
+  } else if (currentRecord.pdfBlob) {
+    // Old format: Blob (backward compatibility)
+    if (currentRecord.pdfBlob.size === 0) {
+      alert('Error: El archivo PDF está vacío. Por favor, elimínalo y sube un PDF válido.');
+      return;
+    }
+    
+    try {
+      const ab = await currentRecord.pdfBlob.arrayBuffer();
+      pdfBytes = new Uint8Array(ab);
+    } catch (err) {
+      alert('Error al leer el PDF: ' + err.message);
+      return;
+    }
+  } else {
+    alert('Error: El PDF no tiene datos. Elimínalo y súbelo de nuevo.');
+    return;
+  }
+
+  overlay.classList.add('active');
+  flipbookEl.style.display = 'none';
+  viewerLoading.style.display = 'flex';
+  loadingMsg.textContent = 'Procesando PDF...';
+  viewerTitle.textContent = currentRecord.name;
+  viewerPageInfo.textContent = '— / —';
+
+  try {
+    console.log(`Cargando PDF: ${currentRecord.name}, tamaño: ${pdfBytes.byteLength} bytes`);
+    
+    // CRITICAL: Create a fresh copy for pdf.js (it may detach the buffer)
+    // We need the original pdfBytes to remain intact in memory
+    const pdfBytesCopy = new Uint8Array(pdfBytes);
+    
+    const pdf = await pdfjsLib.getDocument({data: pdfBytesCopy}).promise;
+    const total = pdf.numPages;
+    currentTotalPages = total;
+    pageInput.max = total;
+
+    // Render all pages at high quality (scale 2.5 gives sharp text without memory issues)
+    const pageImages = [];
+    for (let i = 1; i <= total; i++) {
+      loadingMsg.textContent = `Renderizando página ${i} de ${total}...`;
+      const page = await pdf.getPage(i);
+      const viewport = page.getViewport({ scale: 2.0 });
+      const canvas = document.createElement('canvas');
+      canvas.width = viewport.width;
+      canvas.height = viewport.height;
+      
+      const ctx = canvas.getContext('2d');
+      if (!ctx) {
+        throw new Error(`No se pudo crear el canvas para la página ${i}`);
+      }
+      
+      await page.render({ canvasContext: ctx, viewport }).promise;
+      
+      // High quality JPEG for sharp text
+      const dataUrl = canvas.toDataURL('image/jpeg', 0.92);
+      if (!dataUrl || dataUrl === 'data:,') {
+        console.warn(`Advertencia: La página ${i} generó una imagen vacía`);
+        pageImages.push('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="600"%3E%3Crect fill="%23f0f0f0" width="400" height="600"/%3E%3Ctext x="200" y="300" text-anchor="middle" font-size="20" fill="%23666"%3EPágina ' + i + ' (error)%3C/text%3E%3C/svg%3E');
+      } else {
+        pageImages.push(dataUrl);
+      }
+      
+      page.cleanup();
+    }
+    
+    if (pageImages.length === 0) {
+      throw new Error('No se pudieron generar imágenes de las páginas');
+    }
+
+    console.log(`✓ ${pageImages.length} páginas renderizadas. Modo: ${singlePageMode ? 'página única' : 'doble página'}`);
+
+    // Tear down old flipbook
+    if (pageFlip) { try { pageFlip.destroy(); } catch(e){} pageFlip = null; }
+    flipbookEl.innerHTML = '';
+
+    // Calculate display size based on stage and mode
+    const stage = document.getElementById('viewerStage');
+    const stageW = stage.clientWidth - 20;
+    const stageH = stage.clientHeight - 20;
+    const isMobile = window.innerWidth < 900;
+    const useSinglePage = isMobile || singlePageMode;
+    
+    let bookW, bookH;
+    if (useSinglePage) {
+      // Single page mode: maximize page size
+      bookH = stageH;
+      bookW = bookH * 0.75;
+      if (bookW > stageW) {
+        bookW = stageW;
+        bookH = bookW / 0.75;
+      }
+    } else {
+      // Double page spread
+      bookW = stageW * 0.98;
+      bookH = bookW / 1.5;
+      if (bookH > stageH) {
+        bookH = stageH;
+        bookW = bookH * 1.5;
+      }
+    }
+    
+    console.log(`Tamaño del libro: ${Math.floor(bookW)}x${Math.floor(bookH)}, página: ${Math.floor(useSinglePage ? bookW : bookW/2)}x${Math.floor(bookH)}`);
+
+    viewerLoading.style.display = 'none';
+    flipbookEl.style.display = 'block';
+
+    // Resolve PageFlip class with validation
+    const PF = (window.St && window.St.PageFlip) || window.PageFlip;
+    if (!PF) {
+      throw new Error('Librería PageFlip no está disponible. Recarga la página e intenta de nuevo.');
+    }
+
+    pageFlip = new PF(flipbookEl, {
+      width: Math.floor(useSinglePage ? bookW : bookW / 2),
+      height: Math.floor(bookH),
+      size: 'fixed',
+      minWidth: 200,
+      maxWidth: 2000,
+      minHeight: 300,
+      maxHeight: 2400,
+      drawShadow: true,
+      flippingTime: 700,
+      usePortrait: useSinglePage,
+      startZIndex: 1,
+      autoSize: false,
+      maxShadowOpacity: 0.5,
+      showCover: !useSinglePage,
+      mobileScrollSupport: true,
+    });
+
+    // Pre-load images as actual Image objects before passing to PageFlip
+    // This ensures PageFlip can render them properly
+    loadingMsg.textContent = 'Preparando vista...';
+    const imageElements = await Promise.all(pageImages.map(src => {
+      return new Promise((resolve) => {
+        const img = new Image();
+        img.onload = () => resolve(img);
+        img.onerror = () => resolve(img); // resolve anyway to not block
+        img.src = src;
+      });
+    }));
+    
+    console.log(`✓ ${imageElements.length} imágenes pre-cargadas`);
+    pageFlip.loadFromImages(pageImages);
+
+    updatePageInfo();
+    pageFlip.on('flip', updatePageInfo);
+  } catch (err) {
+    console.error('Error en el visor:', err);
+    
+    // Provide more specific error messages
+    let errorMsg = 'Error cargando el PDF';
+    let helpText = '';
+    
+    if (err.message && err.message.includes('empty')) {
+      errorMsg = 'El archivo PDF está vacío o corrupto';
+      helpText = 'Este PDF no se puede abrir porque está vacío o dañado. <strong>Recomendación:</strong> Elimínalo de la biblioteca y súbelo nuevamente.';
+    } else if (err.message && err.message.includes('Invalid PDF')) {
+      errorMsg = 'El archivo PDF no es válido';
+      helpText = 'Este archivo no es un PDF válido o está dañado. <strong>Recomendación:</strong> Verifica el archivo original y súbelo de nuevo.';
+    } else {
+      errorMsg = 'Error cargando el PDF';
+      helpText = err.message || 'Ocurrió un error desconocido';
+    }
+    
+    loadingMsg.innerHTML = `
+      <div style="text-align: center; max-width: 500px;">
+        <div style="font-size: 18px; margin-bottom: 12px;">${errorMsg}</div>
+        <div style="color:#ff8a8a; font-size:13px; line-height: 1.6;">${helpText}</div>
+        <button onclick="closeViewer()" style="margin-top: 20px; padding: 10px 20px; background: var(--avon); color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">Cerrar</button>
+      </div>
+    `;
+  }
+}
+
+function updatePageInfo() {
+  if (!pageFlip) return;
+  const cur = pageFlip.getCurrentPageIndex() + 1;
+  const total = currentTotalPages;
+  viewerPageInfo.textContent = `Página ${cur} / ${total}`;
+  pageInput.value = cur;
+  document.getElementById('prevBtn').disabled = cur <= 1;
+  document.getElementById('firstBtn').disabled = cur <= 1;
+  document.getElementById('nextBtn').disabled = cur >= total;
+  document.getElementById('lastBtn').disabled = cur >= total;
+}
+function goPrev() { pageFlip && pageFlip.flipPrev(); }
+function goNext() { pageFlip && pageFlip.flipNext(); }
+function goFirst() { pageFlip && pageFlip.flip(0); }
+function goLast() { pageFlip && pageFlip.flip(currentTotalPages - 1); }
+pageInput.addEventListener('change', () => {
+  const v = parseInt(pageInput.value, 10);
+  if (!isNaN(v) && v >= 1 && v <= currentTotalPages && pageFlip) {
+    pageFlip.flip(v - 1);
+  } else {
+    updatePageInfo();
+  }
+});
+
+function closeViewer() {
+  overlay.classList.remove('active');
+  if (pageFlip) { try { pageFlip.destroy(); } catch(e){} pageFlip = null; }
+  flipbookEl.innerHTML = '';
+  currentRecord = null;
+}
+
+// Toggle between single page and double page view
+async function toggleViewMode() {
+  if (!currentRecord) return;
+  
+  singlePageMode = !singlePageMode;
+  
+  // Update button label
+  const icon = document.getElementById('toggleViewIcon');
+  const label = document.getElementById('toggleViewLabel');
+  if (singlePageMode) {
+    icon.textContent = '📖';
+    label.textContent = 'Doble página';
+  } else {
+    icon.textContent = '📄';
+    label.textContent = 'Página única';
+  }
+  
+  // Re-open the viewer with the new mode (re-renders at correct resolution)
+  const id = currentRecord.id;
+  await openViewer(id);
+}
+
+document.addEventListener('keydown', (e) => {
+  if (!overlay.classList.contains('active')) return;
+  if (e.key === 'Escape') closeViewer();
+  else if (e.key === 'ArrowLeft') goPrev();
+  else if (e.key === 'ArrowRight') goNext();
+});
+
+// ============ RENAME ============
+let renameTargetId = null;
+function askRename(id) {
+  renameTargetId = id;
+  dbGet(id).then(rec => {
+    document.getElementById('renameInput').value = rec.name;
+    document.getElementById('renameModal').classList.add('active');
+    setTimeout(() => document.getElementById('renameInput').focus(), 50);
+  });
+}
+function closeRename() {
+  document.getElementById('renameModal').classList.remove('active');
+  renameTargetId = null;
+}
+async function confirmRename() {
+  if (!renameTargetId) return;
+  const newName = document.getElementById('renameInput').value.trim();
+  if (!newName) return;
+  const rec = await dbGet(renameTargetId);
+  rec.name = newName;
+  await dbPut(rec);
+  closeRename();
+  await refreshLibrary();
+}
+
+// ============ DELETE ============
+let deleteTargetId = null;
+function askDelete(id) {
+  deleteTargetId = id;
+  dbGet(id).then(rec => {
+    document.getElementById('deleteMsg').innerHTML = `Vas a eliminar <strong>"${escapeHtml(rec.name)}"</strong> de tu biblioteca. Esta acción no se puede deshacer.`;
+    document.getElementById('deleteModal').classList.add('active');
+  });
+}
+function closeDelete() {
+  document.getElementById('deleteModal').classList.remove('active');
+  deleteTargetId = null;
+}
+async function confirmDelete() {
+  if (!deleteTargetId) return;
+  await dbDelete(deleteTargetId);
+  closeDelete();
+  await refreshLibrary();
+}
+
+// ============ INIT ============
+(async function init() {
+  try {
+    // Initialize system validation
+    SystemStatus.init();
+    
+    // Initialize database
+    await openDb();
+    await refreshLibrary();
+  } catch (err) {
+    console.error('Error de inicialización:', err);
+    alert('Error inicializando la aplicación: ' + err.message);
+  }
+})();
+</script>
+
+</body>
+</html>
