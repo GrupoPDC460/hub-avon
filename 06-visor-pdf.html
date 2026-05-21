@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Visor PDF · Revistas Avon — Plataforma PDC</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<style>
+/* ===== PALETA AVON + PDC ===== */
+:root {
+  --brand-avon: #E91E63;
+  --brand-pdc-dark: #0A2472;
+  --brand-pdc-light: #5BC0EB;
+  --text: #E2E8F0;
+  --text-muted: #94A3B8;
+  --bg-primary: #0F0D1E;
+  --bg-secondary: #1E1B36;
+  --bg-card: rgba(30, 27, 54, 0.6);
+  --border: #3A3560;
+}
+
+:root[data-theme="light"] {
+  --text: #1E293B;
+  --text-muted: #64748B;
+  --bg-primary: #F8FAFC;
+  --bg-secondary: #FFFFFF;
+  --bg-card: #FFFFFF;
+  --border: #E2E8F0;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: var(--bg-primary);
+  color: var(--text);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ===== HEADER ===== */
+.header {
+  background: linear-gradient(135deg, var(--brand-pdc-dark), var(--brand-avon));
+  padding: 20px 24px;
+  border-bottom: 2px solid rgba(255,255,255,0.1);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+}
+
+.header-content {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.header-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.header-title h1 {
+  font-size: 20px;
+  font-weight: 800;
+  color: white;
+  letter-spacing: -0.5px;
+}
+
+.header-title p {
+  font-size: 13px;
+  color: rgba(255,255,255,0.8);
+}
+
+.btn-back {
+  padding: 10px 18px;
+  background: rgba(255,255,255,0.15);
+  border: 1px solid rgba(255,255,255,0.3);
+  color: white;
+  text-decoration: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-back:hover {
+  background: rgba(255,255,255,0.25);
+  transform: translateY(-2px);
+}
+
+/* ===== MAIN CONTAINER ===== */
+.container {
+  flex: 1;
+  display: flex;
+  max-width: 1400px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 20px;
+  gap: 20px;
+}
+
+/* ===== SIDEBAR ===== */
+.sidebar {
+  width: 300px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 20px;
+  height: fit-content;
+  position: sticky;
+  top: 100px;
+}
+
+.sidebar h2 {
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 16px;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pdf-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.pdf-item {
+  padding: 12px 14px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.pdf-item:hover {
+  background: rgba(233, 30, 99, 0.1);
+  border-color: var(--brand-avon);
+  color: var(--text);
+  transform: translateX(4px);
+}
+
+.pdf-item.active {
+  background: linear-gradient(135deg, var(--brand-avon), var(--brand-pdc-dark));
+  border-color: var(--brand-avon);
+  color: white;
+  font-weight: 700;
+}
+
+.pdf-icon {
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+/* ===== VIEWER ===== */
+.viewer-container {
+  flex: 1;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.viewer-controls {
+  padding: 16px 20px;
+  background: var(--bg-card);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.controls-left {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.btn-control {
+  padding: 8px 14px;
+  background: var(--bg-primary);
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn-control:hover {
+  background: var(--brand-pdc-light);
+  color: white;
+  border-color: var(--brand-pdc-light);
+}
+
+.btn-control:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.page-info {
+  font-size: 13px;
+  color: var(--text-muted);
+  font-weight: 600;
+  padding: 8px 12px;
+}
+
+.zoom-controls {
+  display: flex;
+  gap: 8px;
+}
+
+.viewer-content {
+  flex: 1;
+  overflow: auto;
+  background: var(--bg-primary);
+  display: flex;
+  justify-content: center;
+  padding: 20px;
+}
+
+#pdf-canvas {
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+  border-radius: 8px;
+  max-width: 100%;
+  height: auto;
+}
+
+.loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 60px 20px;
+  color: var(--text-muted);
+}
+
+.loading-spinner {
+  width: 48px;
+  height: 48px;
+  border: 4px solid var(--border);
+  border-top-color: var(--brand-avon);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 80px 20px;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+.empty-state-icon {
+  font-size: 64px;
+  opacity: 0.5;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column;
+  }
+  
+  .sidebar {
+    width: 100%;
+    position: static;
+  }
+  
+  .viewer-controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .controls-left {
+    justify-content: space-between;
+  }
+}
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="header">
+  <div class="header-content">
+    <div class="header-title">
+      <span style="font-size: 28px;">📄</span>
+      <div>
+        <h1>Visor PDF · Revistas Avon</h1>
+        <p>Visualiza revistas y catálogos en alta calidad</p>
+      </div>
+    </div>
+    <a href="index.html" class="btn-back">
+      ← Volver al Hub
+    </a>
+  </div>
+</div>
+
+<!-- Main Container -->
+<div class="container">
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <h2>📚 Revistas Disponibles</h2>
+    <div class="pdf-list" id="pdfList">
+      <!-- Los PDFs se agregarán aquí -->
+    </div>
+  </div>
+
+  <!-- Viewer -->
+  <div class="viewer-container">
+    <div class="viewer-controls">
+      <div class="controls-left">
+        <button class="btn-control" id="prevPage" disabled>
+          ◄ Anterior
+        </button>
+        <span class="page-info">
+          Página <span id="pageNum">-</span> de <span id="pageCount">-</span>
+        </span>
+        <button class="btn-control" id="nextPage" disabled>
+          Siguiente ►
+        </button>
+      </div>
+      
+      <div class="zoom-controls">
+        <button class="btn-control" id="zoomOut">🔍-</button>
+        <span class="page-info" id="zoomLevel">100%</span>
+        <button class="btn-control" id="zoomIn">🔍+</button>
+      </div>
+    </div>
+
+    <div class="viewer-content" id="viewerContent">
+      <div class="empty-state">
+        <div class="empty-state-icon">📄</div>
+        <p style="font-size: 16px; font-weight: 600;">Selecciona una revista para comenzar</p>
+        <p style="font-size: 13px;">Elige una opción del menú de la izquierda</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// CONFIGURACIÓN DE PDFs (OneDrive)
+// ============================================================
+const PDFs = [
+  {
+    id: 1,
+    name: "Campaña 01 - 2024",
+    icon: "📕",
+    url: "TU_ENLACE_ONEDRIVE_AQUI_1" // Reemplazar con enlace público de OneDrive
+  },
+  {
+    id: 2,
+    name: "Campaña 02 - 2024",
+    icon: "📗",
+    url: "TU_ENLACE_ONEDRIVE_AQUI_2"
+  },
+  {
+    id: 3,
+    name: "Campaña 03 - 2024",
+    icon: "📘",
+    url: "TU_ENLACE_ONEDRIVE_AQUI_3"
+  },
+  // Agregar más revistas aquí
+];
+
+// ============================================================
+// VISOR PDF
+// ============================================================
+pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+let pdfDoc = null;
+let pageNum = 1;
+let pageRendering = false;
+let pageNumPending = null;
+let scale = 1.5;
+const canvas = document.createElement('canvas');
+canvas.id = 'pdf-canvas';
+const ctx = canvas.getContext('2d');
+
+// Renderizar sidebar
+function renderSidebar() {
+  const list = document.getElementById('pdfList');
+  list.innerHTML = PDFs.map(pdf => `
+    <div class="pdf-item" data-id="${pdf.id}" onclick="loadPDF(${pdf.id})">
+      <span class="pdf-icon">${pdf.icon}</span>
+      <span>${pdf.name}</span>
+    </div>
+  `).join('');
+}
+
+// Cargar PDF
+async function loadPDF(id) {
+  const pdf = PDFs.find(p => p.id === id);
+  if (!pdf) return;
+  
+  // Actualizar UI
+  document.querySelectorAll('.pdf-item').forEach(item => {
+    item.classList.toggle('active', item.dataset.id == id);
+  });
+  
+  const viewerContent = document.getElementById('viewerContent');
+  viewerContent.innerHTML = '<div class="loading"><div class="loading-spinner"></div><p>Cargando PDF...</p></div>';
+  
+  try {
+    // Convertir enlace de OneDrive a descarga directa
+    let pdfUrl = pdf.url;
+    if (pdfUrl.includes('onedrive') || pdfUrl.includes('sharepoint')) {
+      pdfUrl = pdfUrl.replace('?e=', '?download=1&e=');
+    }
+    
+    pdfDoc = await pdfjsLib.getDocument(pdfUrl).promise;
+    document.getElementById('pageCount').textContent = pdfDoc.numPages;
+    pageNum = 1;
+    
+    viewerContent.innerHTML = '';
+    viewerContent.appendChild(canvas);
+    
+    renderPage(pageNum);
+    updateControls();
+  } catch (error) {
+    viewerContent.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-state-icon">⚠️</div>
+        <p style="font-size: 16px; font-weight: 600; color: #ef4444;">Error al cargar PDF</p>
+        <p style="font-size: 13px;">${error.message}</p>
+        <p style="font-size: 12px; margin-top: 8px;">Verifica que el enlace de OneDrive sea público</p>
+      </div>
+    `;
+  }
+}
+
+// Renderizar página
+function renderPage(num) {
+  if (!pdfDoc) return;
+  pageRendering = true;
+  
+  pdfDoc.getPage(num).then(page => {
+    const viewport = page.getViewport({ scale });
+    canvas.height = viewport.height;
+    canvas.width = viewport.width;
+    
+    const renderContext = {
+      canvasContext: ctx,
+      viewport: viewport
+    };
+    
+    const renderTask = page.render(renderContext);
+    renderTask.promise.then(() => {
+      pageRendering = false;
+      if (pageNumPending !== null) {
+        renderPage(pageNumPending);
+        pageNumPending = null;
+      }
+    });
+  });
+  
+  document.getElementById('pageNum').textContent = num;
+}
+
+function queueRenderPage(num) {
+  if (pageRendering) {
+    pageNumPending = num;
+  } else {
+    renderPage(num);
+  }
+}
+
+function updateControls() {
+  document.getElementById('prevPage').disabled = pageNum <= 1;
+  document.getElementById('nextPage').disabled = pageNum >= pdfDoc.numPages;
+}
+
+// Controles
+document.getElementById('prevPage').addEventListener('click', () => {
+  if (pageNum <= 1) return;
+  pageNum--;
+  queueRenderPage(pageNum);
+  updateControls();
+});
+
+document.getElementById('nextPage').addEventListener('click', () => {
+  if (pageNum >= pdfDoc.numPages) return;
+  pageNum++;
+  queueRenderPage(pageNum);
+  updateControls();
+});
+
+document.getElementById('zoomIn').addEventListener('click', () => {
+  scale += 0.25;
+  document.getElementById('zoomLevel').textContent = Math.round(scale * 100) + '%';
+  queueRenderPage(pageNum);
+});
+
+document.getElementById('zoomOut').addEventListener('click', () => {
+  if (scale <= 0.5) return;
+  scale -= 0.25;
+  document.getElementById('zoomLevel').textContent = Math.round(scale * 100) + '%';
+  queueRenderPage(pageNum);
+});
+
+// Inicializar
+renderSidebar();
+</script>
+
+</body>
+</html>
