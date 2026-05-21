@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Visor PDF · Documentos — Plataforma PDC</title>
+<title>Material de Capacitación — Plataforma PDC</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <style>
 /* ===== PALETA AVON + PDC ===== */
@@ -354,10 +354,10 @@ body {
       <button class="btn-toggle-menu" id="toggleMenu" title="Mostrar/Ocultar menú">
         ☰
       </button>
-      <span style="font-size: 28px;">📄</span>
+      <span style="font-size: 28px;">📚</span>
       <div>
-        <h1>Visor PDF · Documentos</h1>
-        <p>Visualiza manuales y documentos en alta calidad</p>
+        <h1>Material de Capacitación</h1>
+        <p>Manuales y recursos de apoyo para el equipo</p>
       </div>
     </div>
     <a href="index.html" class="btn-back">
@@ -410,34 +410,26 @@ body {
 
 <script>
 // ============================================================
-// CONFIGURACIÓN DE PDFs (OneDrive)
+// CONFIGURACIÓN DINÁMICA - PDFs desde JSON
 // ============================================================
-const PDFs = [
-  {
-    id: 1,
-    name: "Capa Sistema Axapta",
-    icon: "💻",
-    url: "https://grupopdc460.github.io/hub-avon/Capa_Sistema_Axapta.pdf"
-  },
-  {
-    id: 2,
-    name: "Capacitación Sistema BC",
-    icon: "📚",
-    url: "https://grupopdc460.github.io/hub-avon/Capacitacion_Sistema_BC.pdf"
-  },
-  {
-    id: 3,
-    name: "Servicio al Cliente",
-    icon: "💬",
-    url: "https://grupopdc460.github.io/hub-avon/Capa_Servicio_al_cliente.pdf"
-  },
-  {
-    id: 4,
-    name: "Convenio de Pago Avon",
-    icon: "📋",
-    url: "https://grupopdc460.github.io/hub-avon/Capa_Convenio_de_Pago_Avon.pdf"
-  },
-];
+let PDFs = [];
+
+// Cargar PDFs desde JSON
+async function loadPDFsConfig() {
+  try {
+    const response = await fetch('pdfs-capacitacion.json');
+    const data = await response.json();
+    PDFs = data.pdfs;
+    renderSidebar();
+  } catch (error) {
+    console.error('Error cargando PDFs:', error);
+    document.getElementById('pdfList').innerHTML = `
+      <div style="padding: 20px; text-align: center; color: var(--text-muted);">
+        <p>⚠️ Error al cargar los documentos</p>
+      </div>
+    `;
+  }
+}
 
 // ============================================================
 // VISOR PDF
@@ -580,8 +572,8 @@ document.getElementById('toggleMenu').addEventListener('click', () => {
   sidebar.classList.toggle('hidden');
 });
 
-// Inicializar
-renderSidebar();
+// Inicializar - Cargar PDFs desde JSON
+loadPDFsConfig();
 </script>
 
 </body>

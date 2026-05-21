@@ -1,0 +1,28 @@
+{
+  "pdfs": [
+    {
+      "id": 1,
+      "name": "Capa Sistema Axapta",
+      "icon": "💻",
+      "url": "https://grupopdc460.github.io/hub-avon/Capa_Sistema_Axapta.pdf"
+    },
+    {
+      "id": 2,
+      "name": "Capacitación Sistema BC",
+      "icon": "📚",
+      "url": "https://grupopdc460.github.io/hub-avon/Capacitacion_Sistema_BC.pdf"
+    },
+    {
+      "id": 3,
+      "name": "Servicio al Cliente",
+      "icon": "💬",
+      "url": "https://grupopdc460.github.io/hub-avon/Capa_Servicio_al_cliente.pdf"
+    },
+    {
+      "id": 4,
+      "name": "Convenio de Pago Avon",
+      "icon": "📋",
+      "url": "https://grupopdc460.github.io/hub-avon/Capa_Convenio_de_Pago_Avon.pdf"
+    }
+  ]
+}
