@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Visor PDF · Revistas Avon — Plataforma PDC</title>
+<title>Visor PDF · Documentos — Plataforma PDC</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <style>
 /* ===== PALETA AVON + PDC ===== */
@@ -322,8 +322,8 @@ body {
     <div class="header-title">
       <span style="font-size: 28px;">📄</span>
       <div>
-        <h1>Visor PDF · Revistas Avon</h1>
-        <p>Visualiza revistas y catálogos en alta calidad</p>
+        <h1>Visor PDF · Documentos</h1>
+        <p>Visualiza manuales y documentos en alta calidad</p>
       </div>
     </div>
     <a href="index.html" class="btn-back">
@@ -336,7 +336,7 @@ body {
 <div class="container">
   <!-- Sidebar -->
   <div class="sidebar">
-    <h2>📚 Revistas Disponibles</h2>
+    <h2>📚 Documentos Disponibles</h2>
     <div class="pdf-list" id="pdfList">
       <!-- Los PDFs se agregarán aquí -->
     </div>
@@ -367,7 +367,7 @@ body {
     <div class="viewer-content" id="viewerContent">
       <div class="empty-state">
         <div class="empty-state-icon">📄</div>
-        <p style="font-size: 16px; font-weight: 600;">Selecciona una revista para comenzar</p>
+        <p style="font-size: 16px; font-weight: 600;">Selecciona un documento para comenzar</p>
         <p style="font-size: 13px;">Elige una opción del menú de la izquierda</p>
       </div>
     </div>
@@ -381,23 +381,11 @@ body {
 const PDFs = [
   {
     id: 1,
-    name: "Campaña 01 - 2024",
-    icon: "📕",
-    url: "TU_ENLACE_ONEDRIVE_AQUI_1" // Reemplazar con enlace público de OneDrive
+    name: "Capa Sistema Axapta",
+    icon: "💻",
+    url: "https://codisaco-my.sharepoint.com/:b:/g/personal/daniel_monge_grupopdc_com/IQBKqqBHmLVoTZ4FuDE2QRmdATtwD4_-Nx75vx7cShKXzVc?e=Icgk2J"
   },
-  {
-    id: 2,
-    name: "Campaña 02 - 2024",
-    icon: "📗",
-    url: "TU_ENLACE_ONEDRIVE_AQUI_2"
-  },
-  {
-    id: 3,
-    name: "Campaña 03 - 2024",
-    icon: "📘",
-    url: "TU_ENLACE_ONEDRIVE_AQUI_3"
-  },
-  // Agregar más revistas aquí
+  // Agregar más documentos aquí cuando estén listos
 ];
 
 // ============================================================
