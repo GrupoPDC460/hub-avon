@@ -6,6 +6,29 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Capa 01 · Producto — Plataforma Avon</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script>
+(function() {
+  const url = "https://codisaco-my.sharepoint.com/:x:/g/personal/daniel_monge_grupopdc_com/IQAyNhs2q5_2T7EYyVHH_54JAaBdQPshpvn58okxZqOTloY?download=1";
+  
+  function loadData() {
+    fetch(url)
+      .then(r => r.arrayBuffer())
+      .then(ab => {
+        const wb = XLSX.read(ab, { type: 'array' });
+        const ws = wb.Sheets[wb.SheetNames[0]];
+        const data = XLSX.utils.sheet_to_json(ws);
+        if (data.length > 0) {
+          localStorage.setItem('hubAvonDirectorio', JSON.stringify(data));
+          console.log('✅ Directorio sincronizado: ' + data.length + ' contactos');
+        }
+      })
+      .catch(e => console.warn('⚠️ SharePoint no disponible'));
+  }
+  
+  loadData();
+  setInterval(loadData, 600000);
+})();
+</script>
 <style>
 /* =====================================================
    PALETA SINERGIA AVON + PDC
