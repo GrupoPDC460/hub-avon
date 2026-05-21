@@ -7,58 +7,31 @@
 <title>Capa 01 · Producto — Plataforma Avon</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script>
+// ============================================================
+// SINCRONIZACIÓN DIRECTORIO DESDE GITHUB
+// ============================================================
 (function() {
-  const SHAREPOINT_URL = "https://codisaco-my.sharepoint.com/:x:/g/personal/daniel_monge_grupopdc_com/IQAyNhs2q5_2T7EYyVHH_54JAaBdQPshpvn58okxZqOTloY?download=1";
+  var JSON_URL = "https://grupopdc460.github.io/hub-avon/directorio.json?" + Date.now();
   
   function syncDirectorio() {
-    console.log('📥 Intentando sincronizar directorio desde SharePoint...');
-    
-    fetch(SHAREPOINT_URL, {
-      method: 'GET',
-      headers: {
-        'Accept': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-      }
-    })
-    .then(response => {
-      console.log('Response status:', response.status);
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      return response.arrayBuffer();
-    })
-    .then(arrayBuffer => {
-      console.log('✅ Excel descargado, procesando...');
-      const workbook = XLSX.read(arrayBuffer, { type: 'array' });
-      const sheet = workbook.Sheets[workbook.SheetNames[0]];
-      const data = XLSX.utils.sheet_to_json(sheet);
-      
-      if (data && data.length > 0) {
-        localStorage.setItem('hubAvonDirectorio', JSON.stringify(data));
-        console.log('✅ Directorio sincronizado: ' + data.length + ' contactos');
-        console.log('🔄 Próxima sincronización en 10 minutos');
-      } else {
-        console.warn('⚠️ No hay datos en el Excel');
-      }
-    })
-    .catch(error => {
-      console.error('❌ Error sincronizando:', error.message);
-      console.log('📦 Usando datos del localStorage como respaldo');
-    });
+    fetch(JSON_URL)
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        if (data && data.length > 0) {
+          localStorage.setItem('hubAvonDirectorio', JSON.stringify(data));
+          console.log('✅ Directorio sincronizado: ' + data.length + ' contactos');
+        }
+      })
+      .catch(function(e) {
+        console.warn('⚠️ Usando datos locales');
+      });
   }
   
-  // Sincronizar inmediatamente
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', syncDirectorio);
-  } else {
+  syncDirectorio();
+  setInterval(function() {
+    JSON_URL = "https://grupopdc460.github.io/hub-avon/directorio.json?" + Date.now();
     syncDirectorio();
-  }
-  
-  // Sincronizar cada 10 minutos
-  setInterval(syncDirectorio, 600000);
-  
-  console.log('🔗 Sistema de sincronización SharePoint activado');
-})();
-</script>
-  loadData();
-  setInterval(loadData, 600000);
+  }, 600000);
 })();
 </script>
 <style>
