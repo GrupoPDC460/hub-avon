@@ -98,6 +98,27 @@ body {
   transform: translateY(-2px);
 }
 
+.btn-toggle-menu {
+  padding: 8px 12px;
+  background: rgba(255,255,255,0.15);
+  border: 1px solid rgba(255,255,255,0.3);
+  color: white;
+  border-radius: 10px;
+  font-size: 20px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 12px;
+}
+
+.btn-toggle-menu:hover {
+  background: rgba(255,255,255,0.25);
+  transform: scale(1.05);
+}
+
 /* ===== MAIN CONTAINER ===== */
 .container {
   flex: 1;
@@ -119,6 +140,16 @@ body {
   height: fit-content;
   position: sticky;
   top: 100px;
+  transition: all 0.3s ease;
+  overflow: hidden;
+}
+
+.sidebar.hidden {
+  width: 0;
+  padding: 0;
+  border: none;
+  margin: 0;
+  opacity: 0;
 }
 
 .sidebar h2 {
@@ -320,6 +351,9 @@ body {
 <div class="header">
   <div class="header-content">
     <div class="header-title">
+      <button class="btn-toggle-menu" id="toggleMenu" title="Mostrar/Ocultar menú">
+        ☰
+      </button>
       <span style="font-size: 28px;">📄</span>
       <div>
         <h1>Visor PDF · Documentos</h1>
@@ -538,6 +572,12 @@ document.getElementById('zoomOut').addEventListener('click', () => {
   scale -= 0.25;
   document.getElementById('zoomLevel').textContent = Math.round(scale * 100) + '%';
   queueRenderPage(pageNum);
+});
+
+// Toggle menú lateral
+document.getElementById('toggleMenu').addEventListener('click', () => {
+  const sidebar = document.querySelector('.sidebar');
+  sidebar.classList.toggle('hidden');
 });
 
 // Inicializar
