@@ -8,23 +8,55 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script>
 (function() {
-  const url = "https://codisaco-my.sharepoint.com/:x:/g/personal/daniel_monge_grupopdc_com/IQAyNhs2q5_2T7EYyVHH_54JAaBdQPshpvn58okxZqOTloY?download=1";
+  const SHAREPOINT_URL = "https://codisaco-my.sharepoint.com/:x:/g/personal/daniel_monge_grupopdc_com/IQAyNhs2q5_2T7EYyVHH_54JAaBdQPshpvn58okxZqOTloY?download=1";
   
-  function loadData() {
-    fetch(url)
-      .then(r => r.arrayBuffer())
-      .then(ab => {
-        const wb = XLSX.read(ab, { type: 'array' });
-        const ws = wb.Sheets[wb.SheetNames[0]];
-        const data = XLSX.utils.sheet_to_json(ws);
-        if (data.length > 0) {
-          localStorage.setItem('hubAvonDirectorio', JSON.stringify(data));
-          console.log('✅ Directorio sincronizado: ' + data.length + ' contactos');
-        }
-      })
-      .catch(e => console.warn('⚠️ SharePoint no disponible'));
+  function syncDirectorio() {
+    console.log('📥 Intentando sincronizar directorio desde SharePoint...');
+    
+    fetch(SHAREPOINT_URL, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+      }
+    })
+    .then(response => {
+      console.log('Response status:', response.status);
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      return response.arrayBuffer();
+    })
+    .then(arrayBuffer => {
+      console.log('✅ Excel descargado, procesando...');
+      const workbook = XLSX.read(arrayBuffer, { type: 'array' });
+      const sheet = workbook.Sheets[workbook.SheetNames[0]];
+      const data = XLSX.utils.sheet_to_json(sheet);
+      
+      if (data && data.length > 0) {
+        localStorage.setItem('hubAvonDirectorio', JSON.stringify(data));
+        console.log('✅ Directorio sincronizado: ' + data.length + ' contactos');
+        console.log('🔄 Próxima sincronización en 10 minutos');
+      } else {
+        console.warn('⚠️ No hay datos en el Excel');
+      }
+    })
+    .catch(error => {
+      console.error('❌ Error sincronizando:', error.message);
+      console.log('📦 Usando datos del localStorage como respaldo');
+    });
   }
   
+  // Sincronizar inmediatamente
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', syncDirectorio);
+  } else {
+    syncDirectorio();
+  }
+  
+  // Sincronizar cada 10 minutos
+  setInterval(syncDirectorio, 600000);
+  
+  console.log('🔗 Sistema de sincronización SharePoint activado');
+})();
+</script>
   loadData();
   setInterval(loadData, 600000);
 })();
