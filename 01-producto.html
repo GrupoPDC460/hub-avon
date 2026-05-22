@@ -66,6 +66,22 @@
     syncDirectorio();
   }, 600000);
 })();
+
+  // Helper: convertir emoji flag a imagen real (Windows no soporta emoji flags)
+  window.getFlagImg = function(countryName, size) {
+    size = size || 24;
+    var codes = {
+      'guatemala': 'gt', 'el salvador': 'sv', 'honduras': 'hn',
+      'nicaragua': 'ni', 'panama': 'pa', 'panamá': 'pa',
+      'republica dominicana': 'do', 'rep. dominicana': 'do',
+      'rep dominicana': 'do', 'costa rica': 'cr'
+    };
+    var key = (countryName || '').toLowerCase().trim();
+    var code = codes[key] || '';
+    if (!code) return '<span style="font-size:' + size + 'px">🌎</span>';
+    return '<img src="https://flagcdn.com/w' + (size * 2) + '/' + code + '.png" alt="' + countryName + '" style="width:' + size + 'px;height:' + Math.round(size*0.7) + 'px;border-radius:2px;object-fit:cover;vertical-align:middle;box-shadow:0 1px 3px rgba(0,0,0,0.3)">';
+  };
+
 </script>
 <style>
 /* =====================================================
@@ -3101,32 +3117,32 @@ body {
 
       <div class="grid grid-3" style="margin-bottom: 14px;">
         <div class="card" style="border-top: 4px solid var(--avon); text-align: center;">
-          <div style="font-size: 32px; margin-bottom: 6px;">🇬🇹</div>
+          <div style="margin-bottom: 6px;"><img src="https://flagcdn.com/w80/gt.png" alt="Guatemala" style="width:36px;height:25px;border-radius:3px;object-fit:cover;box-shadow:0 2px 5px rgba(0,0,0,0.3)"></div>
           <div style="font-weight: 800; color: var(--text);">Guatemala</div>
           <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Múltiples Centros de Venta en CC y plazas</div>
         </div>
         <div class="card" style="border-top: 4px solid var(--avon); text-align: center;">
-          <div style="font-size: 32px; margin-bottom: 6px;">🇸🇻</div>
+          <div style="margin-bottom: 6px;"><img src="https://flagcdn.com/w80/sv.png" alt="El Salvador" style="width:36px;height:25px;border-radius:3px;object-fit:cover;box-shadow:0 2px 5px rgba(0,0,0,0.3)"></div>
           <div style="font-weight: 800; color: var(--text);">El Salvador</div>
           <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Centros de Venta abiertos al público</div>
         </div>
         <div class="card" style="border-top: 4px solid var(--avon); text-align: center;">
-          <div style="font-size: 32px; margin-bottom: 6px;">🇭🇳</div>
+          <div style="margin-bottom: 6px;"><img src="https://flagcdn.com/w80/hn.png" alt="Honduras" style="width:36px;height:25px;border-radius:3px;object-fit:cover;box-shadow:0 2px 5px rgba(0,0,0,0.3)"></div>
           <div style="font-weight: 800; color: var(--text);">Honduras</div>
           <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Centros de Venta abiertos al público</div>
         </div>
         <div class="card" style="border-top: 4px solid var(--avon); text-align: center;">
-          <div style="font-size: 32px; margin-bottom: 6px;">🇳🇮</div>
+          <div style="margin-bottom: 6px;"><img src="https://flagcdn.com/w80/ni.png" alt="Nicaragua" style="width:36px;height:25px;border-radius:3px;object-fit:cover;box-shadow:0 2px 5px rgba(0,0,0,0.3)"></div>
           <div style="font-weight: 800; color: var(--text);">Nicaragua</div>
           <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Centros de Venta abiertos al público</div>
         </div>
         <div class="card" style="border-top: 4px solid var(--avon); text-align: center;">
-          <div style="font-size: 32px; margin-bottom: 6px;">🇵🇦</div>
+          <div style="margin-bottom: 6px;"><img src="https://flagcdn.com/w80/pa.png" alt="Panamá" style="width:36px;height:25px;border-radius:3px;object-fit:cover;box-shadow:0 2px 5px rgba(0,0,0,0.3)"></div>
           <div style="font-weight: 800; color: var(--text);">Panamá</div>
           <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Tienda en <strong>C.C. Albrook Mall</strong></div>
         </div>
         <div class="card" style="border-top: 4px solid var(--avon); text-align: center;">
-          <div style="font-size: 32px; margin-bottom: 6px;">🇩🇴</div>
+          <div style="margin-bottom: 6px;"><img src="https://flagcdn.com/w80/do.png" alt="Rep. Dominicana" style="width:36px;height:25px;border-radius:3px;object-fit:cover;box-shadow:0 2px 5px rgba(0,0,0,0.3)"></div>
           <div style="font-weight: 800; color: var(--text);">R. Dominicana</div>
           <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Centros de Venta abiertos al público</div>
         </div>
@@ -3686,15 +3702,15 @@ body {
       <div class="grid grid-2" style="margin-top: 14px;">
         <div class="card" style="border-left: 4px solid var(--red);">
           <div class="card-title" style="color: var(--red);">🔴 BAC Credomatic</div>
-          <div class="card-text">🇳🇮 Solo Nicaragua</div>
+          <div class="card-text">Solo Nicaragua</div>
         </div>
         <div class="card" style="border-left: 4px solid var(--red);">
           <div class="card-title" style="color: var(--red);">🔴 Banco Nacional · Caja de Ahorros · Banco General</div>
-          <div class="card-text">🇵🇦 Solo Panamá</div>
+          <div class="card-text">Solo Panamá</div>
         </div>
         <div class="card" style="border-left: 4px solid var(--red); grid-column: 1 / -1;">
           <div class="card-title" style="color: var(--red);">🔴 Bco. Atlántida · Banco de Occidente</div>
-          <div class="card-text">🇭🇳 Solo Honduras</div>
+          <div class="card-text">Solo Honduras</div>
         </div>
       </div>
 
@@ -4265,12 +4281,12 @@ body {
         </div>
         <select class="directorio-filter" id="dirFilterPais">
           <option value="">🌎 Todos los países</option>
-          <option value="Guatemala">🇬🇹 Guatemala</option>
-          <option value="El Salvador">🇸🇻 El Salvador</option>
-          <option value="Honduras">🇭🇳 Honduras</option>
-          <option value="Nicaragua">🇳🇮 Nicaragua</option>
-          <option value="Panamá">🇵🇦 Panamá</option>
-          <option value="Rep. Dominicana">🇩🇴 Rep. Dominicana</option>
+          <option value="Guatemala">Guatemala</option>
+          <option value="El Salvador">El Salvador</option>
+          <option value="Honduras">Honduras</option>
+          <option value="Nicaragua">Nicaragua</option>
+          <option value="Panamá">Panamá</option>
+          <option value="Rep. Dominicana">Rep. Dominicana</option>
         </select>
         <select class="directorio-filter" id="dirFilterGestor">
           <option value="">👤 Todos los gestores</option>
@@ -5131,7 +5147,7 @@ function renderCountryTabs() {
   const tabsHtml = Object.keys(COUNTRIES).map((key, idx) => {
     const c = COUNTRIES[key];
     return `<div class="country-tab ${idx === 0 ? 'active' : ''}" data-country="${key}" onclick="selectCountry('${key}')">
-      <div class="flag">${c.flag}</div>
+      ${getFlagImg(c.pais, 22)}
       <div>${c.name}</div>
     </div>`;
   }).join('');
@@ -5159,7 +5175,7 @@ function selectCountry(key) {
   }).join('');
   document.getElementById('countryDetail').innerHTML = `
     <div class="country-header">
-      <div class="country-flag-big">${c.flag}</div>
+      <div class="country-flag-big">${getFlagImg(c.pais, 40)}</div>
       <div class="country-name">
         <h3>${c.name}</h3>
         <div class="country-meta">
@@ -5515,7 +5531,7 @@ function renderDirectorio() {
     return `
       <div class="contact-card">
         <div class="contact-header">
-          <span class="contact-flag">${c.flag}</span>
+          ${getFlagImg(c.pais, 20)}
           <div class="contact-name">${c.nombre}</div>
         </div>
         <div class="contact-tags">${tags.join('')}</div>
