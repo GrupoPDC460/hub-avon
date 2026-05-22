@@ -56,12 +56,30 @@ class AvonChatbot {
       contact.GESTOR && contact.GESTOR.toLowerCase().includes(lowerQuery)
     );
     
+    // Buscar por zona (NUEVO)
+    const byZona = this.directoryData.filter(contact =>
+      contact['Zona o cargo'] && contact['Zona o cargo'].toString().includes(lowerQuery.replace('zona', '').trim())
+    );
+    
+    // Buscar por correo
+    const byEmail = this.directoryData.filter(contact =>
+      contact.Correo && contact.Correo.toLowerCase().includes(lowerQuery)
+    );
+    
+    // Buscar por teléfono
+    const byPhone = this.directoryData.filter(contact =>
+      contact.Contacto && contact.Contacto.toString().includes(lowerQuery.replace(/\D/g, ''))
+    );
+    
     return {
       byCountry,
       byName,
       byDivision,
       byGestor,
-      total: byCountry.length + byName.length + byDivision.length + byGestor.length
+      byZona,
+      byEmail,
+      byPhone,
+      total: byCountry.length + byName.length + byDivision.length + byGestor.length + byZona.length + byEmail.length + byPhone.length
     };
   }
 
@@ -69,60 +87,101 @@ class AvonChatbot {
   formatDirectoryResults(results, query) {
     let response = '';
     
-    // Resultados por país
-    if (results.byCountry.length > 0) {
-      const country = results.byCountry[0].PAIS;
-      const gestores = [...new Set(results.byCountry.map(c => c.GESTOR))];
-      
-      response += `**📍 ${country}**\n\n`;
-      response += `**Gestores:**\n`;
-      
-      gestores.forEach(gestor => {
-        const contacts = results.byCountry.filter(c => c.GESTOR === gestor);
-        const firstContact = contacts[0];
-        
-        response += `\n**${gestor}**\n`;
-        response += `📧 ${firstContact.Correo}\n`;
-        response += `📞 ${firstContact.Contacto}\n`;
-        response += `👥 ${contacts.length} agente(s) en este país\n`;
-      });
-      
-      response += `\n📇 **Ver directorio completo:** Módulo 09`;
-      return response;
-    }
-    
-    // Resultados por nombre
+    // Resultados por nombre (prioridad si hay coincidencia exacta)
     if (results.byName.length > 0) {
+      // Si solo hay 1 resultado, mostrar info completa
+      if (results.byName.length === 1) {
+        const contact = results.byName[0];
+        response += `**👤 ${contact.Nombre}**\n\n`;
+        response += `📧 **Email:** ${contact.Correo}\n`;
+        response += `📞 **Teléfono:** ${contact.Contacto}\n`;
+        response += `🏢 **Zona:** ${contact['Zona o cargo']}\n`;
+        response += `📊 **División:** ${contact.División}\n`;
+        response += `🌎 **País:** ${contact.PAIS}\n`;
+        response += `👤 **Gestor:** ${contact.GESTOR}\n`;
+        response += `\n📇 **Directorio completo:** Módulo 09`;
+        return response;
+      }
+      
+      // Si hay varios, mostrar lista resumida
       response += `**Encontré ${results.byName.length} contacto(s):**\n\n`;
       
-      results.byName.slice(0, 5).forEach(contact => {
+      results.byName.slice(0, 8).forEach(contact => {
         response += `**${contact.Nombre}**\n`;
-        response += `📧 ${contact.Correo}\n`;
-        response += `📞 ${contact.Contacto}\n`;
-        response += `🌎 ${contact.PAIS} - ${contact.División}\n`;
-        response += `👤 Gestor: ${contact.GESTOR}\n\n`;
+        response += `📞 ${contact.Contacto} • 🏢 Zona ${contact['Zona o cargo']} • 🌎 ${contact.PAIS}\n`;
+        response += `📧 ${contact.Correo}\n\n`;
       });
       
-      if (results.byName.length > 5) {
-        response += `\n...y ${results.byName.length - 5} contacto(s) más.\n`;
+      if (results.byName.length > 8) {
+        response += `\n...y ${results.byName.length - 8} contacto(s) más.\n`;
       }
       
       response += `\n📇 **Ver todos:** Módulo 09`;
       return response;
     }
     
-    // Resultados por división
-    if (results.byDivision.length > 0) {
-      response += `**División ${results.byDivision[0].División}:**\n\n`;
-      response += `📊 ${results.byDivision.length} agente(s)\n`;
-      response += `🌎 País: ${results.byDivision[0].PAIS}\n\n`;
+    // Resultados por zona (NUEVO)
+    if (results.byZona.length > 0) {
+      const zona = results.byZona[0]['Zona o cargo'];
+      response += `**🏢 Zona ${zona}**\n\n`;
+      response += `📊 **Total:** ${results.byZona.length} agente(s)\n\n`;
       
-      results.byDivision.slice(0, 3).forEach(contact => {
-        response += `• ${contact.Nombre} - ${contact.Contacto}\n`;
+      results.byZona.slice(0, 10).forEach(contact => {
+        response += `**${contact.Nombre}**\n`;
+        response += `📞 ${contact.Contacto} • 🌎 ${contact.PAIS} - ${contact.División}\n`;
+        response += `👤 Gestor: ${contact.GESTOR}\n\n`;
       });
       
-      if (results.byDivision.length > 3) {
-        response += `\n...y ${results.byDivision.length - 3} más.\n`;
+      if (results.byZona.length > 10) {
+        response += `\n...y ${results.byZona.length - 10} más.\n`;
+      }
+      
+      response += `\n📇 **Ver todos:** Módulo 09`;
+      return response;
+    }
+    
+    // Resultados por país
+    if (results.byCountry.length > 0) {
+      const country = results.byCountry[0].PAIS;
+      response += `**📍 ${country}**\n\n`;
+      response += `📊 **Total:** ${results.byCountry.length} contacto(s)\n\n`;
+      
+      // Agrupar por gestor
+      const gestores = [...new Set(results.byCountry.map(c => c.GESTOR))];
+      
+      response += `**Gestores (${gestores.length}):**\n`;
+      gestores.forEach(gestor => {
+        const contacts = results.byCountry.filter(c => c.GESTOR === gestor);
+        response += `\n**${gestor}** - ${contacts.length} agente(s)\n`;
+        
+        // Mostrar primeros 3 contactos de cada gestor
+        contacts.slice(0, 3).forEach(contact => {
+          response += `  • ${contact.Nombre} - 📞 ${contact.Contacto}\n`;
+        });
+        
+        if (contacts.length > 3) {
+          response += `  ...y ${contacts.length - 3} más\n`;
+        }
+      });
+      
+      response += `\n📇 **Ver directorio completo:** Módulo 09`;
+      return response;
+    }
+    
+    // Resultados por división
+    if (results.byDivision.length > 0) {
+      const division = results.byDivision[0].División;
+      response += `**📊 División ${division}**\n\n`;
+      response += `👥 **Total:** ${results.byDivision.length} agente(s)\n`;
+      response += `🌎 **País:** ${results.byDivision[0].PAIS}\n\n`;
+      
+      results.byDivision.slice(0, 8).forEach(contact => {
+        response += `**${contact.Nombre}**\n`;
+        response += `📞 ${contact.Contacto} • 🏢 Zona ${contact['Zona o cargo']}\n\n`;
+      });
+      
+      if (results.byDivision.length > 8) {
+        response += `\n...y ${results.byDivision.length - 8} más.\n`;
       }
       
       response += `\n📇 **Ver todos:** Módulo 09`;
@@ -132,12 +191,46 @@ class AvonChatbot {
     // Resultados por gestor
     if (results.byGestor.length > 0) {
       const gestor = results.byGestor[0];
-      response += `**Gestor: ${gestor.GESTOR}**\n\n`;
+      response += `**👤 Gestor: ${gestor.GESTOR}**\n\n`;
       response += `📧 ${gestor.Correo}\n`;
       response += `📞 ${gestor.Contacto}\n`;
       response += `🌎 ${gestor.PAIS}\n`;
-      response += `📊 ${results.byGestor.length} agente(s) a cargo\n`;
+      response += `👥 **${results.byGestor.length} agente(s)** a cargo\n\n`;
+      
+      response += `**Agentes:**\n`;
+      results.byGestor.slice(0, 8).forEach(contact => {
+        response += `• ${contact.Nombre} - 📞 ${contact.Contacto}\n`;
+      });
+      
+      if (results.byGestor.length > 8) {
+        response += `\n...y ${results.byGestor.length - 8} más.\n`;
+      }
+      
       response += `\n📇 **Ver directorio completo:** Módulo 09`;
+      return response;
+    }
+    
+    // Resultados por email
+    if (results.byEmail.length > 0) {
+      const contact = results.byEmail[0];
+      response += `**📧 ${contact.Correo}**\n\n`;
+      response += `👤 **Nombre:** ${contact.Nombre}\n`;
+      response += `📞 **Teléfono:** ${contact.Contacto}\n`;
+      response += `🏢 **Zona:** ${contact['Zona o cargo']}\n`;
+      response += `🌎 **País:** ${contact.PAIS}\n`;
+      response += `👤 **Gestor:** ${contact.GESTOR}\n`;
+      return response;
+    }
+    
+    // Resultados por teléfono
+    if (results.byPhone.length > 0) {
+      const contact = results.byPhone[0];
+      response += `**📞 ${contact.Contacto}**\n\n`;
+      response += `👤 **Nombre:** ${contact.Nombre}\n`;
+      response += `📧 **Email:** ${contact.Correo}\n`;
+      response += `🏢 **Zona:** ${contact['Zona o cargo']}\n`;
+      response += `🌎 **País:** ${contact.PAIS}\n`;
+      response += `👤 **Gestor:** ${contact.GESTOR}\n`;
       return response;
     }
     
@@ -766,7 +859,10 @@ Incluye selector de país interactivo con los 6 países`,
     // Buscar en directorio si la pregunta incluye palabras de contacto
     const contactKeywords = ['contacto', 'gestor', 'telefono', 'teléfono', 'email', 'correo', 
                             'guatemala', 'el salvador', 'costa rica', 'honduras', 'nicaragua', 
-                            'panama', 'panamá'];
+                            'panama', 'panamá', 'republica dominicana', 'dominicana',
+                            'zona', 'division', 'división', 'agente', 'ceiba', 'conacaste',
+                            'caoba', 'teca', 'aguila', 'fenix', 'liquidambar', 'cedro',
+                            'glenda', 'oliver', 'santos'];
     
     if (contactKeywords.some(keyword => lowerQuestion.includes(keyword))) {
       const results = this.searchDirectory(lowerQuestion);
