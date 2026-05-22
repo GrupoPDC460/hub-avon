@@ -1403,5 +1403,18 @@ checkAuth();
 </footer>
 <link rel="stylesheet" href="footer-styles.css">
 
+
+<!-- Navegación Flotante -->
+<nav class="floating-nav" id="floatingNav">
+  <button class="nav-btn nav-btn-top" data-tooltip="Subir" id="btnScrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">▲</button>
+</nav>
+<link rel="stylesheet" href="nav-styles.css">
+<script>
+window.addEventListener('scroll', function() {
+  var btn = document.getElementById('btnScrollTop');
+  if (btn) btn.classList.toggle('visible', window.scrollY > 300);
+});
+</script>
+
 </body>
 </html>
