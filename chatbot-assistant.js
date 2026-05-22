@@ -7,10 +7,141 @@ class AvonChatbot {
   constructor() {
     this.isOpen = false;
     this.conversationHistory = [];
+    this.directoryData = []; // Directorio cargado del JSON
     this.initKnowledgeBase();
+    this.loadDirectory(); // Cargar directorio.json
     this.createChatbot();
     this.attachEventListeners();
     this.trackMetrics();
+  }
+
+  // Cargar directorio desde JSON
+  async loadDirectory() {
+    try {
+      const response = await fetch('directorio.json');
+      if (response.ok) {
+        this.directoryData = await response.json();
+        console.log('📇 Directorio cargado:', this.directoryData.length, 'contactos');
+      }
+    } catch (error) {
+      console.warn('⚠️ No se pudo cargar directorio.json:', error);
+    }
+  }
+
+  // Buscar en el directorio
+  searchDirectory(query) {
+    if (!this.directoryData || this.directoryData.length === 0) {
+      return null;
+    }
+
+    const lowerQuery = query.toLowerCase();
+    
+    // Buscar por país
+    const byCountry = this.directoryData.filter(contact => 
+      contact.PAIS && contact.PAIS.toLowerCase().includes(lowerQuery)
+    );
+    
+    // Buscar por nombre
+    const byName = this.directoryData.filter(contact =>
+      contact.Nombre && contact.Nombre.toLowerCase().includes(lowerQuery)
+    );
+    
+    // Buscar por división
+    const byDivision = this.directoryData.filter(contact =>
+      contact.División && contact.División.toLowerCase().includes(lowerQuery)
+    );
+    
+    // Buscar por gestor
+    const byGestor = this.directoryData.filter(contact =>
+      contact.GESTOR && contact.GESTOR.toLowerCase().includes(lowerQuery)
+    );
+    
+    return {
+      byCountry,
+      byName,
+      byDivision,
+      byGestor,
+      total: byCountry.length + byName.length + byDivision.length + byGestor.length
+    };
+  }
+
+  // Formatear resultados del directorio
+  formatDirectoryResults(results, query) {
+    let response = '';
+    
+    // Resultados por país
+    if (results.byCountry.length > 0) {
+      const country = results.byCountry[0].PAIS;
+      const gestores = [...new Set(results.byCountry.map(c => c.GESTOR))];
+      
+      response += `**📍 ${country}**\n\n`;
+      response += `**Gestores:**\n`;
+      
+      gestores.forEach(gestor => {
+        const contacts = results.byCountry.filter(c => c.GESTOR === gestor);
+        const firstContact = contacts[0];
+        
+        response += `\n**${gestor}**\n`;
+        response += `📧 ${firstContact.Correo}\n`;
+        response += `📞 ${firstContact.Contacto}\n`;
+        response += `👥 ${contacts.length} agente(s) en este país\n`;
+      });
+      
+      response += `\n📇 **Ver directorio completo:** Módulo 09`;
+      return response;
+    }
+    
+    // Resultados por nombre
+    if (results.byName.length > 0) {
+      response += `**Encontré ${results.byName.length} contacto(s):**\n\n`;
+      
+      results.byName.slice(0, 5).forEach(contact => {
+        response += `**${contact.Nombre}**\n`;
+        response += `📧 ${contact.Correo}\n`;
+        response += `📞 ${contact.Contacto}\n`;
+        response += `🌎 ${contact.PAIS} - ${contact.División}\n`;
+        response += `👤 Gestor: ${contact.GESTOR}\n\n`;
+      });
+      
+      if (results.byName.length > 5) {
+        response += `\n...y ${results.byName.length - 5} contacto(s) más.\n`;
+      }
+      
+      response += `\n📇 **Ver todos:** Módulo 09`;
+      return response;
+    }
+    
+    // Resultados por división
+    if (results.byDivision.length > 0) {
+      response += `**División ${results.byDivision[0].División}:**\n\n`;
+      response += `📊 ${results.byDivision.length} agente(s)\n`;
+      response += `🌎 País: ${results.byDivision[0].PAIS}\n\n`;
+      
+      results.byDivision.slice(0, 3).forEach(contact => {
+        response += `• ${contact.Nombre} - ${contact.Contacto}\n`;
+      });
+      
+      if (results.byDivision.length > 3) {
+        response += `\n...y ${results.byDivision.length - 3} más.\n`;
+      }
+      
+      response += `\n📇 **Ver todos:** Módulo 09`;
+      return response;
+    }
+    
+    // Resultados por gestor
+    if (results.byGestor.length > 0) {
+      const gestor = results.byGestor[0];
+      response += `**Gestor: ${gestor.GESTOR}**\n\n`;
+      response += `📧 ${gestor.Correo}\n`;
+      response += `📞 ${gestor.Contacto}\n`;
+      response += `🌎 ${gestor.PAIS}\n`;
+      response += `📊 ${results.byGestor.length} agente(s) a cargo\n`;
+      response += `\n📇 **Ver directorio completo:** Módulo 09`;
+      return response;
+    }
+    
+    return null;
   }
 
   // Base de conocimiento - FAQ estática
@@ -632,7 +763,25 @@ Incluye selector de país interactivo con los 6 países`,
       return;
     }
 
-    // Buscar por palabras clave
+    // Buscar en directorio si la pregunta incluye palabras de contacto
+    const contactKeywords = ['contacto', 'gestor', 'telefono', 'teléfono', 'email', 'correo', 
+                            'guatemala', 'el salvador', 'costa rica', 'honduras', 'nicaragua', 
+                            'panama', 'panamá'];
+    
+    if (contactKeywords.some(keyword => lowerQuestion.includes(keyword))) {
+      const results = this.searchDirectory(lowerQuestion);
+      
+      if (results && results.total > 0) {
+        const formattedResults = this.formatDirectoryResults(results, lowerQuestion);
+        if (formattedResults) {
+          this.addBotMessage(formattedResults);
+          this.trackQuestion('directorio_search', 'Directorio');
+          return;
+        }
+      }
+    }
+
+    // Buscar por palabras clave (FAQ estática)
     for (const [keyword, possibleAnswers] of Object.entries(this.keywords)) {
       if (lowerQuestion.includes(keyword)) {
         const answerKey = possibleAnswers[0];
@@ -655,7 +804,8 @@ Incluye selector de país interactivo con los 6 países`,
 • ¿Qué es PD?
 • Tramos de mora
 • Etapas del convenio
-• Script primera llamada`);
+• Script primera llamada
+• Contacto [país]`);
   }
 
   // Agregar mensaje de usuario
