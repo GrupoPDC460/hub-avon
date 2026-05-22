@@ -247,32 +247,50 @@ Es el tiempo transcurrido desde que venció el pago de una representante. Se mid
       },
       
       'tramos de mora': {
-        answer: `**Tramos de Mora (PD):**
+        answer: `**Tramos de Mora (Past Due):**
 
-🟢 **PD0 (0 días)** - Al día / Sin mora
-🟡 **Early Stage (ES): 1-45 días**
-🟠 **Late Stage (LS): 46-90 días**
-🔴 **Morosidad (M): 91-180 días**
-⚫ **Recuperación (R): 181+ días**
+🟢 **A0 - PREVENTIVA** (Sin mora real)
+Cuenta al día, solo recordatorio.
 
-💡 **Tip:** En ES usas tono preventivo, en LS más firme pero siempre profesional.
+🟡 **EARLY STAGE - Estatus A:**
+• **PD1 (A1):** 1-19 días → Se le pasó la fecha
+• **PD2 (A2):** 20-38 días → Una campaña sin pagar
+• **PD3 (A3):** 39-57 días → Dos campañas sin pagar
 
-📱 **¿Quieres usar la calculadora PD?** Visita el Módulo 05 - Tramos PD`,
+🟠 **EARLY STAGE - Estatus C:**
+• **PD4 (C):** 58-87 días → 3-4 campañas
+• **PD5 (C):** 88-117 días → 4-5 campañas
+• **PD6 (C):** 118-147 días → 5-6 campañas
+• **PD7 (C):** 148-180 días → 6-7 campañas
+
+🔴 **M - MOROSIDAD** (181+ días)
+⚫ **R - RECUPERACIÓN** (Cuenta en recuperación)
+
+📊 Flujo: A0 → A1 → A2 → A3 → C → M → R
+
+📱 **Módulo 05** tiene la calculadora de PD`,
         category: 'PD/Mora'
       },
 
       'diferencia early late stage': {
-        answer: `**Early Stage vs Late Stage:**
+        answer: `**Early Stage (Estatus A y C):**
 
-🟡 **Early Stage (ES) - 1 a 45 días:**
+🟡 **Estatus A (PD1-PD3): 1 a 57 días**
+- Bloques de ~19 días cada uno
 - Tono: Preventivo y amigable
-- Objetivo: Evitar que siga creciendo
-- Estrategia: Recordatorios, facilidades de pago
+- Objetivo: Recuperar rápido, la rep aún está activa
 
-🟠 **Late Stage (LS) - 46 a 90 días:**
+🟠 **Estatus C (PD4-PD7): 58 a 180 días**
+- Bloques de ~30 días cada uno
 - Tono: Más firme pero profesional
-- Objetivo: Recuperar antes de Morosidad
-- Estrategia: Convenios, fechas límite claras
+- Objetivo: Convenios de pago, evitar morosidad
+
+🔴 **M - Morosidad (181+ días)**
+- La rep ya no puede pedir producto
+- Objetivo: Recuperar lo máximo posible
+
+⚫ **R - Recuperación**
+- Cuenta en proceso de recuperación final
 
 📞 **Scripts:** Pregunta "script early stage" o "script late stage"`,
         category: 'PD/Mora'
