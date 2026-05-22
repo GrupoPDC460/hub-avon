@@ -96,7 +96,17 @@
   }
 }
 
-/* Bandera */
+/* Bandera - Imagen real (funciona en Windows) */
+.ticker-flag-img {
+  width: 32px;
+  height: 22px;
+  border-radius: 3px;
+  object-fit: cover;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+  border: 1px solid rgba(255,255,255,0.2);
+}
+
+/* Bandera - Emoji fallback */
 .ticker-flag {
   font-size: 1.8rem;
   line-height: 1;
