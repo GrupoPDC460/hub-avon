@@ -877,7 +877,7 @@ Incluye selector de país interactivo con los 6 países`,
   processQuestion(question) {
     const lowerQuestion = question.toLowerCase();
     
-    // Buscar respuesta exacta
+    // Buscar respuesta exacta en FAQ
     if (this.knowledge[lowerQuestion]) {
       this.addBotMessage(this.knowledge[lowerQuestion].answer);
       this.trackQuestion(lowerQuestion, this.knowledge[lowerQuestion].category);
@@ -890,7 +890,8 @@ Incluye selector de país interactivo con los 6 países`,
                             'panama', 'panamá', 'republica dominicana', 'dominicana',
                             'zona', 'division', 'división', 'agente', 'ceiba', 'conacaste',
                             'caoba', 'teca', 'aguila', 'fenix', 'liquidambar', 'cedro',
-                            'glenda', 'oliver', 'santos'];
+                            'maquilishuat', 'madroño', 'cedro', 'tiendas',
+                            'atencion al cliente', 'reclamo', 'reclamos', 'queja', 'quejas', 'derivar'];
     
     if (contactKeywords.some(keyword => lowerQuestion.includes(keyword))) {
       const results = this.searchDirectory(lowerQuestion);
@@ -915,6 +916,20 @@ Incluye selector de país interactivo con los 6 países`,
       }
     }
 
+    // FALLBACK: Siempre intentar buscar en directorio como último recurso
+    if (lowerQuestion.length >= 3) {
+      const results = this.searchDirectory(lowerQuestion);
+      
+      if (results && results.total > 0) {
+        const formattedResults = this.formatDirectoryResults(results, lowerQuestion);
+        if (formattedResults) {
+          this.addBotMessage(formattedResults);
+          this.trackQuestion('directorio_search_fallback', 'Directorio');
+          return;
+        }
+      }
+    }
+
     // No se encontró respuesta
     this.addBotMessage(`🤔 No encontré una respuesta exacta para "${question}".
 
@@ -922,7 +937,6 @@ Incluye selector de país interactivo con los 6 países`,
 - Intenta reformular tu pregunta
 - Escribe "ayuda" para ver temas disponibles
 - Usa los botones rápidos abajo
-- O navega a los módulos desde el menú lateral
 
 💡 **Preguntas frecuentes:**
 • ¿Qué es PD?
