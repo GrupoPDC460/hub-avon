@@ -378,71 +378,193 @@ Es un **acuerdo formal** entre Avon y la representante para pagar su deuda en cu
 
       // ===== SCRIPTS Y LLAMADAS =====
       'script primera llamada': {
-        answer: `**Script Primera Llamada (Early Stage):**
+        answer: `**📋 SCRIPT OFICIAL DE COBRO - 12 PASOS:**
 
-📞 **Apertura:**
-"Hola [Nombre], buenos días/tardes. Soy [Tu nombre] del equipo de Avon. ¿Cómo estás? Te contacto porque veo que tu pago de la campaña [X] ya venció hace [Y] días."
+**1. APERTURA** - Saludo y presentación
+**2. ÍTEM REGULATORIO** - Aviso de grabación (OBLIGATORIO)
+**3. MOTIVO** - Informar saldo pendiente
+**4. DIAGNÓSTICO** - Sondear razón de mora
+**5. COBRO** - Brindar saldo total y pedir pago completo
+**6. NEGOCIACIÓN** - Manejo de objeciones
+**7. INFO** - Puntos de pago disponibles
+**8. DATOS** - Actualizar número de contacto
+**9. CONFIRMACIÓN** - Repetir y confirmar acuerdo
+**10. CIERRE** - Beneficios de pagar + consecuencias
+**11. DESPEDIDA** - Cortesía y profesionalismo
+**12. REGISTRO** - Tipificación inmediata
 
-🎯 **Desarrollo:**
-"Queremos ayudarte a mantener tu cuenta al día. ¿Hay algo que podamos hacer para facilitar tu pago?"
+💡 Escribe "script apertura", "script objeciones", "script cierre" o "tipificaciones" para ver cada paso en detalle.
 
-✅ **Cierre:**
-"Perfecto, entonces quedamos en que pagarás [monto] el [fecha]. Te envío confirmación por WhatsApp. ¿Te parece bien?"
+📄 **PDF completo:** Módulo 10 - Script Oficial`,
+        category: 'Scripts'
+      },
 
-📱 **Scripts completos:** Módulo 07 - Las 3 Llamadas`,
+      'script apertura': {
+        answer: `**📞 PASO 1 - APERTURA:**
+"Buenos días/tardes. ¿Me podría comunicar con [NOMBRE DEL CLIENTE]?"
+"Le habla [TU NOMBRE], del Departamento de Cobros de [EMPRESA]. ¿Cómo se encuentra?"
+
+⚠️ **PASO 2 - ÍTEM REGULATORIO (OBLIGATORIO):**
+"Le informo que esta llamada puede ser grabada con fines de calidad y cumplimiento regulatorio."
+
+📌 NOTAS:
+• Esperar confirmación de identidad antes de continuar
+• Tono cálido, pausado y respetuoso
+• El aviso de grabación NUNCA se omite
+
+💡 Escribe "script cobro" para el siguiente paso`,
+        category: 'Scripts'
+      },
+
+      'script cobro': {
+        answer: `**💰 PASO 3 - MOTIVO DE LA LLAMADA:**
+"Su cuenta presenta un saldo pendiente correspondiente a [PRODUCTOS/PEDIDOS]. Valoramos su fidelidad y queremos ayudarle a regularizar su situación."
+
+**🔍 PASO 4 - DIAGNÓSTICO:**
+"¿Me podría comentar qué le impidió realizar el pago?"
+"Entiendo su situación. Precisamente estamos buscando la mejor alternativa para usted."
+
+**💵 PASO 5 - COBRAR SALDO TOTAL:**
+"El saldo pendiente es de [MONTO]. ¿Estaría en posibilidad de realizar el pago completo hoy?"
+
+📌 NOTAS:
+• Mencionar productos genera conexión con el cliente
+• Escuchar sin interrumpir la razón de mora
+• SIEMPRE ofrecer pago total antes de negociar parcial
+
+💡 Escribe "script objeciones" para manejo de objeciones`,
         category: 'Scripts'
       },
 
       'script early stage': {
-        answer: `**Script Early Stage (1-45 días):**
+        answer: `**📋 SCRIPT COMPLETO - RESUMEN RÁPIDO:**
 
-📞 "Hola [Nombre], te habla [Tu nombre] de Avon. ¿Cómo estás?"
+📞 **APERTURA:** Saludo + ítem regulatorio (grabación)
+💰 **COBRO:** Motivo + diagnóstico + saldo total
+🤝 **NEGOCIACIÓN:** Manejo de objeciones
+📍 **INFO:** Puntos de pago + actualizar datos
+✅ **CIERRE:** Confirmar acuerdo + beneficios + despedida
+📝 **REGISTRO:** Tipificación inmediata
 
-🎯 "Te contacto porque tu pago de la campaña [X] está pendiente desde hace [Y] días. Queremos evitar que genere intereses."
+Los 12 pasos aplican para TODAS las llamadas (early y late stage). La diferencia está en el TONO:
+• **Early (A1-A3):** Preventivo, amigable
+• **Late (C, PD4+):** Más firme, urgente pero profesional
 
-💡 "¿Cuándo podrías hacer el pago? Tenemos varias opciones..."
+💡 Escribe "script apertura", "script cobro", "script objeciones" o "script cierre"
 
-✅ **Cierre con compromiso concreto**
-
-🔑 **Tono:** Amable, preventivo, colaborativo
-
-📞 **Objeciones:** Pregunta "como manejar objecion"`,
+📄 **PDF completo:** Módulo 10 - Script Oficial`,
         category: 'Scripts'
       },
 
       'script late stage': {
-        answer: `**Script Late Stage (46-90 días):**
+        answer: `**📋 SCRIPT LATE STAGE (PD4-PD7, Estatus C):**
 
-📞 "Hola [Nombre], soy [Tu nombre] del departamento de cobranza Avon."
+Usa los mismos 12 pasos del script oficial pero con tono más firme:
 
-⚠️ "Tu cuenta tiene [X] días de mora. Necesitamos regularizar esta situación urgentemente para evitar que pase a legal."
+📞 **APERTURA:** Igual - saludo + ítem regulatorio
+💰 **COBRO:** Enfatizar tiempo de mora y urgencia
+🤝 **NEGOCIACIÓN:** Ofrecer convenio de pago
+⚠️ **CIERRE:** Enfatizar consecuencias (reporte a buró crediticio, pérdida de acceso a pedidos)
 
-🎯 "Tengo autorización para ofrecerte un convenio de pago. ¿Cuánto puedes pagar hoy como primera cuota?"
+**Diferencia clave vs Early Stage:**
+• Tono serio pero profesional (nunca amenazante)
+• Informar consecuencias reales
+• Buscar compromiso concreto de fecha y monto
 
-✅ **Cierre firme pero profesional**
+💡 Escribe "script objeciones" o "tipificaciones" para más detalle
 
-🔑 **Tono:** Serio, urgente, pero respetuoso
+📄 **PDF completo:** Módulo 10 - Script Oficial`,
+        category: 'Scripts'
+      },
 
-📋 **Convenios:** Pregunta "que es convenio de pago"`,
+      'script objeciones': {
+        answer: `**🤝 PASO 6 - MANEJO DE OBJECIONES:**
+
+💬 **"No tengo dinero"**
+→ "¿Para cuándo tendría disponibilidad? Podemos registrar un compromiso para esa fecha."
+
+💬 **"No puedo pagar el monto completo"**
+→ "¿Qué monto le sería posible abonar hoy? Con un abono detenemos el avance de su mora."
+
+💬 **"Ya realicé el pago"**
+→ "¡Qué bien! ¿Me proporciona el número de referencia para actualizar su cuenta?"
+
+💬 **"No voy a pagar"**
+→ "Es importante que conozca las implicaciones para su historial. ¿Me permite explicarle?"
+
+💬 **"El monto no es correcto"**
+→ "Permita que revise su cuenta para brindarle la información exacta."
+
+💬 **"No recuerdo haber pedido eso"**
+→ "Le detallo los productos incluidos: [LISTA]. ¿Le suena alguno? Podemos revisar juntos."
+
+📄 **PDF completo:** Módulo 10 - Script Oficial`,
+        category: 'Scripts'
+      },
+
+      'script cierre': {
+        answer: `**✅ PASOS 9-11 - CONFIRMACIÓN Y CIERRE:**
+
+**PASO 9 - CONFIRMAR ACUERDO:**
+"Usted realizará el pago de [MONTO] el día [FECHA] a través de [MEDIO DE PAGO]. ¿Es correcto?"
+
+**PASO 10 - BENEFICIOS + CONSECUENCIAS:**
+✅ Beneficios de pagar: seguir haciendo pedidos, productos exclusivos, conservar línea de crédito
+⚠️ Si no paga: reporte a buró crediticio, sin acceso a pedidos futuros
+📌 Comunicar consecuencias de forma informativa, NUNCA como amenaza
+
+**PASO 11 - DESPEDIDA:**
+"Ha sido un placer atenderle. Mi nombre es [AGENTE], código [CÓDIGO]. ¡Que tenga un excelente día!"
+
+📌 No colgar hasta que el cliente haya cerrado la conversación
+
+💡 Escribe "tipificaciones" para ver los códigos de registro`,
+        category: 'Scripts'
+      },
+
+      'tipificaciones': {
+        answer: `**📝 PASO 12 - TIPIFICACIONES (Completar SIEMPRE):**
+
+**PP** — Promesa de pago (acepta fecha específica)
+**AP** — Abono parcial (pago parcial del saldo)
+**PI** — Pago inmediato (paga hoy mismo)
+**ND** — No desea pagar (documentar motivo, escalar)
+**NC** — No contactado (no contesta, buzón, número incorrecto)
+**CU** — Cuenta en disputa (disputa saldo/productos, escalar)
+**CR** — Compromiso roto (tenía acuerdo y no cumplió)
+**DI** — Dato incorrecto (datos erróneos, actualizar)
+
+📌 **Registrar INMEDIATAMENTE al finalizar la llamada:**
+• Nombre, fecha, monto acordado
+• Fecha de pago, medio de pago
+• Número actualizado, código agente
+
+📄 **PDF completo:** Módulo 10 - Script Oficial`,
         category: 'Scripts'
       },
 
       'como manejar objecion': {
-        answer: `**Manejo de Objeciones Comunes:**
+        answer: `**🤝 MANEJO DE OBJECIONES (del Script Oficial):**
 
 💬 **"No tengo dinero"**
-→ "Entiendo tu situación. ¿Qué monto sí podrías pagar esta semana? Podemos armar un convenio."
+→ "¿Para cuándo tendría disponibilidad? Podemos registrar un compromiso y evitar cargos adicionales."
 
-💬 **"Estoy esperando que me paguen"**
-→ "Perfecto, ¿qué día recibes ese pago? Agendemos para ese día específico."
+💬 **"No puedo pagar el monto completo"**
+→ "¿Qué monto le sería posible abonar hoy? Con un abono detenemos el avance de su mora."
 
-💬 **"Ya no vendo Avon"**
-→ "Comprendo, pero la deuda sigue vigente. ¿Prefieres pagos pequeños mensuales o un descuento por pago total?"
+💬 **"Ya realicé el pago"**
+→ "¡Qué bien! ¿Me proporciona el número de referencia o comprobante?"
 
-💬 **"Llamo después"**
-→ "Claro, ¿a qué hora te llamo mañana? Necesito agendar para dar seguimiento."
+💬 **"No voy a pagar"**
+→ "Es importante que conozca las implicaciones para su historial y acceso a futuros pedidos."
 
-📚 **Más objeciones:** Módulo 07`,
+💬 **"El monto no es correcto"**
+→ "Permita que revise su cuenta para brindarle la información exacta."
+
+💬 **"No recuerdo haber pedido eso"**
+→ "Le detallo los productos incluidos. ¿Le suena alguno? Podemos revisar juntos."
+
+📄 **PDF completo:** Módulo 10 - Script Oficial`,
         category: 'Scripts'
       },
 
@@ -703,8 +825,14 @@ Incluye selector de país interactivo con los 6 países`,
       'early stage': ['diferencia early late stage', 'script early stage'],
       'late stage': ['diferencia early late stage', 'script late stage'],
       'convenio': ['que es convenio de pago', 'etapas del convenio', 'cuantos pagos convenio'],
-      'script': ['script primera llamada', 'script early stage', 'script late stage'],
-      'objecion': ['como manejar objecion'],
+      'script': ['script primera llamada', 'script apertura', 'script cobro', 'script objeciones', 'script cierre'],
+      'objecion': ['como manejar objecion', 'script objeciones'],
+      'tipificacion': ['tipificaciones'],
+      'tipificar': ['tipificaciones'],
+      'apertura': ['script apertura'],
+      'saludo': ['script apertura'],
+      'cierre': ['script cierre'],
+      'despedida': ['script cierre'],
       'avon': ['como funciona avon', 'que es una campaña'],
       'campaña': ['que es una campaña'],
       'directorio': ['directorio'],
