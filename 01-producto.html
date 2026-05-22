@@ -5965,60 +5965,79 @@ m10NotesLoad();
 <!-- Chatbot Asistente -->
 <script src="chatbot-assistant.js"></script>
 
-<!-- Footer Atención al Cliente -->
+<!-- Footer Ticker Deslizante -->
 <footer class="customer-service-footer">
-  <div class="footer-container">
-    <div class="footer-header">
-      <span class="pulse-dot"></span>
-      <h3 class="footer-title">📞 ATENCIÓN AL CLIENTE - DERIVAR RECLAMOS</h3>
-      <span class="pulse-dot"></span>
-    </div>
-    <div class="countries-grid">
-      <div class="country-card" style="animation-delay: 0.1s">
-        <div class="flag">🇭🇳</div>
-        <div class="country-info">
-          <div class="country-name">Honduras</div>
-          <div class="phone-number">2263 0227</div>
-        </div>
+  <div class="ticker-wrap">
+    <div class="ticker">
+      <!-- Primera vuelta -->
+      <div class="ticker-item">
+        <span class="ticker-label">📞 ATENCIÓN AL CLIENTE</span>
       </div>
-      <div class="country-card" style="animation-delay: 0.2s">
-        <div class="flag">🇳🇮</div>
-        <div class="country-info">
-          <div class="country-name">Nicaragua</div>
-          <div class="phone-number">7513 2174</div>
-        </div>
+      <div class="ticker-item">
+        <span class="ticker-flag">🇭🇳</span>
+        <span class="ticker-country">Honduras:</span>
+        <span class="ticker-phone">2263-0227</span>
       </div>
-      <div class="country-card" style="animation-delay: 0.3s">
-        <div class="flag">🇬🇹</div>
-        <div class="country-info">
-          <div class="country-name">Guatemala</div>
-          <div class="phone-number">2378 4861</div>
-        </div>
+      <div class="ticker-item">
+        <span class="ticker-flag">🇳🇮</span>
+        <span class="ticker-country">Nicaragua:</span>
+        <span class="ticker-phone">7513-2174</span>
       </div>
-      <div class="country-card" style="animation-delay: 0.4s">
-        <div class="flag">🇸🇻</div>
-        <div class="country-info">
-          <div class="country-name">El Salvador</div>
-          <div class="phone-number">2136 8772</div>
-        </div>
+      <div class="ticker-item">
+        <span class="ticker-flag">🇬🇹</span>
+        <span class="ticker-country">Guatemala:</span>
+        <span class="ticker-phone">2378-4861</span>
       </div>
-      <div class="country-card" style="animation-delay: 0.5s">
-        <div class="flag">🇵🇦</div>
-        <div class="country-info">
-          <div class="country-name">Panamá</div>
-          <div class="phone-number">838 8339</div>
-        </div>
+      <div class="ticker-item">
+        <span class="ticker-flag">🇸🇻</span>
+        <span class="ticker-country">El Salvador:</span>
+        <span class="ticker-phone">2136-8772</span>
       </div>
-      <div class="country-card" style="animation-delay: 0.6s">
-        <div class="flag">🇩🇴</div>
-        <div class="country-info">
-          <div class="country-name">Rep. Dominicana</div>
-          <div class="phone-number">182-9946-0346</div>
-        </div>
+      <div class="ticker-item">
+        <span class="ticker-flag">🇵🇦</span>
+        <span class="ticker-country">Panamá:</span>
+        <span class="ticker-phone">838-8339</span>
       </div>
-    </div>
-    <div class="footer-tip">
-      💡 Usa estos números para derivar cualquier tipo de reclamo
+      <div class="ticker-item">
+        <span class="ticker-flag">🇩🇴</span>
+        <span class="ticker-country">Rep. Dominicana:</span>
+        <span class="ticker-phone">182-9946-0346</span>
+      </div>
+      
+      <!-- Segunda vuelta (duplicado para loop infinito) -->
+      <div class="ticker-item">
+        <span class="ticker-label">📞 ATENCIÓN AL CLIENTE</span>
+      </div>
+      <div class="ticker-item">
+        <span class="ticker-flag">🇭🇳</span>
+        <span class="ticker-country">Honduras:</span>
+        <span class="ticker-phone">2263-0227</span>
+      </div>
+      <div class="ticker-item">
+        <span class="ticker-flag">🇳🇮</span>
+        <span class="ticker-country">Nicaragua:</span>
+        <span class="ticker-phone">7513-2174</span>
+      </div>
+      <div class="ticker-item">
+        <span class="ticker-flag">🇬🇹</span>
+        <span class="ticker-country">Guatemala:</span>
+        <span class="ticker-phone">2378-4861</span>
+      </div>
+      <div class="ticker-item">
+        <span class="ticker-flag">🇸🇻</span>
+        <span class="ticker-country">El Salvador:</span>
+        <span class="ticker-phone">2136-8772</span>
+      </div>
+      <div class="ticker-item">
+        <span class="ticker-flag">🇵🇦</span>
+        <span class="ticker-country">Panamá:</span>
+        <span class="ticker-phone">838-8339</span>
+      </div>
+      <div class="ticker-item">
+        <span class="ticker-flag">🇩🇴</span>
+        <span class="ticker-country">Rep. Dominicana:</span>
+        <span class="ticker-phone">182-9946-0346</span>
+      </div>
     </div>
   </div>
 </footer>
