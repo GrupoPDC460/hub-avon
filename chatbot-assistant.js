@@ -512,6 +512,22 @@ Para ver contactos específicos pregunta:
         category: 'Directorio'
       },
 
+      'atencion al cliente': {
+        answer: `**📞 ATENCIÓN AL CLIENTE**
+**Para derivar reclamos:**
+
+🇭🇳 **Honduras:** 2263 0227
+🇳🇮 **Nicaragua:** 7513 2174
+🇬🇹 **Guatemala:** 2378 4861
+🇸🇻 **El Salvador:** 2136 8772
+🇵🇦 **Panamá:** 838 8339
+🇩🇴 **República Dominicana:** 182-9946-0346
+
+💡 **Tip:** También están en el footer de todas las páginas`,
+        category: 'Directorio',
+        keywords: ['reclamo', 'reclamos', 'queja', 'quejas', 'derivar', 'cliente', 'atencion']
+      },
+
       'contacto costa rica': {
         answer: `**Gestor Costa Rica:**
 
