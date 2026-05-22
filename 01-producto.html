@@ -13,13 +13,41 @@
 (function() {
   var JSON_URL = "https://grupopdc460.github.io/hub-avon/directorio.json?" + Date.now();
   
+  var FLAGS = {
+    'guatemala': '🇬🇹', 'el salvador': '🇸🇻', 'honduras': '🇭🇳',
+    'nicaragua': '🇳🇮', 'panama': '🇵🇦', 'panamá': '🇵🇦',
+    'republica dominicana': '🇩🇴', 'rep. dominicana': '🇩🇴',
+    'rep dominicana': '🇩🇴', 'costa rica': '🇨🇷'
+  };
+
+  function normalizarContacto(r) {
+    var pais = (r.PAIS || r.pais || '').trim();
+    var flag = FLAGS[pais.toLowerCase()] || '🌎';
+    return {
+      nombre: r.Nombre || r.nombre || '',
+      correo: r.Correo || r.correo || '',
+      zona: r['Zona o cargo'] || r.zona || '',
+      division: r['División'] || r.Division || r.division || '',
+      contacto: r.Contacto || r.contacto || '',
+      pais: pais,
+      flag: flag,
+      gestor: r.GESTOR || r.gestor || ''
+    };
+  }
+
   function syncDirectorio() {
     fetch(JSON_URL)
       .then(function(r) { return r.json(); })
       .then(function(data) {
         if (data && data.length > 0) {
-          localStorage.setItem('hubAvonDirectorio', JSON.stringify(data));
-          console.log('✅ Directorio sincronizado: ' + data.length + ' contactos');
+          var normalizado = data.map(normalizarContacto);
+          localStorage.setItem('hubAvonDirectorio', JSON.stringify(normalizado));
+          console.log('✅ Directorio sincronizado: ' + normalizado.length + ' contactos');
+          // Recargar si la página ya está cargada
+          if (typeof CURRENT_DIRECTORIO !== 'undefined') {
+            CURRENT_DIRECTORIO = normalizado;
+            if (typeof renderDirectorio === 'function') renderDirectorio();
+          }
         }
       })
       .catch(function(e) {
