@@ -310,6 +310,61 @@ Para ver contactos específicos pregunta:
         category: 'Directorio'
       },
 
+      'contacto guatemala': {
+        answer: `**Gestor Guatemala:**
+
+📧 Email: gestor.gt@avon.com
+📞 Teléfono: +502 xxxx-xxxx
+🏢 División: Centroamérica Norte
+
+📇 **Directorio completo:** Módulo 09`,
+        category: 'Directorio'
+      },
+
+      'contacto honduras': {
+        answer: `**Gestor Honduras:**
+
+📧 Email: gestor.hn@avon.com
+📞 Teléfono: +504 xxxx-xxxx
+🏢 División: Centroamérica Norte
+
+📇 **Directorio completo:** Módulo 09`,
+        category: 'Directorio'
+      },
+
+      'contacto nicaragua': {
+        answer: `**Gestor Nicaragua:**
+
+📧 Email: gestor.ni@avon.com
+📞 Teléfono: +505 xxxx-xxxx
+🏢 División: Centroamérica
+
+📇 **Directorio completo:** Módulo 09`,
+        category: 'Directorio'
+      },
+
+      'contacto panama': {
+        answer: `**Gestor Panamá:**
+
+📧 Email: gestor.pa@avon.com
+📞 Teléfono: +507 xxxx-xxxx
+🏢 División: Centroamérica Sur
+
+📇 **Directorio completo:** Módulo 09`,
+        category: 'Directorio'
+      },
+
+      'contacto panamá': {
+        answer: `**Gestor Panamá:**
+
+📧 Email: gestor.pa@avon.com
+📞 Teléfono: +507 xxxx-xxxx
+🏢 División: Centroamérica Sur
+
+📇 **Directorio completo:** Módulo 09`,
+        category: 'Directorio'
+      },
+
       // ===== PUNTOS DE PAGO =====
       'puntos de pago': {
         answer: `**Puntos de Pago por País:**
@@ -400,8 +455,15 @@ Incluye selector de país interactivo con los 6 países`,
       'objecion': ['como manejar objecion'],
       'avon': ['como funciona avon', 'que es una campaña'],
       'campaña': ['que es una campaña'],
-      'directorio': ['directorio', 'contacto costa rica', 'contacto el salvador'],
+      'directorio': ['directorio'],
       'contacto': ['directorio'],
+      'costa rica': ['contacto costa rica'],
+      'el salvador': ['contacto el salvador'],
+      'guatemala': ['contacto guatemala'],
+      'honduras': ['contacto honduras'],
+      'nicaragua': ['contacto nicaragua'],
+      'panama': ['contacto panama'],
+      'panamá': ['contacto panamá'],
       'pago': ['puntos de pago', 'que es convenio de pago'],
       'practica': ['como practicar'],
       'ayuda': ['ayuda'],
