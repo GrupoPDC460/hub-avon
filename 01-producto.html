@@ -5517,11 +5517,11 @@ function renderDirectorio() {
   
   // Stats
   const paises = [...new Set(filtered.map(c => c.pais))].length;
-  const gestores = [...new Set(filtered.map(c => c.gestor).filter(g => g))].length;
+  const numGestores = [...new Set(filtered.map(c => c.gestor).filter(g => g))].length;
   statsEl.innerHTML = `
     <div class="dir-stat"><div class="dir-stat-num">${filtered.length}</div><div class="dir-stat-label">Contactos</div></div>
     <div class="dir-stat"><div class="dir-stat-num">${paises}</div><div class="dir-stat-label">Países</div></div>
-    <div class="dir-stat"><div class="dir-stat-num">${gestores}</div><div class="dir-stat-label">Gestores</div></div>
+    <div class="dir-stat"><div class="dir-stat-num">${numGestores}</div><div class="dir-stat-label">Gestores</div></div>
   `;
   
   // Render cards
