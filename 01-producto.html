@@ -1601,28 +1601,32 @@ body {
    SIDEBAR COLAPSABLE (Fullscreen mode)
    ===================================================== */
 .sidebar-collapse-btn {
-  position: absolute;
-  top: 26px;
-  right: -16px;
-  width: 32px;
-  height: 32px;
+  position: fixed;
+  top: 16px;
+  left: 252px;
+  width: 28px;
+  height: 28px;
   background: var(--avon);
   color: white;
-  border: 3px solid var(--bg);
+  border: 2px solid var(--bg);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 900;
-  z-index: 200;
+  z-index: 9999;
   transition: all 0.3s ease;
   box-shadow: 0 2px 10px var(--shadow);
 }
 .sidebar-collapse-btn:hover {
   transform: scale(1.1);
   background: var(--avon-deep);
+}
+.app.fullscreen .sidebar-collapse-btn {
+  left: 0px;
+  border-radius: 0 50% 50% 0;
 }
 /* Botón flotante separado (visible solo cuando sidebar está colapsado) */
 .sidebar-expand-btn {
@@ -5051,29 +5055,32 @@ const sidebarExpand = document.getElementById('sidebarExpand');
 const appEl = document.querySelector('.app');
 
 function setSidebarCollapsed(collapsed) {
+  if (!appEl) return;
   if (collapsed) {
     appEl.classList.add('fullscreen');
     if (sidebarToggle) {
-      sidebarToggle.innerHTML = '▶';
-      sidebarToggle.title = 'Mostrar menú lateral';
+      sidebarToggle.textContent = '▶';
+      sidebarToggle.title = 'Mostrar menú';
     }
   } else {
     appEl.classList.remove('fullscreen');
     if (sidebarToggle) {
-      sidebarToggle.innerHTML = '◀';
-      sidebarToggle.title = 'Ocultar menú (pantalla completa)';
+      sidebarToggle.textContent = '◀';
+      sidebarToggle.title = 'Ocultar menú';
     }
   }
 }
 
 if (sidebarToggle) {
-  sidebarToggle.addEventListener('click', () => {
+  sidebarToggle.addEventListener('click', function(e) {
+    e.stopPropagation();
     const isCollapsed = appEl.classList.contains('fullscreen');
     setSidebarCollapsed(!isCollapsed);
   });
 }
 if (sidebarExpand) {
-  sidebarExpand.addEventListener('click', () => {
+  sidebarExpand.addEventListener('click', function(e) {
+    e.stopPropagation();
     setSidebarCollapsed(false);
   });
 }
