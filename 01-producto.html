@@ -4281,12 +4281,12 @@ body {
         </div>
         <select class="directorio-filter" id="dirFilterPais">
           <option value="">🌎 Todos los países</option>
-          <option value="Guatemala">Guatemala</option>
-          <option value="El Salvador">El Salvador</option>
-          <option value="Honduras">Honduras</option>
-          <option value="Nicaragua">Nicaragua</option>
-          <option value="Panamá">Panamá</option>
-          <option value="Rep. Dominicana">Rep. Dominicana</option>
+          <option value="GUATEMALA">Guatemala</option>
+          <option value="El SALVADOR">El Salvador</option>
+          <option value="HONDURAS">Honduras</option>
+          <option value="NICARAGUA">Nicaragua</option>
+          <option value="PANAMA">Panamá</option>
+          <option value="REPUBLICA DOMINICANA">Rep. Dominicana</option>
         </select>
         <select class="directorio-filter" id="dirFilterGestor">
           <option value="">👤 Todos los gestores</option>
@@ -5466,36 +5466,41 @@ function renderDirectorio() {
   const filterDiv = document.getElementById('dirFilterDivision').value;
   
   // Poblar filtros únicos solo la primera vez
+  // Repopulate gestor filter
   const gestorSelect = document.getElementById('dirFilterGestor');
-  if (gestorSelect.options.length <= 1) {
-    const gestores = [...new Set(CURRENT_DIRECTORIO.map(c => c.gestor).filter(g => g))].sort((a,b) => {
-      const na = parseInt(a.replace(/\D/g, '')) || 0;
-      const nb = parseInt(b.replace(/\D/g, '')) || 0;
-      return na - nb;
-    });
-    gestores.forEach(g => {
-      const opt = document.createElement('option');
-      opt.value = g;
-      opt.textContent = '👤 ' + g;
-      gestorSelect.appendChild(opt);
-    });
-  }
+  const prevGestor = gestorSelect.value;
+  gestorSelect.innerHTML = '<option value="">👤 Todos los gestores</option>';
+  const gestores = [...new Set(CURRENT_DIRECTORIO.map(c => c.gestor).filter(g => g))].sort((a,b) => {
+    const na = parseInt(a.replace(/\D/g, '')) || 0;
+    const nb = parseInt(b.replace(/\D/g, '')) || 0;
+    return na - nb;
+  });
+  gestores.forEach(g => {
+    const opt = document.createElement('option');
+    opt.value = g;
+    opt.textContent = '👤 ' + g;
+    gestorSelect.appendChild(opt);
+  });
+  if (prevGestor) gestorSelect.value = prevGestor;
+
+  // Repopulate division filter
   const divSelect = document.getElementById('dirFilterDivision');
-  if (divSelect.options.length <= 1) {
-    const divisiones = [...new Set(CURRENT_DIRECTORIO.map(c => c.division).filter(d => d))].sort();
-    divisiones.forEach(d => {
-      const opt = document.createElement('option');
-      opt.value = d;
-      opt.textContent = '🏢 ' + d;
-      divSelect.appendChild(opt);
-    });
-  }
+  const prevDiv = divSelect.value;
+  divSelect.innerHTML = '<option value="">🏢 Todas las divisiones</option>';
+  const divisiones = [...new Set(CURRENT_DIRECTORIO.map(c => c.division).filter(d => d))].sort();
+  divisiones.forEach(d => {
+    const opt = document.createElement('option');
+    opt.value = d;
+    opt.textContent = '🏢 ' + d;
+    divSelect.appendChild(opt);
+  });
+  if (prevDiv) divSelect.value = prevDiv;
   
   // Filtrar
   let filtered = CURRENT_DIRECTORIO.filter(c => {
-    if (filterPais && c.pais !== filterPais) return false;
-    if (filterGestor && c.gestor !== filterGestor) return false;
-    if (filterDiv && c.division !== filterDiv) return false;
+    if (filterPais && c.pais.toLowerCase() !== filterPais.toLowerCase()) return false;
+    if (filterGestor && c.gestor.toLowerCase() !== filterGestor.toLowerCase()) return false;
+    if (filterDiv && c.division.toLowerCase() !== filterDiv.toLowerCase()) return false;
     if (search) {
       const text = (c.nombre + ' ' + c.correo + ' ' + c.zona + ' ' + c.division + ' ' + c.gestor + ' ' + c.contacto).toLowerCase();
       if (!text.includes(search)) return false;
