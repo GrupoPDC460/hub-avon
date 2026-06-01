@@ -104,17 +104,7 @@ body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); co
 .currency-badge.local { background: rgba(233,30,99,0.2); color: #ff6b9d; }
 .currency-badge.usd { background: rgba(16,185,129,0.2); color: #34d399; }
 
-.responsables { margin-top: 40px; }
-.responsables h2 { text-align: center; margin-bottom: 20px; font-size: 1.3rem; }
-.resp-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
-.resp-card {
-  background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
-  padding: 20px; text-align: center;
-}
-.resp-card .area { font-size: 0.8rem; color: var(--avon); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
-.resp-card .name { font-size: 1.1rem; font-weight: 700; margin-bottom: 8px; }
-.resp-card .email { font-size: 0.9rem; color: var(--gold); }
-.resp-card .tipo { font-size: 0.8rem; color: var(--text-muted); margin-top: 8px; }
+
 
 @media (max-width: 768px) {
   .header h1 { font-size: 1.3rem; }
@@ -141,42 +131,7 @@ body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); co
 <div class="container">
   <div id="content"></div>
 
-  <div class="responsables">
-    <h2>📋 Responsables por Tipo de Diferencia</h2>
-    <div class="resp-grid">
-      <div class="resp-card">
-        <div class="area">Tesorería</div>
-        <div class="name">Equipo Tesorería</div>
-        <div class="email">tesoreria@empresa.com</div>
-        <div class="tipo">Faltante en banco / Diferencia de monto</div>
-      </div>
-      <div class="resp-card">
-        <div class="area">Contabilidad</div>
-        <div class="name">Equipo Contabilidad</div>
-        <div class="email">contabilidad@empresa.com</div>
-        <div class="tipo">Faltante en JDE / Error de registro contable</div>
-      </div>
-      <div class="resp-card">
-        <div class="area">Fiscal</div>
-        <div class="name">Equipo Fiscal</div>
-        <div class="email">fiscal@empresa.com</div>
-        <div class="tipo">Faltante en JDE — tipo impuesto / retención</div>
-      </div>
-      <div class="resp-card">
-        <div class="area">Créditos y Cobros</div>
-        <div class="name">Equipo Créditos y Cobros</div>
-        <div class="email">creditosycobros@empresa.com</div>
-        <div class="tipo">Faltante en JDE — tipo ingreso / cobro de cliente</div>
-      </div>
-      <div class="resp-card">
-        <div class="area">Nóminas</div>
-        <div class="name">Equipo Nóminas</div>
-        <div class="email">nominas@empresa.com</div>
-        <div class="tipo">Diferencia en cheques de nómina / pagos de planilla</div>
-      </div>
-    </div>
-  </div>
-</div>
+  
 
 <!-- Footer Ticker -->
 <footer class="customer-service-footer">
