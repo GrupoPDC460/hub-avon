@@ -113,6 +113,53 @@ body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); co
   .stats { gap: 8px; }
   .stat-box { padding: 12px 16px; min-width: 90px; }
   .stat-num { font-size: 1.5rem; }
+  .tabs { flex-direction: column; padding: 0 16px 12px; }
+  .tab { width: 100%; }
+  .resumen-grid { grid-template-columns: 1fr; }
+}
+
+/* Tabs */
+.tabs { display: flex; gap: 8px; justify-content: center; padding: 0 24px 16px; }
+.tab {
+  padding: 12px 28px; border-radius: 12px; border: 2px solid var(--border);
+  background: var(--surface); color: var(--text-muted); cursor: pointer;
+  font-size: 1rem; font-weight: 700; transition: all 0.3s;
+}
+.tab:hover { border-color: var(--avon); color: var(--text); }
+.tab.active {
+  border-color: var(--avon); color: white;
+  background: linear-gradient(135deg, rgba(233,30,99,0.2), rgba(233,30,99,0.05));
+  box-shadow: 0 0 20px rgba(233,30,99,0.2);
+}
+
+/* Resumen por banco */
+.resumen-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 16px; }
+.resumen-card {
+  background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
+  padding: 22px; transition: all 0.3s; position: relative; overflow: hidden;
+}
+.resumen-card::before {
+  content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 3px;
+  background: linear-gradient(90deg, var(--gold), var(--avon));
+}
+.resumen-card:hover {
+  border-color: var(--gold); transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(245,166,35,0.15);
+}
+.resumen-banco { font-size: 1.2rem; font-weight: 800; color: var(--gold); margin-bottom: 14px; }
+.resumen-row { display: flex; gap: 10px; margin-bottom: 8px; font-size: 0.9rem; align-items: flex-start; }
+.resumen-row .r-icon { flex-shrink: 0; width: 22px; text-align: center; }
+.resumen-row .r-label { color: var(--text-muted); min-width: 85px; flex-shrink: 0; }
+.resumen-row .r-value { color: var(--text); font-weight: 600; }
+.resumen-total {
+  display: inline-block; margin-top: 10px; padding: 6px 16px; border-radius: 20px;
+  background: linear-gradient(135deg, var(--avon), var(--avon-deep));
+  font-size: 0.85rem; font-weight: 700; color: white;
+}
+.moneda-tag {
+  display: inline-block; padding: 2px 8px; border-radius: 8px; font-size: 0.75rem;
+  font-weight: 700; margin: 2px; letter-spacing: 0.5px;
+  background: rgba(245,166,35,0.15); color: var(--gold); border: 1px solid rgba(245,166,35,0.3);
 }
 </style>
 </head>
@@ -125,6 +172,11 @@ body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); co
 </div>
 
 <div class="stats" id="stats"></div>
+
+<div class="tabs">
+  <button class="tab active" id="tabCuentas" onclick="switchTab('cuentas')">💳 Cuentas por País</button>
+  <button class="tab" id="tabResumen" onclick="switchTab('resumen')">🏦 Resumen por Banco</button>
+</div>
 
 <div class="filters" id="filters"></div>
 
@@ -175,26 +227,40 @@ const FLAGS = {
 };
 
 let ALL_DATA = [];
+let RESUMEN_DATA = [];
 let activeFilter = '';
+let activeTab = 'cuentas';
 
 fetch('cuentas_bancarias.json')
   .then(r => r.json())
-  .then(data => { ALL_DATA = data; render(); })
+  .then(data => {
+    if (Array.isArray(data)) { ALL_DATA = data; RESUMEN_DATA = []; }
+    else { ALL_DATA = data.cuentas || []; RESUMEN_DATA = data.resumen || []; }
+    render();
+  })
   .catch(e => console.error('Error:', e));
 
-function render() {
-  const data = activeFilter ? ALL_DATA.filter(a => a.pais === activeFilter) : ALL_DATA;
+function switchTab(tab) {
+  activeTab = tab;
+  activeFilter = '';
+  document.getElementById('tabCuentas').classList.toggle('active', tab === 'cuentas');
+  document.getElementById('tabResumen').classList.toggle('active', tab === 'resumen');
+  render();
+}
 
-  // Stats
+function render() {
+  if (activeTab === 'resumen') { renderResumen(); return; }
+
+  const data = activeFilter ? ALL_DATA.filter(a => a.pais === activeFilter) : ALL_DATA;
   const paises = [...new Set(data.map(a => a.pais))];
   const bancos = [...new Set(data.map(a => a.banco))];
+
   document.getElementById('stats').innerHTML = `
     <div class="stat-box"><div class="stat-num">${data.length}</div><div class="stat-label">Cuentas</div></div>
     <div class="stat-box"><div class="stat-num">${paises.length}</div><div class="stat-label">Países</div></div>
     <div class="stat-box"><div class="stat-num">${bancos.length}</div><div class="stat-label">Bancos</div></div>
   `;
 
-  // Filters
   const allPaises = [...new Set(ALL_DATA.map(a => a.pais))];
   document.getElementById('filters').innerHTML = `
     <button class="filter-btn ${!activeFilter ? 'active' : ''}" onclick="setFilter('')">🌎 Todos</button>
@@ -205,7 +271,6 @@ function render() {
     `).join('')}
   `;
 
-  // Content by country
   let html = '';
   const grouped = {};
   data.forEach(a => { if (!grouped[a.pais]) grouped[a.pais] = []; grouped[a.pais].push(a); });
@@ -233,7 +298,36 @@ function render() {
       </div>
     `;
   }
+  document.getElementById('content').innerHTML = html;
+}
 
+function renderResumen() {
+  const totalCuentas = RESUMEN_DATA.reduce((sum, r) => sum + parseInt(r.totalCuentas || 0), 0);
+  const totalBancos = RESUMEN_DATA.length;
+  const totalPaises = [...new Set(RESUMEN_DATA.flatMap(r => r.pais.split(', ')))].length;
+
+  document.getElementById('stats').innerHTML = `
+    <div class="stat-box"><div class="stat-num">${totalCuentas}</div><div class="stat-label">Cuentas Total</div></div>
+    <div class="stat-box"><div class="stat-num">${totalBancos}</div><div class="stat-label">Bancos</div></div>
+    <div class="stat-box"><div class="stat-num">${totalPaises}</div><div class="stat-label">Países</div></div>
+  `;
+
+  document.getElementById('filters').innerHTML = '';
+
+  let html = '<div class="resumen-grid">';
+  RESUMEN_DATA.forEach(r => {
+    const monedas = r.monedas.split(', ').map(m => `<span class="moneda-tag">${m.trim()}</span>`).join(' ');
+    html += `
+      <div class="resumen-card">
+        <div class="resumen-banco">🏦 ${r.banco}</div>
+        <div class="resumen-row"><span class="r-icon">🌎</span><span class="r-label">País:</span><span class="r-value">${r.pais}</span></div>
+        <div class="resumen-row"><span class="r-icon">💰</span><span class="r-label">Monedas:</span><span class="r-value">${monedas}</span></div>
+        <div class="resumen-row"><span class="r-icon">🏢</span><span class="r-label">Sociedades:</span><span class="r-value">${r.sociedades}</span></div>
+        <div class="resumen-total">${r.totalCuentas} cuenta${parseInt(r.totalCuentas) > 1 ? 's' : ''}</div>
+      </div>
+    `;
+  });
+  html += '</div>';
   document.getElementById('content').innerHTML = html;
 }
 
