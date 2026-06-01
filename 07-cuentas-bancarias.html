@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/x-icon" href="favicon.ico">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cuentas Bancarias · Hub Avon PDC</title>
+<style>
+:root {
+  --bg: #0F0E1A; --bg2: #1A1830; --surface: #1E1B36; --surface2: #28244A;
+  --border: #2E2A52; --text: #E8E6F0; --text-muted: #9B97B8;
+  --avon: #E91E63; --avon-deep: #C2185B; --pdc: #0A2472; --gold: #F5A623;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+.header {
+  background: linear-gradient(135deg, var(--avon) 0%, var(--pdc) 100%);
+  padding: 32px 24px; text-align: center; position: relative; overflow: hidden;
+}
+.header::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+  background: radial-gradient(circle at 20% 50%, rgba(255,255,255,0.1) 0%, transparent 50%);
+}
+.header h1 { font-size: 1.8rem; font-weight: 800; position: relative; z-index: 1; }
+.header p { font-size: 0.95rem; opacity: 0.85; margin-top: 8px; position: relative; z-index: 1; }
+.header .back-btn {
+  position: absolute; left: 20px; top: 50%; transform: translateY(-50%);
+  background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3);
+  color: white; padding: 10px 18px; border-radius: 10px; cursor: pointer;
+  font-size: 0.9rem; font-weight: 600; text-decoration: none; z-index: 2;
+  transition: all 0.3s;
+}
+.header .back-btn:hover { background: rgba(255,255,255,0.25); }
+
+.stats { display: flex; gap: 16px; justify-content: center; padding: 24px; flex-wrap: wrap; }
+.stat-box {
+  background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+  padding: 16px 28px; text-align: center; min-width: 120px;
+}
+.stat-num { font-size: 2rem; font-weight: 800; color: var(--avon); }
+.stat-label { font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
+
+.filters {
+  padding: 0 24px 20px; display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;
+}
+.filter-btn {
+  padding: 10px 20px; border-radius: 25px; border: 2px solid var(--border);
+  background: var(--surface); color: var(--text-muted); cursor: pointer;
+  font-size: 0.9rem; font-weight: 600; transition: all 0.3s; display: flex; align-items: center; gap: 8px;
+}
+.filter-btn:hover, .filter-btn.active {
+  border-color: var(--avon); color: white; background: rgba(233,30,99,0.15);
+}
+.filter-btn.active { box-shadow: 0 0 15px rgba(233,30,99,0.3); }
+.filter-btn img { width: 20px; height: 14px; border-radius: 2px; object-fit: cover; }
+
+.container { max-width: 1200px; margin: 0 auto; padding: 0 24px 40px; }
+
+.country-section { margin-bottom: 32px; animation: fadeIn 0.5s ease; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+
+.country-header {
+  display: flex; align-items: center; gap: 12px; margin-bottom: 16px;
+  padding: 12px 20px; background: var(--surface); border-radius: 12px;
+  border-left: 4px solid var(--avon);
+}
+.country-header img { width: 32px; height: 22px; border-radius: 3px; object-fit: cover; box-shadow: 0 2px 6px rgba(0,0,0,0.4); }
+.country-header h2 { font-size: 1.2rem; font-weight: 700; }
+.country-header .count { margin-left: auto; font-size: 0.85rem; color: var(--text-muted); background: var(--bg); padding: 4px 12px; border-radius: 20px; }
+
+.accounts-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 16px; }
+
+.account-card {
+  background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
+  padding: 20px; transition: all 0.3s; position: relative; overflow: hidden;
+}
+.account-card::before {
+  content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 3px;
+  background: linear-gradient(90deg, var(--avon), var(--gold));
+}
+.account-card:hover {
+  border-color: var(--avon); transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(233,30,99,0.15);
+}
+.bank-name { font-size: 1.1rem; font-weight: 700; margin-bottom: 12px; color: var(--gold); }
+.account-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; font-size: 0.9rem; }
+.account-row .icon { width: 20px; text-align: center; flex-shrink: 0; }
+.account-row .label { color: var(--text-muted); min-width: 80px; }
+.account-row .value { color: var(--text); font-weight: 600; word-break: break-all; }
+.account-number {
+  font-family: 'Courier New', monospace; font-size: 1.15rem; font-weight: 700;
+  color: white; letter-spacing: 1.5px; padding: 10px 14px; margin-top: 12px;
+  background: linear-gradient(135deg, var(--bg) 0%, var(--surface2) 100%);
+  border-radius: 8px; border: 1px solid var(--border); text-align: center;
+}
+.currency-badge {
+  display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: 0.75rem;
+  font-weight: 700; letter-spacing: 1px; margin-left: 8px;
+}
+.currency-badge.local { background: rgba(233,30,99,0.2); color: #ff6b9d; }
+.currency-badge.usd { background: rgba(16,185,129,0.2); color: #34d399; }
+
+.responsables { margin-top: 40px; }
+.responsables h2 { text-align: center; margin-bottom: 20px; font-size: 1.3rem; }
+.resp-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+.resp-card {
+  background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
+  padding: 20px; text-align: center;
+}
+.resp-card .area { font-size: 0.8rem; color: var(--avon); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+.resp-card .name { font-size: 1.1rem; font-weight: 700; margin-bottom: 8px; }
+.resp-card .email { font-size: 0.9rem; color: var(--gold); }
+.resp-card .tipo { font-size: 0.8rem; color: var(--text-muted); margin-top: 8px; }
+
+@media (max-width: 768px) {
+  .header h1 { font-size: 1.3rem; }
+  .header .back-btn { position: static; transform: none; margin-bottom: 12px; display: inline-block; }
+  .accounts-grid { grid-template-columns: 1fr; }
+  .stats { gap: 8px; }
+  .stat-box { padding: 12px 16px; min-width: 90px; }
+  .stat-num { font-size: 1.5rem; }
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <a href="index.html" class="back-btn">← Volver al Hub</a>
+  <h1>🏦 Cuentas Bancarias</h1>
+  <p>Archivo Maestro de Cuentas · Avon Centroamérica y Caribe</p>
+</div>
+
+<div class="stats" id="stats"></div>
+
+<div class="filters" id="filters"></div>
+
+<div class="container">
+  <div id="content"></div>
+
+  <div class="responsables">
+    <h2>📋 Responsables por Tipo de Diferencia</h2>
+    <div class="resp-grid">
+      <div class="resp-card">
+        <div class="area">Tesorería</div>
+        <div class="name">Equipo Tesorería</div>
+        <div class="email">tesoreria@empresa.com</div>
+        <div class="tipo">Faltante en banco / Diferencia de monto</div>
+      </div>
+      <div class="resp-card">
+        <div class="area">Contabilidad</div>
+        <div class="name">Equipo Contabilidad</div>
+        <div class="email">contabilidad@empresa.com</div>
+        <div class="tipo">Faltante en JDE / Error de registro contable</div>
+      </div>
+      <div class="resp-card">
+        <div class="area">Fiscal</div>
+        <div class="name">Equipo Fiscal</div>
+        <div class="email">fiscal@empresa.com</div>
+        <div class="tipo">Faltante en JDE — tipo impuesto / retención</div>
+      </div>
+      <div class="resp-card">
+        <div class="area">Créditos y Cobros</div>
+        <div class="name">Equipo Créditos y Cobros</div>
+        <div class="email">creditosycobros@empresa.com</div>
+        <div class="tipo">Faltante en JDE — tipo ingreso / cobro de cliente</div>
+      </div>
+      <div class="resp-card">
+        <div class="area">Nóminas</div>
+        <div class="name">Equipo Nóminas</div>
+        <div class="email">nominas@empresa.com</div>
+        <div class="tipo">Diferencia en cheques de nómina / pagos de planilla</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Footer Ticker -->
+<footer class="customer-service-footer">
+  <div class="ticker-wrap">
+    <div class="ticker">
+      <div class="ticker-item"><span class="ticker-label">📞 ATENCIÓN AL CLIENTE</span></div>
+      <div class="ticker-item"><img class="ticker-flag-img" src="https://flagcdn.com/w40/hn.png" alt="Honduras"><span class="ticker-country">Honduras:</span><span class="ticker-phone">2263-0227</span></div>
+      <div class="ticker-item"><img class="ticker-flag-img" src="https://flagcdn.com/w40/ni.png" alt="Nicaragua"><span class="ticker-country">Nicaragua:</span><span class="ticker-phone">7513-2174</span></div>
+      <div class="ticker-item"><img class="ticker-flag-img" src="https://flagcdn.com/w40/gt.png" alt="Guatemala"><span class="ticker-country">Guatemala:</span><span class="ticker-phone">2378-4861</span></div>
+      <div class="ticker-item"><img class="ticker-flag-img" src="https://flagcdn.com/w40/sv.png" alt="El Salvador"><span class="ticker-country">El Salvador:</span><span class="ticker-phone">2136-8772</span></div>
+      <div class="ticker-item"><img class="ticker-flag-img" src="https://flagcdn.com/w40/pa.png" alt="Panamá"><span class="ticker-country">Panamá:</span><span class="ticker-phone">838-8339</span></div>
+      <div class="ticker-item"><img class="ticker-flag-img" src="https://flagcdn.com/w40/do.png" alt="Rep. Dominicana"><span class="ticker-country">Rep. Dominicana:</span><span class="ticker-phone">182-9946-0346</span></div>
+      <div class="ticker-item"><span class="ticker-label">📞 ATENCIÓN AL CLIENTE</span></div>
+      <div class="ticker-item"><img class="ticker-flag-img" src="https://flagcdn.com/w40/hn.png" alt="Honduras"><span class="ticker-country">Honduras:</span><span class="ticker-phone">2263-0227</span></div>
+      <div class="ticker-item"><img class="ticker-flag-img" src="https://flagcdn.com/w40/ni.png" alt="Nicaragua"><span class="ticker-country">Nicaragua:</span><span class="ticker-phone">7513-2174</span></div>
+      <div class="ticker-item"><img class="ticker-flag-img" src="https://flagcdn.com/w40/gt.png" alt="Guatemala"><span class="ticker-country">Guatemala:</span><span class="ticker-phone">2378-4861</span></div>
+      <div class="ticker-item"><img class="ticker-flag-img" src="https://flagcdn.com/w40/sv.png" alt="El Salvador"><span class="ticker-country">El Salvador:</span><span class="ticker-phone">2136-8772</span></div>
+      <div class="ticker-item"><img class="ticker-flag-img" src="https://flagcdn.com/w40/pa.png" alt="Panamá"><span class="ticker-country">Panamá:</span><span class="ticker-phone">838-8339</span></div>
+      <div class="ticker-item"><img class="ticker-flag-img" src="https://flagcdn.com/w40/do.png" alt="Rep. Dominicana"><span class="ticker-country">Rep. Dominicana:</span><span class="ticker-phone">182-9946-0346</span></div>
+    </div>
+  </div>
+</footer>
+<link rel="stylesheet" href="footer-styles.css">
+
+<!-- Nav flotante -->
+<nav class="floating-nav" id="floatingNav">
+  <button class="nav-btn nav-btn-home" data-tooltip="Inicio" onclick="window.location.href='index.html'">🏠</button>
+  <button class="nav-btn" data-tooltip="Atrás" onclick="history.back()">◀</button>
+  <button class="nav-btn nav-btn-top" data-tooltip="Subir" id="btnScrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">▲</button>
+</nav>
+<link rel="stylesheet" href="nav-styles.css">
+
+<!-- Chatbot -->
+<script src="chatbot-assistant.js"></script>
+
+<script>
+const FLAGS = {
+  'Guatemala': 'gt', 'El Salvador': 'sv', 'Honduras': 'hn',
+  'Nicaragua': 'ni', 'Panamá': 'pa', 'República Dominicana': 'do'
+};
+
+let ALL_DATA = [];
+let activeFilter = '';
+
+fetch('cuentas_bancarias.json')
+  .then(r => r.json())
+  .then(data => { ALL_DATA = data; render(); })
+  .catch(e => console.error('Error:', e));
+
+function render() {
+  const data = activeFilter ? ALL_DATA.filter(a => a.pais === activeFilter) : ALL_DATA;
+
+  // Stats
+  const paises = [...new Set(data.map(a => a.pais))];
+  const bancos = [...new Set(data.map(a => a.banco))];
+  document.getElementById('stats').innerHTML = `
+    <div class="stat-box"><div class="stat-num">${data.length}</div><div class="stat-label">Cuentas</div></div>
+    <div class="stat-box"><div class="stat-num">${paises.length}</div><div class="stat-label">Países</div></div>
+    <div class="stat-box"><div class="stat-num">${bancos.length}</div><div class="stat-label">Bancos</div></div>
+  `;
+
+  // Filters
+  const allPaises = [...new Set(ALL_DATA.map(a => a.pais))];
+  document.getElementById('filters').innerHTML = `
+    <button class="filter-btn ${!activeFilter ? 'active' : ''}" onclick="setFilter('')">🌎 Todos</button>
+    ${allPaises.map(p => `
+      <button class="filter-btn ${activeFilter === p ? 'active' : ''}" onclick="setFilter('${p}')">
+        <img src="https://flagcdn.com/w40/${FLAGS[p]||''}.png" alt="${p}"> ${p}
+      </button>
+    `).join('')}
+  `;
+
+  // Content by country
+  let html = '';
+  const grouped = {};
+  data.forEach(a => { if (!grouped[a.pais]) grouped[a.pais] = []; grouped[a.pais].push(a); });
+
+  for (const [pais, cuentas] of Object.entries(grouped)) {
+    const code = FLAGS[pais] || '';
+    html += `
+      <div class="country-section">
+        <div class="country-header">
+          <img src="https://flagcdn.com/w80/${code}.png" alt="${pais}">
+          <h2>${pais}</h2>
+          <span class="count">${cuentas.length} cuenta${cuentas.length > 1 ? 's' : ''}</span>
+        </div>
+        <div class="accounts-grid">
+          ${cuentas.map(c => `
+            <div class="account-card">
+              <div class="bank-name">🏦 ${c.banco}</div>
+              <div class="account-row"><span class="icon">🏢</span><span class="label">Sociedad:</span><span class="value">${c.sociedad}</span></div>
+              <div class="account-row"><span class="icon">💳</span><span class="label">Tipo:</span><span class="value">${c.tipo}</span></div>
+              <div class="account-row"><span class="icon">💰</span><span class="label">Moneda:</span><span class="value">${c.moneda} <span class="currency-badge ${c.moneda === 'USD' ? 'usd' : 'local'}">${c.moneda}</span></span></div>
+              <div class="account-number">${c.cuenta}</div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+  }
+
+  document.getElementById('content').innerHTML = html;
+}
+
+function setFilter(pais) {
+  activeFilter = pais;
+  render();
+  document.getElementById('content').scrollIntoView({ behavior: 'smooth' });
+}
+
+// Scroll to top button
+window.addEventListener('scroll', function() {
+  var btn = document.getElementById('btnScrollTop');
+  if (btn) btn.classList.toggle('visible', window.scrollY > 300);
+});
+</script>
+</body>
+</html>

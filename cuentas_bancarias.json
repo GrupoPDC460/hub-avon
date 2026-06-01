@@ -1,0 +1,298 @@
+[
+  {
+    "pais": "Guatemala",
+    "sociedad": "AVONEXPORT LIMITADA",
+    "banco": "Banco Industrial",
+    "tipo": "Monetaria",
+    "moneda": "GTQ",
+    "cuenta": "170104604"
+  },
+  {
+    "pais": "Guatemala",
+    "sociedad": "PRODUCTOS AVON DE GUATEMALA",
+    "banco": "BAC Reformador",
+    "tipo": "Monetaria",
+    "moneda": "GTQ",
+    "cuenta": "900081472"
+  },
+  {
+    "pais": "Guatemala",
+    "sociedad": "PRODUCTOS AVON DE GUATEMALA",
+    "banco": "G&T Continental",
+    "tipo": "Monetaria",
+    "moneda": "GTQ",
+    "cuenta": "382564"
+  },
+  {
+    "pais": "Guatemala",
+    "sociedad": "PRODUCTOS AVON DE GUATEMALA",
+    "banco": "Banrural",
+    "tipo": "Monetaria",
+    "moneda": "GTQ",
+    "cuenta": "3-099-00696-1"
+  },
+  {
+    "pais": "Guatemala",
+    "sociedad": "PRODUCTOS AVON DE GUATEMALA",
+    "banco": "Banco Industrial",
+    "tipo": "Monetaria",
+    "moneda": "GTQ",
+    "cuenta": "991604990"
+  },
+  {
+    "pais": "Guatemala",
+    "sociedad": "PRODUCTOS AVON DE GUATEMALA",
+    "banco": "Banco Industrial",
+    "tipo": "Monetaria",
+    "moneda": "GTQ",
+    "cuenta": "1775436"
+  },
+  {
+    "pais": "Guatemala",
+    "sociedad": "PRODUCTOS AVON DE GUATEMALA",
+    "banco": "Citibank",
+    "tipo": "Monetaria",
+    "moneda": "GTQ",
+    "cuenta": "1136038"
+  },
+  {
+    "pais": "Guatemala",
+    "sociedad": "PRODUCTOS AVON DE GUATEMALA",
+    "banco": "Citibank",
+    "tipo": "Monetaria",
+    "moneda": "USD",
+    "cuenta": "700486001"
+  },
+  {
+    "pais": "Guatemala",
+    "sociedad": "PRODUCTOS AVON DE GUATEMALA",
+    "banco": "BAC Reformador",
+    "tipo": "Monetaria",
+    "moneda": "GTQ",
+    "cuenta": "907047401"
+  },
+  {
+    "pais": "Guatemala",
+    "sociedad": "PRODUCTOS AVON DE GUATEMALA",
+    "banco": "BAC Reformador",
+    "tipo": "Monetaria",
+    "moneda": "USD",
+    "cuenta": "907047443"
+  },
+  {
+    "pais": "El Salvador",
+    "sociedad": "PRODUCTOS AVON, S.A.",
+    "banco": "Banco Agrícola",
+    "tipo": "Monetaria",
+    "moneda": "USD",
+    "cuenta": "5030425076"
+  },
+  {
+    "pais": "El Salvador",
+    "sociedad": "PRODUCTOS AVON, S.A.",
+    "banco": "Banco Promérica",
+    "tipo": "Monetaria",
+    "moneda": "USD",
+    "cuenta": "50000018000029"
+  },
+  {
+    "pais": "El Salvador",
+    "sociedad": "PRODUCTOS AVON, S.A.",
+    "banco": "Citibank",
+    "tipo": "Monetaria",
+    "moneda": "USD",
+    "cuenta": "0114175021"
+  },
+  {
+    "pais": "El Salvador",
+    "sociedad": "PRODUCTOS AVON, S.A.",
+    "banco": "Banco Cuscatlán",
+    "tipo": "Monetaria",
+    "moneda": "USD",
+    "cuenta": "81601437"
+  },
+  {
+    "pais": "El Salvador",
+    "sociedad": "PRODUCTOS AVON, S.A.",
+    "banco": "BAC Reformador",
+    "tipo": "Monetaria",
+    "moneda": "USD",
+    "cuenta": "201622545"
+  },
+  {
+    "pais": "Honduras",
+    "sociedad": "PRODUCTOS AVON, S.A.",
+    "banco": "Banco de Occidente",
+    "tipo": "Monetaria",
+    "moneda": "HNL",
+    "cuenta": "11-201-007507-0"
+  },
+  {
+    "pais": "Honduras",
+    "sociedad": "PRODUCTOS AVON, S.A.",
+    "banco": "Banco Atlántida",
+    "tipo": "Monetaria",
+    "moneda": "HNL",
+    "cuenta": "2-10000529-3"
+  },
+  {
+    "pais": "Honduras",
+    "sociedad": "PRODUCTOS AVON, S.A.",
+    "banco": "Banco Atlántida",
+    "tipo": "Monetaria",
+    "moneda": "HNL",
+    "cuenta": "2-10013148-7"
+  },
+  {
+    "pais": "Honduras",
+    "sociedad": "PRODUCTOS AVON, S.A.",
+    "banco": "Citibank",
+    "tipo": "Monetaria",
+    "moneda": "HNL",
+    "cuenta": "31093015"
+  },
+  {
+    "pais": "Honduras",
+    "sociedad": "PRODUCTOS AVON, S.A.",
+    "banco": "Citibank",
+    "tipo": "Monetaria",
+    "moneda": "USD",
+    "cuenta": "31093023"
+  },
+  {
+    "pais": "Nicaragua",
+    "sociedad": "PRODUCTOS AVON DE NICARAGUA,  S.A",
+    "banco": "BAC Reformador",
+    "tipo": "Monetaria",
+    "moneda": "COR",
+    "cuenta": "12002139"
+  },
+  {
+    "pais": "Nicaragua",
+    "sociedad": "PRODUCTOS AVON DE NICARAGUA,  S.A",
+    "banco": "BAC Reformador",
+    "tipo": "Monetaria",
+    "moneda": "USD",
+    "cuenta": "373682178"
+  },
+  {
+    "pais": "Nicaragua",
+    "sociedad": "PRODUCTOS AVON DE NICARAGUA,  S.A",
+    "banco": "Banco Promérica",
+    "tipo": "Monetaria",
+    "moneda": "COR",
+    "cuenta": "10011602969573"
+  },
+  {
+    "pais": "Nicaragua",
+    "sociedad": "PRODUCTOS AVON DE NICARAGUA,  S.A",
+    "banco": "Banco Promérica",
+    "tipo": "Monetaria",
+    "moneda": "USD",
+    "cuenta": "10013210002539"
+  },
+  {
+    "pais": "Nicaragua",
+    "sociedad": "PRODUCTOS AVON DE NICARAGUA,  S.A",
+    "banco": "Lafise",
+    "tipo": "Monetaria",
+    "moneda": "COR",
+    "cuenta": "160205024"
+  },
+  {
+    "pais": "Nicaragua",
+    "sociedad": "PRODUCTOS AVON DE NICARAGUA,  S.A",
+    "banco": "Lafise",
+    "tipo": "Monetaria",
+    "moneda": "COR",
+    "cuenta": "160200035"
+  },
+  {
+    "pais": "Nicaragua",
+    "sociedad": "PRODUCTOS AVON DE NICARAGUA,  S.A",
+    "banco": "Lafise",
+    "tipo": "Monetaria",
+    "moneda": "USD",
+    "cuenta": "161200010"
+  },
+  {
+    "pais": "Panamá",
+    "sociedad": "PRODUCTOS AVON, S.A.",
+    "banco": "Banco General",
+    "tipo": "Monetaria",
+    "moneda": "USD",
+    "cuenta": "372011323626"
+  },
+  {
+    "pais": "Panamá",
+    "sociedad": "PRODUCTOS AVON, S.A.",
+    "banco": "Banco Nacional",
+    "tipo": "Monetaria",
+    "moneda": "USD",
+    "cuenta": "10000015844"
+  },
+  {
+    "pais": "Panamá",
+    "sociedad": "PRODUCTOS AVON, S.A.",
+    "banco": "Caja de ahorros",
+    "tipo": "Monetaria",
+    "moneda": "USD",
+    "cuenta": "10006708244"
+  },
+  {
+    "pais": "Panamá",
+    "sociedad": "PRODUCTOS AVON, S.A.",
+    "banco": "Citibank",
+    "tipo": "Monetaria",
+    "moneda": "USD",
+    "cuenta": "500494069"
+  },
+  {
+    "pais": "Panamá",
+    "sociedad": "PRODUCTOS AVON, S.A.",
+    "banco": "BAC",
+    "tipo": "Monetaria",
+    "moneda": "USD",
+    "cuenta": "106043359"
+  },
+  {
+    "pais": "República Dominicana",
+    "sociedad": "PRODUCTOS AVON SAS",
+    "banco": "Banco Popular Dominicano",
+    "tipo": "Monetaria",
+    "moneda": "DOP",
+    "cuenta": "56399194"
+  },
+  {
+    "pais": "República Dominicana",
+    "sociedad": "PRODUCTOS AVON SAS",
+    "banco": "Citibank",
+    "tipo": "Monetaria",
+    "moneda": "USD",
+    "cuenta": "36376595"
+  },
+  {
+    "pais": "República Dominicana",
+    "sociedad": "PRODUCTOS AVON SAS",
+    "banco": "Citibank",
+    "tipo": "Monetaria",
+    "moneda": "DOP",
+    "cuenta": "061-053-01-8"
+  },
+  {
+    "pais": "República Dominicana",
+    "sociedad": "PRODUCTOS AVON SAS",
+    "banco": "Banreservas",
+    "tipo": "Monetaria",
+    "moneda": "DOP",
+    "cuenta": "101222858"
+  },
+  {
+    "pais": "República Dominicana",
+    "sociedad": "PRODUCTOS AVON SAS",
+    "banco": "BHD",
+    "tipo": "Monetaria",
+    "moneda": "DOP",
+    "cuenta": "0236913-002-4"
+  }
+]
