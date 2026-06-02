@@ -58,7 +58,7 @@ body{font-family:'Poppins',sans-serif;background:#46178F;color:#fff;min-height:1
 .answer-btn.correct{animation:correctPulse .6s;box-shadow:0 0 30px rgba(38,166,91,.6)}
 .answer-btn.wrong{opacity:.4;transform:scale(.95)}
 @keyframes correctPulse{0%{transform:scale(1)}50%{transform:scale(1.05)}100%{transform:scale(1)}}
-.a0{background:#e21b3c}.a1{background:#1368ce}.a2{background:#d89e00}.a3{background:#26a65b}
+.a0{background:#e21b3c}.a1{background:#1368ce}.a2{background:#d89e00}.a3{background:#26a65b}.a4{background:#9c27b0}.a5{background:#f57c00}
 .answer-shape{font-size:1.5rem;flex-shrink:0;width:30px;text-align:center}
 .answer-text{flex:1}
 
@@ -256,7 +256,13 @@ function joinLobby(){
   if(!name) return;
   player = name;
 
-  // Registrar jugador con avatar en localStorage compartido
+  // Limpiar lobby previo si es el primer jugador en unirse tras un reset
+  // (si no hay señal de inicio activa, es sesión nueva)
+  const existingStart = localStorage.getItem(LOBBY_START);
+  if(!existingStart){
+    localStorage.removeItem(LOBBY_KEY); // limpia sesión anterior
+  }
+
   const lobby = JSON.parse(localStorage.getItem(LOBBY_KEY)||'[]');
   const entry = { name, avatar: selectedAvatar };
   if(!lobby.find(p => p.name === name)) lobby.push(entry);
@@ -397,16 +403,27 @@ function loadQuestion(){
   document.getElementById('qTopic').textContent = q.t;
   document.getElementById('qText').textContent = q.q;
 
-  const shapes = ['▲','◆','●','■'];
-  const colors = ['a0','a1','a2','a3'];
+  const allShapes = ['▲','◆','●','■','★','♥','⬟','⬡'];
+  const allColors = [
+    {cls:'a0', shadow:'#a8132d'},
+    {cls:'a1', shadow:'#0e4a9a'},
+    {cls:'a2', shadow:'#a07500'},
+    {cls:'a3', shadow:'#1a7a42'},
+    {cls:'a4', shadow:'#7b1fa2'},
+    {cls:'a5', shadow:'#e65100'},
+  ];
+  // Mezclar y tomar 4 colores y 4 formas distintas cada pregunta
+  const shuffledColors = shuffle([...allColors]).slice(0,4);
+  const shuffledShapes = shuffle([...allShapes]).slice(0,4);
+
   // Shuffle answers but track correct
   const indices = [0,1,2,3];
   shuffle(indices);
 
   const answersDiv = document.getElementById('answers');
   answersDiv.innerHTML = indices.map((idx,i) => `
-    <button class="answer-btn ${colors[i]}" onclick="selectAnswer(${i},${idx===q.c})" id="ans${i}" data-idx="${idx}">
-      <span class="answer-shape">${shapes[i]}</span>
+    <button class="answer-btn ${shuffledColors[i].cls}" style="box-shadow:0 5px 0 ${shuffledColors[i].shadow}" onclick="selectAnswer(${i},${idx===q.c})" id="ans${i}" data-idx="${idx}">
+      <span class="answer-shape">${shuffledShapes[i]}</span>
       <span class="answer-text">${q.o[idx]}</span>
     </button>
   `).join('');
