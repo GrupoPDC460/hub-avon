@@ -173,7 +173,7 @@ const QUESTIONS = [
   {q:"¿Qué es Avon?",o:["Empresa de cosméticos por venta directa","Banco digital","Supermercado online","Red social"],c:0,t:"Modelo Avon"},
   {q:"¿Cómo se le llama a la persona que vende productos Avon?",o:["Representante","Empleada","Socia","Distribuidora"],c:0,t:"Modelo Avon"},
   {q:"¿Cada cuánto tiempo aproximadamente hay una campaña Avon?",o:["Cada 2 semanas","Cada mes","Cada 3 meses","Cada semana"],c:0,t:"Modelo Avon"},
-  {q:"¿Cuántas campañas hay aproximadamente en un año?",o:["26 campañas","12 campañas","52 campañas","6 campañas"],c:0,t:"Modelo Avon"},
+  {q:"¿Cuántas campañas hay aproximadamente en un año?",o:["12 campañas","26 campañas","19 campañas","52 campañas"],c:2,t:"Modelo Avon"},
   {q:"¿Qué es la fecha de reparto?",o:["Cuando Avon entrega los productos","Cuando la representante paga","Cuando se hace el pedido","Cuando se cierra la campaña"],c:0,t:"Modelo Avon"},
 
   // TEMA: Tramos de Mora
@@ -484,7 +484,160 @@ function resetGame(){
   document.getElementById('startBtn').disabled = true;
   const lb = JSON.parse(localStorage.getItem(LB_KEY)||'[]');
   document.getElementById('playerCount').textContent = `🏆 ${lb.length} jugador${lb.length>1?'es':''} han participado`;
+  stopMusic();
 }
+
+// ===== AUDIO ENGINE (Web Audio API) =====
+let audioCtx = null;
+let musicNodes = [];
+let musicPlaying = false;
+let muteState = false;
+
+function getCtx(){
+  if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  if(audioCtx.state === 'suspended') audioCtx.resume();
+  return audioCtx;
+}
+
+function playTone(freq, type, start, duration, vol=0.3, ctx=null){
+  const c = ctx || getCtx();
+  const o = c.createOscillator();
+  const g = c.createGain();
+  o.connect(g); g.connect(c.destination);
+  o.type = type; o.frequency.setValueAtTime(freq, c.currentTime + start);
+  g.gain.setValueAtTime(0, c.currentTime + start);
+  g.gain.linearRampToValueAtTime(vol, c.currentTime + start + 0.01);
+  g.gain.linearRampToValueAtTime(0, c.currentTime + start + duration);
+  o.start(c.currentTime + start);
+  o.stop(c.currentTime + start + duration + 0.05);
+  return {o, g};
+}
+
+// Música de fondo — loop estilo Kahoot (progresión animada)
+const MUSIC_PATTERN = [
+  // [freq, type, relStart, dur, vol]
+  [523,  'square', 0.0,  0.18, 0.12],
+  [659,  'square', 0.2,  0.18, 0.12],
+  [784,  'square', 0.4,  0.18, 0.12],
+  [1047, 'square', 0.6,  0.18, 0.12],
+  [784,  'square', 0.8,  0.18, 0.12],
+  [659,  'square', 1.0,  0.18, 0.12],
+  [523,  'square', 1.2,  0.28, 0.12],
+  [440,  'square', 1.6,  0.18, 0.10],
+  [523,  'square', 1.8,  0.18, 0.10],
+  [659,  'square', 2.0,  0.18, 0.10],
+  [784,  'square', 2.2,  0.18, 0.10],
+  [880,  'square', 2.4,  0.18, 0.10],
+  [784,  'square', 2.6,  0.18, 0.10],
+  [698,  'square', 2.8,  0.28, 0.10],
+  // bajo
+  [131,  'sawtooth',0.0, 0.38, 0.06],
+  [131,  'sawtooth',0.4, 0.38, 0.06],
+  [110,  'sawtooth',0.8, 0.38, 0.06],
+  [110,  'sawtooth',1.2, 0.38, 0.06],
+  [131,  'sawtooth',1.6, 0.38, 0.06],
+  [131,  'sawtooth',2.0, 0.38, 0.06],
+  [117,  'sawtooth',2.4, 0.38, 0.06],
+  [117,  'sawtooth',2.8, 0.38, 0.06],
+];
+const LOOP_DUR = 3.2;
+
+function playMusicLoop(){
+  if(muteState || !musicPlaying) return;
+  const c = getCtx();
+  MUSIC_PATTERN.forEach(([f,t,s,d,v]) => playTone(f,t,s,d,v,c));
+  const id = setTimeout(playMusicLoop, LOOP_DUR * 1000 - 50);
+  musicNodes.push(id);
+}
+
+function startMusic(){
+  if(muteState) return;
+  musicPlaying = true;
+  playMusicLoop();
+}
+
+function stopMusic(){
+  musicPlaying = false;
+  musicNodes.forEach(id => clearTimeout(id));
+  musicNodes = [];
+}
+
+function sfxCorrect(){
+  if(muteState) return;
+  const c = getCtx();
+  playTone(523,'sine',0,0.1,0.3,c);
+  playTone(659,'sine',0.1,0.1,0.3,c);
+  playTone(784,'sine',0.2,0.15,0.3,c);
+  playTone(1047,'sine',0.35,0.25,0.3,c);
+}
+
+function sfxWrong(){
+  if(muteState) return;
+  const c = getCtx();
+  playTone(300,'sawtooth',0,0.08,0.25,c);
+  playTone(220,'sawtooth',0.1,0.08,0.25,c);
+  playTone(180,'sawtooth',0.2,0.15,0.25,c);
+}
+
+function sfxCountdown(){
+  if(muteState) return;
+  playTone(880,'square',0,0.06,0.2);
+}
+
+function sfxFanfare(){
+  if(muteState) return;
+  const c = getCtx();
+  const seq = [[523,0],[659,0.15],[784,0.3],[1047,0.45],[1319,0.6],[1047,0.8],[1319,1.0],[1568,1.2]];
+  seq.forEach(([f,s]) => playTone(f,'sine',s,0.18,0.35,c));
+}
+
+// Botón mute flotante
+const muteBtn = document.createElement('button');
+muteBtn.id = 'muteBtn';
+muteBtn.textContent = '🔊';
+muteBtn.style.cssText = 'position:fixed;bottom:20px;right:20px;z-index:9999;background:rgba(255,255,255,0.15);border:2px solid rgba(255,255,255,0.3);color:#fff;font-size:1.4rem;width:48px;height:48px;border-radius:50%;cursor:pointer;backdrop-filter:blur(4px);transition:all .2s';
+muteBtn.onclick = () => {
+  muteState = !muteState;
+  muteBtn.textContent = muteState ? '🔇' : '🔊';
+  if(muteState) stopMusic();
+  else if(document.getElementById('screenQuestion').style.display!=='none') startMusic();
+};
+document.body.appendChild(muteBtn);
+
+// Hooks en funciones existentes
+const _origStartGame = startGame;
+startGame = function(){
+  _origStartGame();
+  startMusic();
+};
+
+const _origSelectAnswer = selectAnswer;
+selectAnswer = function(btnIdx, isCorrect){
+  if(isCorrect) sfxCorrect(); else sfxWrong();
+  _origSelectAnswer(btnIdx, isCorrect);
+};
+
+const _origEndGame = endGame;
+endGame = function(){
+  stopMusic();
+  sfxFanfare();
+  _origEndGame();
+};
+
+// Cuenta regresiva sonora (últimos 5 seg)
+const _origLoadQ = loadQuestion;
+loadQuestion = function(){
+  _origLoadQ();
+  let lastTick = null;
+  const origTimer = timer;
+  const tickInterval = setInterval(() => {
+    if(timeLeft <= 5 && timeLeft > 0 && timeLeft !== lastTick){
+      sfxCountdown();
+      lastTick = timeLeft;
+    }
+    if(timeLeft <= 0) clearInterval(tickInterval);
+  }, 200);
+};
 </script>
 </body>
 </html>
