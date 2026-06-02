@@ -30,6 +30,13 @@ body{font-family:'Poppins',sans-serif;background:#46178F;color:#fff;min-height:1
 .start-btn:disabled{opacity:.5;cursor:not-allowed}
 .player-count{margin-top:20px;font-size:.9rem;opacity:.7}
 
+/* ===== AVATARES ===== */
+.avatar-label{font-size:.85rem;opacity:.7;margin-bottom:12px;text-transform:uppercase;letter-spacing:1px}
+.avatar-grid{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;max-width:420px;margin-bottom:24px}
+.avatar-opt{font-size:2rem;width:56px;height:56px;border-radius:50%;background:rgba(255,255,255,.1);border:3px solid transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;user-select:none}
+.avatar-opt:hover{transform:scale(1.15);background:rgba(255,255,255,.2)}
+.avatar-opt.selected{border-color:#E91E63;background:rgba(233,30,99,.25);transform:scale(1.2);box-shadow:0 0 16px rgba(233,30,99,.5)}
+
 /* ===== QUESTION ===== */
 .q-header{width:100%;max-width:900px;text-align:center;margin-bottom:20px}
 .q-progress{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
@@ -138,6 +145,10 @@ body{font-family:'Poppins',sans-serif;background:#46178F;color:#fff;min-height:1
   <div class="welcome-title">Quiz Avon PDC</div>
   <div class="welcome-sub">¡Demuestra cuánto sabes del proyecto!</div>
   <input type="text" class="name-input" id="playerName" placeholder="Escribe tu nombre..." maxlength="20" autocomplete="off">
+
+  <div class="avatar-label" style="margin-top:24px">Elige tu avatar</div>
+  <div class="avatar-grid" id="avatarGrid"></div>
+
   <button class="start-btn" id="startBtn" onclick="joinLobby()" disabled>¡Unirme!</button>
   <div class="player-count" id="playerCount"></div>
 </div>
@@ -212,6 +223,25 @@ body{font-family:'Poppins',sans-serif;background:#46178F;color:#fff;min-height:1
 </div>
 
 <script>
+// ===== AVATARES =====
+const AVATARS = ['💄','💅','🌸','✨','🧴','🪞','💋','🌺','💐','🧖‍♀️','💎','🎀','🌷','🧼','🫧','👑','🌹','💆‍♀️','🪷','🧽'];
+let selectedAvatar = AVATARS[0];
+
+(function initAvatars(){
+  const grid = document.getElementById('avatarGrid');
+  AVATARS.forEach((av, i) => {
+    const btn = document.createElement('div');
+    btn.className = 'avatar-opt' + (i===0?' selected':'');
+    btn.textContent = av;
+    btn.onclick = () => {
+      document.querySelectorAll('.avatar-opt').forEach(b=>b.classList.remove('selected'));
+      btn.classList.add('selected');
+      selectedAvatar = av;
+    };
+    grid.appendChild(btn);
+  });
+})();
+
 // ===== LOBBY / SALA DE ESPERA =====
 const LOBBY_KEY   = 'kahootAvonLobby';
 const LOBBY_START = 'kahootAvonStart';
@@ -226,15 +256,14 @@ function joinLobby(){
   if(!name) return;
   player = name;
 
-  // Registrar jugador en localStorage compartido
+  // Registrar jugador con avatar en localStorage compartido
   const lobby = JSON.parse(localStorage.getItem(LOBBY_KEY)||'[]');
-  if(!lobby.includes(name)) lobby.push(name);
+  const entry = { name, avatar: selectedAvatar };
+  if(!lobby.find(p => p.name === name)) lobby.push(entry);
   localStorage.setItem(LOBBY_KEY, JSON.stringify(lobby));
-  // Limpiar señal de inicio por si hay una previa
   localStorage.removeItem(LOBBY_START);
 
   showScreen('screenLobby');
-  sfxCorrect && typeof sfxCorrect === 'function' ? null : null; // audio se activa en startGame
   updateLobbyUI();
   lobbyInterval = setInterval(updateLobbyUI, 1000);
   startCheckInterval = setInterval(checkStart, 500);
@@ -243,13 +272,15 @@ function joinLobby(){
 function updateLobbyUI(){
   const lobby = JSON.parse(localStorage.getItem(LOBBY_KEY)||'[]');
   const container = document.getElementById('lobbyPlayers');
-  container.innerHTML = lobby.map(n =>
-    `<div class="lobby-player">${n === player ? '👤 '+n+' (tú)' : n}</div>`
-  ).join('');
+  container.innerHTML = lobby.map(p => {
+    const av  = p.avatar || '💄';
+    const nm  = p.name   || p;
+    const isMe = nm === player;
+    return `<div class="lobby-player">${av} ${nm}${isMe?' (tú)':''}</div>`;
+  }).join('');
   document.getElementById('lobbyCount').textContent =
     `${lobby.length} jugador${lobby.length!==1?'es':''} listo${lobby.length!==1?'s':''}`;
 
-  // Actualizar botón de admin si está desbloqueado
   const btn = document.getElementById('adminStartBtn');
   if(btn) btn.disabled = lobby.length < 1;
 }
@@ -468,16 +499,17 @@ function nextQuestion(){
 function showLeaderboard(){
   showScreen('screenLeaderboard');
   const lb = JSON.parse(localStorage.getItem(LB_KEY)||'[]');
-  // Add current player temporarily
-  const temp = [...lb, {name: player, score, date: new Date().toISOString()}];
+  const temp = [...lb, {name: player, score, avatar: selectedAvatar, date: new Date().toISOString()}];
   temp.sort((a,b) => b.score - a.score);
 
   const list = document.getElementById('lbList');
   list.innerHTML = temp.slice(0,8).map((entry, i) => {
     const isMe = entry.name === player && entry.score === score;
     const medals = ['🥇','🥈','🥉'];
+    const av = entry.avatar || '💄';
     return `<li class="lb-entry" style="animation-delay:${i*0.1}s;${isMe?'border:2px solid #E91E63;':''}">
       <span class="lb-pos">${medals[i]||i+1}</span>
+      <span style="font-size:1.4rem">${av}</span>
       <span class="lb-name">${entry.name} ${isMe?'(tú)':''}</span>
       <span class="lb-score">${entry.score.toLocaleString()}</span>
     </li>`;
@@ -493,7 +525,7 @@ function continueFromLB(){
 function endGame(){
   // Save to leaderboard
   const lb = JSON.parse(localStorage.getItem(LB_KEY)||'[]');
-  lb.push({name: player, score, date: new Date().toISOString(), answers: [...answers]});
+  lb.push({name: player, score, avatar: selectedAvatar, date: new Date().toISOString(), answers: [...answers]});
   localStorage.setItem(LB_KEY, JSON.stringify(lb));
 
   showScreen('screenFinal');
@@ -508,7 +540,8 @@ function endGame(){
 
   podium.innerHTML = order.map((p,i) => `
     <div class="podium-place">
-      <div class="podium-medal">${medals[i]||''}</div>
+      <div class="podium-medal" style="font-size:2.8rem">${p.avatar || medals[i] || ''}</div>
+      <div style="font-size:1.4rem">${medals[i]||''}</div>
       <div class="podium-name">${p.name}</div>
       <div class="podium-pts">${p.score.toLocaleString()} pts</div>
     </div>
