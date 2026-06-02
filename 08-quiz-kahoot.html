@@ -542,53 +542,19 @@ function adminShowQuestion(){
 function adminRevealAnswer(){
   stopMusic();
   const q=gameQuestions[currentQ];
-  const orderRaw=localStorage.getItem('kahootAvonOrder_'+currentQ);
-  const order=orderRaw?JSON.parse(orderRaw):{colors:[{cls:'a0'},{cls:'a1'},{cls:'a2'},{cls:'a3'}],shapes:[]};
-  // Mostrar cuál era la correcta en vista admin
   q.o.forEach((_,i)=>{
     const el=document.getElementById('aAns'+i);
     if(!el) return;
     if(i===q.c) el.classList.add('correct-reveal');
     else el.classList.add('wrong-reveal');
   });
+  setTimeout(()=>adminShowResult(),1500);
 }
-
-function adminNextQuestion(){
-  currentQ++;
-  if(currentQ>=gameQuestions.length){
-    // Fin
-    localStorage.setItem(SIGNAL_KEY,'FINISH');
-    stopMusic();
-    sfxFanfare();
-    showScreen('screenAdminFinal');
-    showAdminFinal();
-    return;
-  }
-  // Mostrar leaderboard cada 5 preguntas
-  if(currentQ%5===0){
-    localStorage.setItem(SIGNAL_KEY,'SHOW_LB');
-    showScreen('screenAdminLbMid');
-  } else {
-    startMusic();
-    showScreen('screenAdminView');
-    adminShowQuestion();
-  }
-}
-
-// ══════════════════════════════════════════════
-//  ADMIN RESULT (entre preguntas)
-// ══════════════════════════════════════════════
-// El admin ve la pantalla adminResult directamente tras el timer
-// Necesitamos override del timer para ir ahí
-// Ya manejado: adminRevealAnswer() lleva a adminResult después de 1.5s
-
-// Al final del adminRevealAnswer, mostrar pantalla de resultado admin
 function adminShowResult(){
   const q=gameQuestions[currentQ];
   showScreen('screenAdminResult');
   document.getElementById('aResultQuestion').textContent=q.q;
   document.getElementById('aCorrectAnswer').textContent=q.o[q.c];
-  // Mini leaderboard
   const lb=JSON.parse(localStorage.getItem(LB_KEY)||'[]');
   const sorted=[...lb].sort((a,b)=>b.score-a.score);
   const medals=['🥇','🥈','🥉'];
@@ -600,6 +566,21 @@ function adminShowResult(){
       <span class="lb-score">${p.score.toLocaleString()}</span>
     </li>
   `).join('');
+}
+
+function adminNextQuestion(){
+  clearInterval(adminTimerInterval);
+  currentQ++;
+  if(currentQ>=gameQuestions.length){
+    localStorage.setItem(SIGNAL_KEY,'FINISH');
+    stopMusic(); sfxFanfare();
+    showScreen('screenAdminFinal');
+    showAdminFinal();
+    return;
+  }
+  startMusic();
+  showScreen('screenAdminView');
+  adminShowQuestion();
 }
 
 function showAdminFinal(){
@@ -812,30 +793,6 @@ function showPlayerFinal(){
   showScreen('screenFinal');
   launchConfetti();
 }
-
-// Admin avanza manualmente la pregunta
-function adminNextQuestion(){
-  clearInterval(adminTimerInterval);
-  currentQ++;
-  if(currentQ>=gameQuestions.length){
-    localStorage.setItem(SIGNAL_KEY,'FINISH');
-    stopMusic(); sfxFanfare();
-    showScreen('screenAdminFinal');
-    showAdminFinal();
-    return;
-  }
-  startMusic();
-  showScreen('screenAdminView');
-  adminShowQuestion();
-}
-
-// Sobrescribir adminRevealAnswer para ir a adminResult
-const _origReveal=adminRevealAnswer;
-adminRevealAnswer=function(){
-  _origReveal();
-  stopMusic();
-  setTimeout(()=>adminShowResult(),1500);
-};
 
 // ══════════════════════════════════════════════
 //  CONFETTI
