@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/x-icon" href="favicon.ico">
+<title>Quiz Avon · PDC Kahoot</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Poppins:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Poppins',sans-serif;background:#46178F;color:#fff;min-height:100vh;overflow-x:hidden}
+
+/* ===== SCREENS ===== */
+.screen{display:none;min-height:100vh;flex-direction:column;align-items:center;justify-content:center;padding:20px;animation:fadeIn .4s ease}
+.screen.active{display:flex}
+@keyframes fadeIn{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:scale(1)}}
+
+/* ===== WELCOME ===== */
+.welcome-logo{font-size:4rem;margin-bottom:10px;animation:bounce 2s infinite}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-15px)}}
+.welcome-title{font-family:'Fredoka',sans-serif;font-size:3rem;font-weight:700;text-shadow:3px 3px 0 rgba(0,0,0,.3);margin-bottom:5px}
+.welcome-sub{font-size:1.1rem;opacity:.8;margin-bottom:40px}
+.name-input{width:100%;max-width:400px;padding:18px 24px;border-radius:12px;border:3px solid rgba(255,255,255,.3);background:rgba(255,255,255,.1);color:#fff;font-size:1.2rem;font-family:'Poppins';text-align:center;outline:none;transition:all .3s}
+.name-input:focus{border-color:#fff;background:rgba(255,255,255,.2)}
+.name-input::placeholder{color:rgba(255,255,255,.5)}
+.start-btn{margin-top:20px;padding:18px 60px;background:#E91E63;border:none;color:#fff;font-size:1.3rem;font-weight:700;border-radius:12px;cursor:pointer;font-family:'Fredoka';transition:all .3s;box-shadow:0 6px 0 #ad1457}
+.start-btn:hover{transform:translateY(-2px);box-shadow:0 8px 0 #ad1457}
+.start-btn:active{transform:translateY(2px);box-shadow:0 2px 0 #ad1457}
+.start-btn:disabled{opacity:.5;cursor:not-allowed}
+.player-count{margin-top:20px;font-size:.9rem;opacity:.7}
+
+/* ===== QUESTION ===== */
+.q-header{width:100%;max-width:900px;text-align:center;margin-bottom:20px}
+.q-progress{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.q-num{font-size:.9rem;opacity:.7}
+.q-bar{flex:1;margin:0 16px;height:8px;background:rgba(255,255,255,.2);border-radius:4px;overflow:hidden}
+.q-bar-fill{height:100%;background:#E91E63;border-radius:4px;transition:width .3s}
+.q-topic{font-size:.8rem;padding:6px 16px;background:rgba(255,255,255,.15);border-radius:20px;display:inline-block;margin-bottom:16px}
+.q-timer{width:80px;height:80px;border-radius:50%;background:rgba(0,0,0,.3);display:flex;align-items:center;justify-content:center;font-size:2rem;font-weight:800;font-family:'Fredoka';margin:0 auto 20px;border:4px solid #E91E63;transition:border-color .3s}
+.q-timer.warning{border-color:#ff6b35;animation:pulse .5s infinite}
+.q-timer.danger{border-color:#e21b3c;animation:pulse .3s infinite}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
+.q-text{font-size:1.5rem;font-weight:700;line-height:1.4;max-width:800px;text-align:center;margin-bottom:30px;text-shadow:2px 2px 0 rgba(0,0,0,.2)}
+
+.answers{display:grid;grid-template-columns:1fr 1fr;gap:14px;width:100%;max-width:900px}
+.answer-btn{padding:22px 20px;border:none;border-radius:12px;color:#fff;font-size:1.15rem;font-weight:700;cursor:pointer;font-family:'Poppins';transition:all .2s;text-align:left;display:flex;align-items:center;gap:14px;box-shadow:0 5px 0 rgba(0,0,0,.25);position:relative;overflow:hidden}
+.answer-btn:hover{transform:translateY(-2px);filter:brightness(1.1)}
+.answer-btn:active{transform:translateY(2px);box-shadow:0 2px 0 rgba(0,0,0,.25)}
+.answer-btn.disabled{pointer-events:none;opacity:.6}
+.answer-btn.correct{animation:correctPulse .6s;box-shadow:0 0 30px rgba(38,166,91,.6)}
+.answer-btn.wrong{opacity:.4;transform:scale(.95)}
+@keyframes correctPulse{0%{transform:scale(1)}50%{transform:scale(1.05)}100%{transform:scale(1)}}
+.a0{background:#e21b3c}.a1{background:#1368ce}.a2{background:#d89e00}.a3{background:#26a65b}
+.answer-shape{font-size:1.5rem;flex-shrink:0;width:30px;text-align:center}
+.answer-text{flex:1}
+
+/* ===== RESULT (after each question) ===== */
+.result-icon{font-size:5rem;margin-bottom:10px}
+.result-text{font-size:2rem;font-weight:800;font-family:'Fredoka'}
+.result-points{font-size:1.2rem;margin-top:8px;opacity:.8}
+.result-streak{font-size:1rem;margin-top:4px;color:#ffd700}
+.next-btn{margin-top:30px;padding:16px 50px;background:#fff;color:#46178F;border:none;border-radius:12px;font-size:1.1rem;font-weight:700;cursor:pointer;font-family:'Fredoka';box-shadow:0 5px 0 rgba(0,0,0,.2);transition:all .2s}
+.next-btn:hover{transform:translateY(-2px)}
+
+/* ===== LEADERBOARD ===== */
+.lb-title{font-family:'Fredoka';font-size:2.5rem;margin-bottom:30px}
+.lb-list{width:100%;max-width:500px}
+.lb-entry{display:flex;align-items:center;gap:16px;padding:14px 20px;margin-bottom:8px;border-radius:12px;background:rgba(255,255,255,.1);animation:slideIn .4s ease backwards;font-weight:600}
+.lb-entry:nth-child(1){background:linear-gradient(90deg,#ffd700,#f0c000);color:#333;font-size:1.2rem}
+.lb-entry:nth-child(2){background:linear-gradient(90deg,#c0c0c0,#a8a8a8);color:#333}
+.lb-entry:nth-child(3){background:linear-gradient(90deg,#cd7f32,#b5651d);color:#fff}
+@keyframes slideIn{from{opacity:0;transform:translateX(-30px)}to{opacity:1;transform:translateX(0)}}
+.lb-pos{font-size:1.4rem;font-weight:800;width:35px;text-align:center}
+.lb-name{flex:1}
+.lb-score{font-weight:800;font-family:'Fredoka'}
+
+/* ===== PODIUM ===== */
+.podium-title{font-family:'Fredoka';font-size:2.5rem;margin-bottom:10px}
+.podium-sub{opacity:.7;margin-bottom:40px}
+.podium{display:flex;align-items:flex-end;gap:12px;margin-bottom:40px}
+.podium-place{display:flex;flex-direction:column;align-items:center;border-radius:12px 12px 0 0;padding:16px 24px 20px;min-width:110px;animation:podiumRise .8s ease backwards}
+.podium-place:nth-child(1){background:#c0c0c0;height:160px;animation-delay:.3s}
+.podium-place:nth-child(2){background:#ffd700;height:200px;animation-delay:.6s}
+.podium-place:nth-child(3){background:#cd7f32;height:130px;animation-delay:.9s}
+@keyframes podiumRise{from{height:0;opacity:0}to{opacity:1}}
+.podium-medal{font-size:2.5rem}
+.podium-name{font-weight:700;font-size:.95rem;color:#333;margin-top:8px}
+.podium-pts{font-size:.85rem;color:#555;font-weight:600}
+
+/* ===== REPORT ===== */
+.report{width:100%;max-width:700px;margin-top:20px}
+.report-title{font-size:1.3rem;font-weight:700;margin-bottom:16px;text-align:center}
+.report-topic{background:rgba(255,255,255,.1);border-radius:12px;padding:16px 20px;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between}
+.topic-name{font-weight:600}
+.topic-bar{flex:1;margin:0 16px;height:10px;background:rgba(255,255,255,.15);border-radius:5px;overflow:hidden}
+.topic-fill{height:100%;border-radius:5px;transition:width 1s ease}
+.topic-pct{font-weight:800;font-family:'Fredoka';min-width:50px;text-align:right}
+.report-download{margin-top:24px;padding:14px 40px;background:#26a65b;border:none;color:#fff;border-radius:12px;font-size:1rem;font-weight:700;cursor:pointer;font-family:'Poppins';box-shadow:0 4px 0 #1a7a42;transition:all .2s}
+.report-download:hover{transform:translateY(-2px)}
+.report-actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:20px}
+
+.confetti{position:fixed;top:-10px;width:12px;height:12px;border-radius:2px;animation:confettiFall linear forwards;z-index:9999;pointer-events:none}
+@keyframes confettiFall{0%{transform:translateY(0) rotate(0)}100%{transform:translateY(110vh) rotate(720deg)}}
+
+@media(max-width:600px){
+  .welcome-title{font-size:2rem}
+  .q-text{font-size:1.2rem}
+  .answers{grid-template-columns:1fr;gap:10px}
+  .answer-btn{padding:16px;font-size:1rem}
+  .podium-place{min-width:80px;padding:12px 16px}
+}
+</style>
+</head>
+<body>
+
+<!-- SCREEN 1: WELCOME -->
+<div class="screen active" id="screenWelcome">
+  <div class="welcome-logo">🧠</div>
+  <div class="welcome-title">Quiz Avon PDC</div>
+  <div class="welcome-sub">¡Demuestra cuánto sabes del proyecto!</div>
+  <input type="text" class="name-input" id="playerName" placeholder="Escribe tu nombre..." maxlength="20" autocomplete="off">
+  <button class="start-btn" id="startBtn" onclick="startGame()" disabled>¡Jugar!</button>
+  <div class="player-count" id="playerCount"></div>
+</div>
+
+<!-- SCREEN 2: QUESTION -->
+<div class="screen" id="screenQuestion">
+  <div class="q-header">
+    <div class="q-progress">
+      <span class="q-num" id="qNum"></span>
+      <div class="q-bar"><div class="q-bar-fill" id="qBarFill"></div></div>
+      <span class="q-num" id="qScore"></span>
+    </div>
+    <span class="q-topic" id="qTopic"></span>
+  </div>
+  <div class="q-timer" id="qTimer">15</div>
+  <div class="q-text" id="qText"></div>
+  <div class="answers" id="answers"></div>
+</div>
+
+<!-- SCREEN 3: RESULT -->
+<div class="screen" id="screenResult">
+  <div class="result-icon" id="resultIcon"></div>
+  <div class="result-text" id="resultText"></div>
+  <div class="result-points" id="resultPoints"></div>
+  <div class="result-streak" id="resultStreak"></div>
+  <button class="next-btn" onclick="nextQuestion()">Siguiente →</button>
+</div>
+
+<!-- SCREEN 4: LEADERBOARD -->
+<div class="screen" id="screenLeaderboard">
+  <div class="lb-title">🏆 Tabla de Posiciones</div>
+  <div class="lb-list" id="lbList"></div>
+  <button class="next-btn" style="margin-top:30px" onclick="continueFromLB()">Continuar →</button>
+</div>
+
+<!-- SCREEN 5: FINAL -->
+<div class="screen" id="screenFinal">
+  <div class="podium-title">🎉 ¡Resultados Finales!</div>
+  <div class="podium-sub" id="finalSub"></div>
+  <div class="podium" id="podium"></div>
+  <div class="report" id="report"></div>
+  <div class="report-actions">
+    <button class="report-download" onclick="downloadReport()">📥 Descargar Reporte</button>
+    <button class="next-btn" onclick="resetGame()">🔄 Jugar de nuevo</button>
+  </div>
+</div>
+
+<script>
+// ===== QUESTIONS DATABASE =====
+const QUESTIONS = [
+  // TEMA: Modelo Avon
+  {q:"¿Qué es Avon?",o:["Empresa de cosméticos por venta directa","Banco digital","Supermercado online","Red social"],c:0,t:"Modelo Avon"},
+  {q:"¿Cómo se le llama a la persona que vende productos Avon?",o:["Representante","Empleada","Socia","Distribuidora"],c:0,t:"Modelo Avon"},
+  {q:"¿Cada cuánto tiempo aproximadamente hay una campaña Avon?",o:["Cada 2 semanas","Cada mes","Cada 3 meses","Cada semana"],c:0,t:"Modelo Avon"},
+  {q:"¿Cuántas campañas hay aproximadamente en un año?",o:["26 campañas","12 campañas","52 campañas","6 campañas"],c:0,t:"Modelo Avon"},
+  {q:"¿Qué es la fecha de reparto?",o:["Cuando Avon entrega los productos","Cuando la representante paga","Cuando se hace el pedido","Cuando se cierra la campaña"],c:0,t:"Modelo Avon"},
+
+  // TEMA: Tramos de Mora
+  {q:"¿Qué significa PD en cobranza Avon?",o:["Past Due (Vencido)","Pago Directo","Producto Devuelto","Plazo Definido"],c:0,t:"Tramos de Mora"},
+  {q:"¿Cuántos días de mora tiene una cuenta en PD1 (A1)?",o:["1 a 19 días","1 a 45 días","20 a 38 días","1 a 10 días"],c:0,t:"Tramos de Mora"},
+  {q:"¿Qué estatus tiene una cuenta con más de 180 días sin pagar?",o:["M - Morosidad","C - Cobro","A3 - Alerta","R - Recuperación"],c:0,t:"Tramos de Mora"},
+  {q:"¿Qué es una cuenta A0?",o:["Cuenta al día, solo recordatorio","Cuenta con 30 días de mora","Cuenta cancelada","Cuenta nueva sin pedidos"],c:0,t:"Tramos de Mora"},
+  {q:"¿Cuál es el flujo correcto de los estatus de mora?",o:["A0 → A1 → A2 → A3 → C → M → R","A → B → C → D → E","PD1 → PD2 → PD3 → Final","Nuevo → Medio → Viejo → Cerrado"],c:0,t:"Tramos de Mora"},
+  {q:"¿En qué tramo de mora el agente tiene MÁS impacto para recuperar?",o:["Early Stage (PD1-PD3)","Late Stage (M y R)","Preventiva (A0)","Estatus B"],c:0,t:"Tramos de Mora"},
+
+  // TEMA: Convenio de Pago
+  {q:"¿Qué es un convenio de pago?",o:["Acuerdo formal para pagar la deuda en cuotas","Un descuento automático","Una multa por no pagar","Un préstamo nuevo"],c:0,t:"Convenio de Pago"},
+  {q:"¿Cuál es el porcentaje mínimo de la primera cuota de un convenio?",o:["30% del total","10% del total","50% del total","No hay mínimo"],c:0,t:"Convenio de Pago"},
+  {q:"¿Cuánto tiempo máximo puede durar un convenio de pago?",o:["6 meses","1 año","3 meses","Sin límite"],c:0,t:"Convenio de Pago"},
+  {q:"¿Cuál es la primera etapa de un convenio de pago?",o:["Contacto inicial","Firma del convenio","Evaluación financiera","Cobro judicial"],c:0,t:"Convenio de Pago"},
+
+  // TEMA: Script de Cobro
+  {q:"¿Cuántos pasos tiene el Script Oficial de Cobro?",o:["12 pasos","5 pasos","8 pasos","20 pasos"],c:0,t:"Script de Cobro"},
+  {q:"¿Qué paso del script es OBLIGATORIO y nunca debe omitirse?",o:["Ítem regulatorio (aviso de grabación)","Despedida","Actualizar datos","Sondear razón de mora"],c:0,t:"Script de Cobro"},
+  {q:"Si el cliente dice 'No tengo dinero', ¿qué debes hacer según el script?",o:["Preguntar para cuándo tendría disponibilidad","Colgar y llamar después","Ofrecer un descuento","Amenazar con consecuencias legales"],c:0,t:"Script de Cobro"},
+  {q:"¿Qué código de tipificación significa 'Promesa de Pago'?",o:["PP","AP","PI","ND"],c:0,t:"Script de Cobro"},
+  {q:"¿Qué debes ofrecer SIEMPRE primero antes de negociar un abono?",o:["El pago total","Un descuento","Un plazo de 3 meses","Cambio de producto"],c:0,t:"Script de Cobro"},
+];
+
+// Shuffle questions
+function shuffle(arr){for(let i=arr.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]];}return arr;}
+
+// ===== GAME STATE =====
+let player = '';
+let currentQ = 0;
+let score = 0;
+let streak = 0;
+let timer = null;
+let timeLeft = 15;
+let gameQuestions = [];
+let answers = []; // {topic, correct, time}
+const LB_KEY = 'kahootAvonLeaderboard';
+
+// ===== INIT =====
+const nameInput = document.getElementById('playerName');
+nameInput.addEventListener('input', () => {
+  document.getElementById('startBtn').disabled = nameInput.value.trim().length < 2;
+});
+nameInput.addEventListener('keydown', e => { if(e.key==='Enter'&&nameInput.value.trim().length>=2) startGame(); });
+
+// Show player count
+const lb = JSON.parse(localStorage.getItem(LB_KEY)||'[]');
+if(lb.length>0) document.getElementById('playerCount').textContent = `🏆 ${lb.length} jugador${lb.length>1?'es':''} han participado`;
+
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+// ===== START GAME =====
+function startGame(){
+  player = nameInput.value.trim();
+  if(!player) return;
+  score = 0; streak = 0; currentQ = 0; answers = [];
+  gameQuestions = shuffle([...QUESTIONS]).slice(0,15); // 15 random questions
+  showScreen('screenQuestion');
+  loadQuestion();
+}
+
+// ===== LOAD QUESTION =====
+function loadQuestion(){
+  const q = gameQuestions[currentQ];
+  document.getElementById('qNum').textContent = `${currentQ+1} / ${gameQuestions.length}`;
+  document.getElementById('qBarFill').style.width = `${((currentQ)/gameQuestions.length)*100}%`;
+  document.getElementById('qScore').textContent = `⭐ ${score}`;
+  document.getElementById('qTopic').textContent = q.t;
+  document.getElementById('qText').textContent = q.q;
+
+  const shapes = ['▲','◆','●','■'];
+  const colors = ['a0','a1','a2','a3'];
+  // Shuffle answers but track correct
+  const indices = [0,1,2,3];
+  shuffle(indices);
+
+  const answersDiv = document.getElementById('answers');
+  answersDiv.innerHTML = indices.map((idx,i) => `
+    <button class="answer-btn ${colors[i]}" onclick="selectAnswer(${i},${idx===q.c})" id="ans${i}" data-idx="${idx}">
+      <span class="answer-shape">${shapes[i]}</span>
+      <span class="answer-text">${q.o[idx]}</span>
+    </button>
+  `).join('');
+
+  // Start timer
+  timeLeft = 15;
+  const timerEl = document.getElementById('qTimer');
+  timerEl.textContent = timeLeft;
+  timerEl.className = 'q-timer';
+
+  clearInterval(timer);
+  timer = setInterval(() => {
+    timeLeft--;
+    timerEl.textContent = timeLeft;
+    if(timeLeft<=5) timerEl.className = 'q-timer danger';
+    else if(timeLeft<=10) timerEl.className = 'q-timer warning';
+    if(timeLeft<=0){ clearInterval(timer); timeUp(); }
+  }, 1000);
+}
+
+// ===== SELECT ANSWER =====
+function selectAnswer(btnIdx, isCorrect){
+  clearInterval(timer);
+  const btns = document.querySelectorAll('.answer-btn');
+  btns.forEach(b => b.classList.add('disabled'));
+
+  // Find correct button
+  const q = gameQuestions[currentQ];
+  btns.forEach(b => {
+    const idx = parseInt(b.dataset.idx);
+    if(idx === q.c) b.classList.add('correct');
+    else b.classList.add('wrong');
+  });
+
+  let points = 0;
+  if(isCorrect){
+    points = Math.round(1000 * (timeLeft/15));
+    if(points < 100) points = 100;
+    score += points;
+    streak++;
+    if(streak >= 3) { score += 200; } // streak bonus
+  } else {
+    streak = 0;
+  }
+
+  answers.push({topic: q.t, correct: isCorrect, time: 15-timeLeft, points});
+
+  setTimeout(() => showResult(isCorrect, points), 1200);
+}
+
+function timeUp(){
+  const btns = document.querySelectorAll('.answer-btn');
+  btns.forEach(b => b.classList.add('disabled'));
+  const q = gameQuestions[currentQ];
+  btns.forEach(b => {
+    const idx = parseInt(b.dataset.idx);
+    if(idx === q.c) b.classList.add('correct');
+    else b.classList.add('wrong');
+  });
+  streak = 0;
+  answers.push({topic: q.t, correct: false, time: 15, points: 0});
+  setTimeout(() => showResult(false, 0), 1200);
+}
+
+// ===== SHOW RESULT =====
+function showResult(correct, points){
+  showScreen('screenResult');
+  document.getElementById('resultIcon').textContent = correct ? '✅' : '❌';
+  document.getElementById('resultText').textContent = correct ? '¡Correcto!' : 'Incorrecto';
+  document.getElementById('resultText').style.color = correct ? '#26a65b' : '#e21b3c';
+  document.getElementById('resultPoints').textContent = correct ? `+${points} puntos` : 'Sin puntos';
+  document.getElementById('resultStreak').textContent = streak >= 3 ? `🔥 ¡Racha de ${streak}! +200 bonus` : streak >= 2 ? `🔥 Racha de ${streak}` : '';
+}
+
+// ===== NEXT QUESTION =====
+function nextQuestion(){
+  currentQ++;
+  // Show leaderboard every 5 questions
+  if(currentQ % 5 === 0 && currentQ < gameQuestions.length){
+    showLeaderboard();
+  } else if(currentQ >= gameQuestions.length){
+    endGame();
+  } else {
+    showScreen('screenQuestion');
+    loadQuestion();
+  }
+}
+
+// ===== LEADERBOARD =====
+function showLeaderboard(){
+  showScreen('screenLeaderboard');
+  const lb = JSON.parse(localStorage.getItem(LB_KEY)||'[]');
+  // Add current player temporarily
+  const temp = [...lb, {name: player, score, date: new Date().toISOString()}];
+  temp.sort((a,b) => b.score - a.score);
+
+  const list = document.getElementById('lbList');
+  list.innerHTML = temp.slice(0,8).map((entry, i) => {
+    const isMe = entry.name === player && entry.score === score;
+    const medals = ['🥇','🥈','🥉'];
+    return `<li class="lb-entry" style="animation-delay:${i*0.1}s;${isMe?'border:2px solid #E91E63;':''}">
+      <span class="lb-pos">${medals[i]||i+1}</span>
+      <span class="lb-name">${entry.name} ${isMe?'(tú)':''}</span>
+      <span class="lb-score">${entry.score.toLocaleString()}</span>
+    </li>`;
+  }).join('');
+}
+
+function continueFromLB(){
+  if(currentQ >= gameQuestions.length) endGame();
+  else { showScreen('screenQuestion'); loadQuestion(); }
+}
+
+// ===== END GAME =====
+function endGame(){
+  // Save to leaderboard
+  const lb = JSON.parse(localStorage.getItem(LB_KEY)||'[]');
+  lb.push({name: player, score, date: new Date().toISOString(), answers: [...answers]});
+  localStorage.setItem(LB_KEY, JSON.stringify(lb));
+
+  showScreen('screenFinal');
+  launchConfetti();
+
+  // Podium
+  const sorted = [...lb].sort((a,b) => b.score - a.score);
+  const top3 = sorted.slice(0,3);
+  const podium = document.getElementById('podium');
+  const order = top3.length >= 2 ? [top3[1], top3[0], top3[2]].filter(Boolean) : top3;
+  const medals = top3.length >= 2 ? ['🥈','🥇','🥉'] : ['🥇','🥈','🥉'];
+
+  podium.innerHTML = order.map((p,i) => `
+    <div class="podium-place">
+      <div class="podium-medal">${medals[i]||''}</div>
+      <div class="podium-name">${p.name}</div>
+      <div class="podium-pts">${p.score.toLocaleString()} pts</div>
+    </div>
+  `).join('');
+
+  document.getElementById('finalSub').textContent = `${player}, obtuviste ${score.toLocaleString()} puntos`;
+
+  // Report by topic
+  const topics = {};
+  answers.forEach(a => {
+    if(!topics[a.topic]) topics[a.topic] = {correct:0, total:0};
+    topics[a.topic].total++;
+    if(a.correct) topics[a.topic].correct++;
+  });
+
+  const report = document.getElementById('report');
+  report.innerHTML = `<div class="report-title">📊 Reporte por Tema</div>` +
+    Object.entries(topics).map(([topic, data]) => {
+      const pct = Math.round((data.correct/data.total)*100);
+      const color = pct >= 80 ? '#26a65b' : pct >= 50 ? '#d89e00' : '#e21b3c';
+      return `<div class="report-topic">
+        <span class="topic-name">${topic}</span>
+        <div class="topic-bar"><div class="topic-fill" style="width:${pct}%;background:${color}"></div></div>
+        <span class="topic-pct" style="color:${color}">${data.correct}/${data.total} (${pct}%)</span>
+      </div>`;
+    }).join('');
+}
+
+// ===== CONFETTI =====
+function launchConfetti(){
+  const colors = ['#e21b3c','#1368ce','#d89e00','#26a65b','#E91E63','#ffd700'];
+  for(let i=0;i<60;i++){
+    const c = document.createElement('div');
+    c.className = 'confetti';
+    c.style.left = Math.random()*100+'vw';
+    c.style.background = colors[Math.floor(Math.random()*colors.length)];
+    c.style.animationDuration = (2+Math.random()*3)+'s';
+    c.style.animationDelay = Math.random()*2+'s';
+    c.style.width = (8+Math.random()*8)+'px';
+    c.style.height = (8+Math.random()*8)+'px';
+    document.body.appendChild(c);
+    setTimeout(()=>c.remove(), 6000);
+  }
+}
+
+// ===== DOWNLOAD REPORT =====
+function downloadReport(){
+  const lb = JSON.parse(localStorage.getItem(LB_KEY)||'[]');
+  const sorted = [...lb].sort((a,b) => b.score - a.score);
+
+  let csv = 'REPORTE QUIZ AVON PDC\n';
+  csv += 'Generado: ' + new Date().toLocaleString() + '\n\n';
+  csv += 'TABLA DE POSICIONES\n';
+  csv += 'Posición,Nombre,Puntos,Fecha\n';
+  sorted.forEach((p,i) => {
+    csv += `${i+1},${p.name},${p.score},${new Date(p.date).toLocaleDateString()}\n`;
+  });
+
+  // Current player details
+  csv += '\n\nDETALLE ÚLTIMO JUGADOR: ' + player + '\n';
+  csv += 'Pregunta,Tema,Resultado,Tiempo(s),Puntos\n';
+  answers.forEach((a,i) => {
+    csv += `${i+1},${a.topic},${a.correct?'CORRECTO':'INCORRECTO'},${a.time},${a.points}\n`;
+  });
+
+  // Topics summary
+  csv += '\n\nRESUMEN POR TEMA\n';
+  csv += 'Tema,Correctas,Total,Porcentaje,Estado\n';
+  const topics = {};
+  answers.forEach(a => {
+    if(!topics[a.topic]) topics[a.topic] = {correct:0,total:0};
+    topics[a.topic].total++;
+    if(a.correct) topics[a.topic].correct++;
+  });
+  Object.entries(topics).forEach(([t,d]) => {
+    const pct = Math.round((d.correct/d.total)*100);
+    csv += `${t},${d.correct},${d.total},${pct}%,${pct>=80?'DOMINADO':pct>=50?'REPASAR':'REFORZAR'}\n`;
+  });
+
+  const blob = new Blob([csv], {type:'text/csv'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `Quiz_Avon_${player}_${new Date().toISOString().split('T')[0]}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function resetGame(){
+  showScreen('screenWelcome');
+  nameInput.value = '';
+  document.getElementById('startBtn').disabled = true;
+  const lb = JSON.parse(localStorage.getItem(LB_KEY)||'[]');
+  document.getElementById('playerCount').textContent = `🏆 ${lb.length} jugador${lb.length>1?'es':''} han participado`;
+}
+</script>
+</body>
+</html>
