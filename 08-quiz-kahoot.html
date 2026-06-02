@@ -150,7 +150,13 @@ body{font-family:'Poppins',sans-serif;background:#46178F;color:#fff;min-height:1
   <div class="avatar-grid" id="avatarGrid"></div>
   <button class="start-btn" id="startBtn" onclick="joinLobby()" disabled>¡Unirme!</button>
   <div class="player-count" id="playerCount"></div>
-  <span class="admin-link" onclick="showAdminLogin()">⚙ Acceso administrador</span>
+  <!-- Contraseña admin opcional — discreta -->
+  <div style="margin-top:22px;width:100%;max-width:320px">
+    <input type="password" id="hostPassInput" placeholder="Contraseña (solo host)..."
+      style="width:100%;padding:10px 16px;border-radius:10px;border:2px solid rgba(255,255,255,.12);background:rgba(255,255,255,.06);color:#fff;font-size:.9rem;font-family:'Poppins';text-align:center;outline:none;transition:border .2s"
+      onfocus="this.style.borderColor='rgba(233,30,99,.5)'" onblur="this.style.borderColor='rgba(255,255,255,.12)'"
+      onkeydown="if(event.key==='Enter'&&document.getElementById('playerName').value.trim().length>=2) joinLobby()">
+  </div>
 </div>
 
 <!-- ══ SCREEN: ADMIN LOGIN ══ -->
@@ -423,22 +429,38 @@ function joinLobby(){
   if(!name) return;
   player=name;
 
-  // Si no hay señal activa, limpiar lobby anterior (primera persona en entrar)
+  // Detectar si es el host por contraseña
+  const hostPass=document.getElementById('hostPassInput').value;
+  isAdmin=(hostPass===ADMIN_PASS);
+
+  // Si no hay señal activa, limpiar lobby anterior
   if(!localStorage.getItem(SIGNAL_KEY)){
     localStorage.removeItem(LOBBY_KEY);
   }
-  const lobby=JSON.parse(localStorage.getItem(LOBBY_KEY)||'[]');
-  if(!lobby.find(p=>p.name===name)) lobby.push({name,avatar:selectedAvatar});
-  localStorage.setItem(LOBBY_KEY,JSON.stringify(lobby));
 
-  showScreen('screenLobby');
-  updatePlayerLobby();
-  lobbyPollInterval=setInterval(updatePlayerLobby,1000);
-  signalPollInterval=setInterval(checkSignal,600);
+  // El host NO se registra como jugador en el lobby
+  if(!isAdmin){
+    const lobby=JSON.parse(localStorage.getItem(LOBBY_KEY)||'[]');
+    if(!lobby.find(p=>p.name===name)) lobby.push({name,avatar:selectedAvatar});
+    localStorage.setItem(LOBBY_KEY,JSON.stringify(lobby));
+  }
 
-  // Activar audio en tap del usuario
+  // Activar audio
   if(!audioCtx) audioCtx=new(window.AudioContext||window.webkitAudioContext)();
   else if(audioCtx.state==='suspended') audioCtx.resume();
+
+  if(isAdmin){
+    // Host: va directo al lobby admin con panel desbloqueado
+    localStorage.removeItem(SIGNAL_KEY);
+    localStorage.removeItem(LOBBY_KEY);
+    showScreen('screenAdminLobby');
+    startAdminLobbyPoll();
+  } else {
+    showScreen('screenLobby');
+    updatePlayerLobby();
+    lobbyPollInterval=setInterval(updatePlayerLobby,1000);
+    signalPollInterval=setInterval(checkSignal,600);
+  }
 }
 
 function updatePlayerLobby(){
@@ -614,6 +636,7 @@ function adminReset(){
   localStorage.removeItem(SIGNAL_KEY);
   localStorage.removeItem('kahootAvonQuestions');
   isAdmin=false; currentQ=0; gameQuestions=[];
+  document.getElementById('hostPassInput').value='';
   showScreen('screenWelcome');
 }
 
@@ -732,6 +755,7 @@ function showPlayerResult(correct,points){
 }
 
 function savePartialScore(){
+  if(isAdmin) return; // host no cuenta en resultados
   const lb=JSON.parse(localStorage.getItem(LB_KEY)||'[]');
   const idx=lb.findIndex(p=>p.name===player);
   if(idx>=0) lb[idx]={...lb[idx],score,avatar:selectedAvatar,date:new Date().toISOString()};
@@ -771,25 +795,34 @@ function showPlayerFinal(){
       <div class="podium-pts">${p.score.toLocaleString()} pts</div>
     </div>
   `).join('');
-  const me=sorted.find(p=>p.name===player);
-  document.getElementById('finalSub').textContent=me?`${player}, obtuviste ${me.score.toLocaleString()} puntos`:'';
-  // Reporte por tema
-  const topics={};
-  answers.forEach(a=>{
-    if(!topics[a.topic]) topics[a.topic]={correct:0,total:0};
-    topics[a.topic].total++;
-    if(a.correct) topics[a.topic].correct++;
-  });
-  document.getElementById('report').innerHTML=`<div class="report-title">📊 Tu reporte por tema</div>`+
-    Object.entries(topics).map(([topic,data])=>{
-      const pct=Math.round((data.correct/data.total)*100);
-      const color=pct>=80?'#26a65b':pct>=50?'#d89e00':'#e21b3c';
-      return `<div class="report-topic">
-        <span>${topic}</span>
-        <div class="topic-bar"><div class="topic-fill" style="width:${pct}%;background:${color}"></div></div>
-        <span class="topic-pct" style="color:${color}">${data.correct}/${data.total} (${pct}%)</span>
-      </div>`;
-    }).join('');
+
+  if(isAdmin){
+    // Host: ve el podio pero su puntaje no aparece
+    document.getElementById('finalSub').textContent='¡Quiz finalizado! Resultados de los participantes:';
+    document.getElementById('report').innerHTML='';
+    // Ocultar botón de descarga para el host
+    document.querySelector('.report-actions').style.display='none';
+  } else {
+    const me=sorted.find(p=>p.name===player);
+    document.getElementById('finalSub').textContent=me?`${player}, obtuviste ${me.score.toLocaleString()} puntos`:'';
+    document.querySelector('.report-actions').style.display='flex';
+    const topics={};
+    answers.forEach(a=>{
+      if(!topics[a.topic]) topics[a.topic]={correct:0,total:0};
+      topics[a.topic].total++;
+      if(a.correct) topics[a.topic].correct++;
+    });
+    document.getElementById('report').innerHTML=`<div class="report-title">📊 Tu reporte por tema</div>`+
+      Object.entries(topics).map(([topic,data])=>{
+        const pct=Math.round((data.correct/data.total)*100);
+        const color=pct>=80?'#26a65b':pct>=50?'#d89e00':'#e21b3c';
+        return `<div class="report-topic">
+          <span>${topic}</span>
+          <div class="topic-bar"><div class="topic-fill" style="width:${pct}%;background:${color}"></div></div>
+          <span class="topic-pct" style="color:${color}">${data.correct}/${data.total} (${pct}%)</span>
+        </div>`;
+      }).join('');
+  }
   showScreen('screenFinal');
   launchConfetti();
 }
