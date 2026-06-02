@@ -151,7 +151,20 @@ body{font-family:'Poppins',sans-serif;background:#46178F;color:#fff;min-height:1
 
   <button class="start-btn" id="startBtn" onclick="joinLobby()" disabled>¡Unirme!</button>
   <div class="player-count" id="playerCount"></div>
+  <div style="margin-top:28px">
+    <span onclick="showAdminLogin()" style="font-size:0.78rem;color:rgba(255,255,255,0.3);cursor:pointer;letter-spacing:1px;text-transform:uppercase;border-bottom:1px solid rgba(255,255,255,0.15);padding-bottom:2px;transition:color .2s" onmouseover="this.style.color='rgba(255,255,255,0.6)'" onmouseout="this.style.color='rgba(255,255,255,0.3)'">⚙ Acceso administrador</span>
+  </div>
 </div>
+
+<!-- SCREEN ADMIN LOGIN -->
+<div class="screen" id="screenAdminLogin">
+  <div style="font-size:3rem;margin-bottom:12px">🔐</div>
+  <div class="welcome-title" style="font-size:1.8rem;margin-bottom:6px">Panel Administrador</div>
+  <div class="welcome-sub" style="margin-bottom:32px">Ingresa tu contraseña para gestionar el quiz</div>
+  <input type="password" class="name-input" id="adminLoginPass" placeholder="Contraseña..." autocomplete="off" onkeydown="if(event.key==='Enter') submitAdminLogin()">
+  <button class="start-btn" style="margin-top:16px" onclick="submitAdminLogin()">Ingresar</button>
+  <div id="adminLoginError" style="margin-top:14px;color:#e21b3c;font-size:0.9rem;min-height:20px"></div>
+  <span onclick="showScreen('screenWelcome')" style="margin-top:24px;font-size:0.85rem;color:rgba(255,255,255,0.4);cursor:pointer" onmouseover="this.style.color='rgba(255,255,255,0.7)'" onmouseout="this.style.color='rgba(255,255,255,0.4)'">← Volver</span>
 
 <!-- SCREEN 1B: LOBBY (sala de espera) -->
 <div class="screen" id="screenLobby">
@@ -177,6 +190,21 @@ body{font-family:'Poppins',sans-serif;background:#46178F;color:#fff;min-height:1
       <div style="margin-top:10px;font-size:0.85rem;color:rgba(255,255,255,0.5)">Todos los jugadores conectados iniciarán al mismo tiempo</div>
     </div>
   </div>
+</div>
+
+<!-- SCREEN ADMIN MONITOR -->
+<div class="screen" id="screenAdminMonitor">
+  <div style="font-size:3rem;margin-bottom:8px">📊</div>
+  <div class="welcome-title" style="font-size:1.6rem;margin-bottom:6px">Quiz en curso</div>
+  <div class="welcome-sub" style="margin-bottom:28px">Los jugadores están respondiendo...</div>
+  <div class="admin-panel" style="width:100%;max-width:500px">
+    <div class="admin-title">👥 Jugadores en sesión</div>
+    <div class="lobby-players" id="monitorPlayers" style="min-height:60px"></div>
+    <div class="lobby-count" id="monitorCount" style="margin:12px 0 0"></div>
+  </div>
+  <button class="admin-start-btn" onclick="adminReset()" style="margin-top:24px;max-width:300px;background:linear-gradient(135deg,#e21b3c,#a8132d);box-shadow:0 4px 0 #a8132d">
+    🔄 Nueva sesión
+  </button>
 </div>
 
 <!-- SCREEN 2: QUESTION -->
@@ -300,6 +328,36 @@ function checkStart(){
   }
 }
 
+function showAdminLogin(){
+  showScreen('screenAdminLogin');
+  setTimeout(()=>document.getElementById('adminLoginPass').focus(), 300);
+}
+
+function submitAdminLogin(){
+  const pass = document.getElementById('adminLoginPass').value;
+  const err  = document.getElementById('adminLoginError');
+  if(pass === ADMIN_PASS){
+    isAdmin = true;
+    document.getElementById('adminLoginPass').value = '';
+    err.textContent = '';
+    // Limpiar lobby para nueva sesión
+    localStorage.removeItem(LOBBY_KEY);
+    localStorage.removeItem(LOBBY_START);
+    // Ir directo al lobby como admin (sin registrarse como jugador)
+    showScreen('screenLobby');
+    // Desbloquear panel admin directamente
+    document.getElementById('adminLocked').style.display   = 'none';
+    document.getElementById('adminUnlocked').style.display = 'block';
+    document.getElementById('lobbyWaiting').style.display  = 'none';
+    updateLobbyUI();
+    lobbyInterval = setInterval(updateLobbyUI, 1000);
+  } else {
+    err.textContent = '❌ Contraseña incorrecta';
+    document.getElementById('adminLoginPass').value = '';
+    document.getElementById('adminLoginPass').focus();
+  }
+}
+
 function unlockAdmin(){
   const pass = document.getElementById('adminPass').value;
   const err  = document.getElementById('adminError');
@@ -316,11 +374,36 @@ function unlockAdmin(){
 }
 
 function adminStartGame(){
-  // Señal para todos los jugadores en el lobby
   localStorage.setItem(LOBBY_START, 'GO');
   clearInterval(lobbyInterval);
   clearInterval(startCheckInterval);
-  startGame();
+  // Admin no juega — muestra pantalla de monitoreo
+  showScreen('screenAdminMonitor');
+  // Actualizar monitor periódicamente
+  const monitorInterval = setInterval(() => {
+    const lobby = JSON.parse(localStorage.getItem(LOBBY_KEY)||'[]');
+    const container = document.getElementById('monitorPlayers');
+    if(container) container.innerHTML = lobby.map(p =>
+      `<div class="lobby-player">${p.avatar||'💄'} ${p.name||p}</div>`
+    ).join('');
+    const cnt = document.getElementById('monitorCount');
+    if(cnt) cnt.textContent = `${lobby.length} jugador${lobby.length!==1?'es':''} registrado${lobby.length!==1?'s':''}`;
+    if(!document.getElementById('screenAdminMonitor').classList.contains('active'))
+      clearInterval(monitorInterval);
+  }, 1500);
+}
+
+function adminReset(){
+  localStorage.removeItem(LOBBY_KEY);
+  localStorage.removeItem(LOBBY_START);
+  isAdmin = false;
+  // Resetear panel admin para próxima vez
+  document.getElementById('adminLocked').style.display   = 'block';
+  document.getElementById('adminUnlocked').style.display = 'none';
+  document.getElementById('adminPass').value = '';
+  document.getElementById('adminError').textContent = '';
+  document.getElementById('lobbyWaiting').style.display  = '';
+  showScreen('screenWelcome');
 }
 
 // ===== QUESTIONS DATABASE =====
