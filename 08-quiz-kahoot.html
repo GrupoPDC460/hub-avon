@@ -103,6 +103,24 @@ body{font-family:'Poppins',sans-serif;background:#46178F;color:#fff;min-height:1
 .confetti{position:fixed;top:-10px;width:12px;height:12px;border-radius:2px;animation:confettiFall linear forwards;z-index:9999;pointer-events:none}
 @keyframes confettiFall{0%{transform:translateY(0) rotate(0)}100%{transform:translateY(110vh) rotate(720deg)}}
 
+/* SALA DE ESPERA */
+.lobby-code{font-size:3rem;font-weight:900;color:#E91E63;letter-spacing:8px;margin:20px 0 8px;font-family:'Fredoka'}
+.lobby-label{font-size:0.9rem;color:rgba(255,255,255,0.6);text-transform:uppercase;letter-spacing:2px;margin-bottom:24px}
+.lobby-players{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;max-width:600px;margin:0 auto 24px;min-height:60px}
+.lobby-player{background:rgba(255,255,255,0.12);border:2px solid rgba(255,255,255,0.25);border-radius:50px;padding:8px 20px;font-size:1rem;font-family:'Poppins';color:#fff;animation:popIn .3s ease}
+@keyframes popIn{from{transform:scale(0.5);opacity:0}to{transform:scale(1);opacity:1}}
+.lobby-count{font-size:1rem;color:rgba(255,255,255,0.7);margin-bottom:20px}
+.lobby-waiting{font-size:0.95rem;color:rgba(255,255,255,0.5);margin-top:12px;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:0.5}50%{opacity:1}}
+.admin-panel{background:rgba(0,0,0,0.3);border:2px solid #E91E63;border-radius:16px;padding:20px;max-width:480px;margin:20px auto 0}
+.admin-title{font-size:0.8rem;text-transform:uppercase;letter-spacing:2px;color:#E91E63;margin-bottom:14px;font-family:'Poppins'}
+.admin-start-btn{padding:16px 48px;background:linear-gradient(135deg,#26a65b,#1a7a42);border:none;color:#fff;font-size:1.1rem;font-weight:700;border-radius:12px;cursor:pointer;font-family:'Fredoka';transition:all .2s;box-shadow:0 4px 0 #1a7a42;width:100%}
+.admin-start-btn:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 6px 0 #1a7a42}
+.admin-start-btn:disabled{background:#333;box-shadow:none;cursor:not-allowed;color:#666}
+.admin-pass-input{width:100%;padding:12px 16px;border-radius:10px;border:2px solid rgba(255,255,255,0.2);background:rgba(255,255,255,0.08);color:#fff;font-size:1rem;font-family:'Poppins';margin-bottom:12px;box-sizing:border-box;outline:none}
+.admin-pass-input:focus{border-color:#E91E63}
+.admin-error{color:#e21b3c;font-size:0.85rem;margin-top:8px;min-height:20px}
+
 @media(max-width:600px){
   .welcome-title{font-size:2rem}
   .q-text{font-size:1.2rem}
@@ -120,8 +138,34 @@ body{font-family:'Poppins',sans-serif;background:#46178F;color:#fff;min-height:1
   <div class="welcome-title">Quiz Avon PDC</div>
   <div class="welcome-sub">¡Demuestra cuánto sabes del proyecto!</div>
   <input type="text" class="name-input" id="playerName" placeholder="Escribe tu nombre..." maxlength="20" autocomplete="off">
-  <button class="start-btn" id="startBtn" onclick="startGame()" disabled>¡Jugar!</button>
+  <button class="start-btn" id="startBtn" onclick="joinLobby()" disabled>¡Unirme!</button>
   <div class="player-count" id="playerCount"></div>
+</div>
+
+<!-- SCREEN 1B: LOBBY (sala de espera) -->
+<div class="screen" id="screenLobby">
+  <div class="welcome-logo">⏳</div>
+  <div class="welcome-title" style="font-size:1.6rem">Sala de Espera</div>
+  <div class="lobby-label">Jugadores conectados</div>
+  <div class="lobby-players" id="lobbyPlayers"></div>
+  <div class="lobby-count" id="lobbyCount">0 jugadores listos</div>
+  <div class="lobby-waiting" id="lobbyWaiting">Esperando que el administrador inicie el juego...</div>
+
+  <!-- Panel Admin (oculto hasta ingresar contraseña) -->
+  <div class="admin-panel" id="adminPanel">
+    <div class="admin-title">🔐 Panel Administrador</div>
+    <div id="adminLocked">
+      <input type="password" class="admin-pass-input" id="adminPass" placeholder="Contraseña de admin..." autocomplete="off">
+      <button class="admin-start-btn" onclick="unlockAdmin()">Verificar</button>
+      <div class="admin-error" id="adminError"></div>
+    </div>
+    <div id="adminUnlocked" style="display:none">
+      <button class="admin-start-btn" id="adminStartBtn" onclick="adminStartGame()" disabled>
+        🚀 Iniciar Quiz (mín. 1 jugador)
+      </button>
+      <div style="margin-top:10px;font-size:0.85rem;color:rgba(255,255,255,0.5)">Todos los jugadores conectados iniciarán al mismo tiempo</div>
+    </div>
+  </div>
 </div>
 
 <!-- SCREEN 2: QUESTION -->
@@ -168,6 +212,80 @@ body{font-family:'Poppins',sans-serif;background:#46178F;color:#fff;min-height:1
 </div>
 
 <script>
+// ===== LOBBY / SALA DE ESPERA =====
+const LOBBY_KEY   = 'kahootAvonLobby';
+const LOBBY_START = 'kahootAvonStart';
+const ADMIN_PASS  = 'PDC2026';
+
+let lobbyInterval = null;
+let startCheckInterval = null;
+let isAdmin = false;
+
+function joinLobby(){
+  const name = document.getElementById('playerName').value.trim();
+  if(!name) return;
+  player = name;
+
+  // Registrar jugador en localStorage compartido
+  const lobby = JSON.parse(localStorage.getItem(LOBBY_KEY)||'[]');
+  if(!lobby.includes(name)) lobby.push(name);
+  localStorage.setItem(LOBBY_KEY, JSON.stringify(lobby));
+  // Limpiar señal de inicio por si hay una previa
+  localStorage.removeItem(LOBBY_START);
+
+  showScreen('screenLobby');
+  sfxCorrect && typeof sfxCorrect === 'function' ? null : null; // audio se activa en startGame
+  updateLobbyUI();
+  lobbyInterval = setInterval(updateLobbyUI, 1000);
+  startCheckInterval = setInterval(checkStart, 500);
+}
+
+function updateLobbyUI(){
+  const lobby = JSON.parse(localStorage.getItem(LOBBY_KEY)||'[]');
+  const container = document.getElementById('lobbyPlayers');
+  container.innerHTML = lobby.map(n =>
+    `<div class="lobby-player">${n === player ? '👤 '+n+' (tú)' : n}</div>`
+  ).join('');
+  document.getElementById('lobbyCount').textContent =
+    `${lobby.length} jugador${lobby.length!==1?'es':''} listo${lobby.length!==1?'s':''}`;
+
+  // Actualizar botón de admin si está desbloqueado
+  const btn = document.getElementById('adminStartBtn');
+  if(btn) btn.disabled = lobby.length < 1;
+}
+
+function checkStart(){
+  const signal = localStorage.getItem(LOBBY_START);
+  if(signal === 'GO'){
+    clearInterval(lobbyInterval);
+    clearInterval(startCheckInterval);
+    startGame();
+  }
+}
+
+function unlockAdmin(){
+  const pass = document.getElementById('adminPass').value;
+  const err  = document.getElementById('adminError');
+  if(pass === ADMIN_PASS){
+    isAdmin = true;
+    document.getElementById('adminLocked').style.display   = 'none';
+    document.getElementById('adminUnlocked').style.display = 'block';
+    err.textContent = '';
+    updateLobbyUI();
+  } else {
+    err.textContent = '❌ Contraseña incorrecta';
+    document.getElementById('adminPass').value = '';
+  }
+}
+
+function adminStartGame(){
+  // Señal para todos los jugadores en el lobby
+  localStorage.setItem(LOBBY_START, 'GO');
+  clearInterval(lobbyInterval);
+  clearInterval(startCheckInterval);
+  startGame();
+}
+
 // ===== QUESTIONS DATABASE =====
 const QUESTIONS = [
   // TEMA: Modelo Avon
@@ -186,10 +304,10 @@ const QUESTIONS = [
   {q:"¿En qué tramo de mora el agente tiene MÁS impacto para recuperar?",o:["Early Stage (PD1-PD3)","Late Stage (M y R)","Preventiva (A0)","Estatus B"],c:0,t:"Tramos de Mora"},
 
   // TEMA: Convenio de Pago
-  {q:"¿Qué es un convenio de pago?",o:["Acuerdo formal para pagar la deuda en cuotas","Un descuento automático","Una multa por no pagar","Un préstamo nuevo"],c:0,t:"Convenio de Pago"},
-  {q:"¿Cuál es el porcentaje mínimo de la primera cuota de un convenio?",o:["30% del total","10% del total","50% del total","No hay mínimo"],c:0,t:"Convenio de Pago"},
+  {q:"¿Qué es un convenio de pago?",o:["Un alivio financiero para pagar su factura pendiente","Un descuento automático","Una multa por no pagar","Un préstamo nuevo"],c:0,t:"Convenio de Pago"},
+  {q:"¿Cuál es el porcentaje máximo de convenio que se le puede otorgar a una representante?",o:["40% de su factura","30% de su factura","50% de su factura","No hay límite"],c:0,t:"Convenio de Pago"},
   {q:"¿Cuánto tiempo máximo puede durar un convenio de pago?",o:["6 meses","1 año","3 meses","Sin límite"],c:0,t:"Convenio de Pago"},
-  {q:"¿Cuál es la primera etapa de un convenio de pago?",o:["Contacto inicial","Firma del convenio","Evaluación financiera","Cobro judicial"],c:0,t:"Convenio de Pago"},
+  {q:"¿Cuál es la primera etapa de un convenio de pago?",o:["Validación de datos","Firma del convenio","Evaluación financiera","Cobro judicial"],c:0,t:"Convenio de Pago"},
 
   // TEMA: Script de Cobro
   {q:"¿Cuántos pasos tiene el Script Oficial de Cobro?",o:["12 pasos","5 pasos","8 pasos","20 pasos"],c:0,t:"Script de Cobro"},
@@ -600,8 +718,12 @@ function resetGame(){
   showScreen('screenWelcome');
   nameInput.value = '';
   document.getElementById('startBtn').disabled = true;
+  document.getElementById('startBtn').textContent = '¡Unirme!';
   const lb = JSON.parse(localStorage.getItem(LB_KEY)||'[]');
   document.getElementById('playerCount').textContent = `🏆 ${lb.length} jugador${lb.length>1?'es':''} han participado`;
+  // Limpiar lobby al reiniciar
+  localStorage.removeItem(LOBBY_KEY);
+  localStorage.removeItem(LOBBY_START);
   stopMusic();
 }
 
