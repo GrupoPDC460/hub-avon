@@ -10,17 +10,15 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:'Poppins',sans-serif;background:#46178F;color:#fff;min-height:100vh;overflow-x:hidden}
-
-/* ===== SCREENS ===== */
 .screen{display:none;min-height:100vh;flex-direction:column;align-items:center;justify-content:center;padding:20px;animation:fadeIn .4s ease}
 .screen.active{display:flex}
 @keyframes fadeIn{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:scale(1)}}
 
-/* ===== WELCOME ===== */
+/* WELCOME */
 .welcome-logo{font-size:4rem;margin-bottom:10px;animation:bounce 2s infinite}
 @keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-15px)}}
 .welcome-title{font-family:'Fredoka',sans-serif;font-size:3rem;font-weight:700;text-shadow:3px 3px 0 rgba(0,0,0,.3);margin-bottom:5px}
-.welcome-sub{font-size:1.1rem;opacity:.8;margin-bottom:40px}
+.welcome-sub{font-size:1.1rem;opacity:.8;margin-bottom:30px}
 .name-input{width:100%;max-width:400px;padding:18px 24px;border-radius:12px;border:3px solid rgba(255,255,255,.3);background:rgba(255,255,255,.1);color:#fff;font-size:1.2rem;font-family:'Poppins';text-align:center;outline:none;transition:all .3s}
 .name-input:focus{border-color:#fff;background:rgba(255,255,255,.2)}
 .name-input::placeholder{color:rgba(255,255,255,.5)}
@@ -28,53 +26,76 @@ body{font-family:'Poppins',sans-serif;background:#46178F;color:#fff;min-height:1
 .start-btn:hover{transform:translateY(-2px);box-shadow:0 8px 0 #ad1457}
 .start-btn:active{transform:translateY(2px);box-shadow:0 2px 0 #ad1457}
 .start-btn:disabled{opacity:.5;cursor:not-allowed}
-.player-count{margin-top:20px;font-size:.9rem;opacity:.7}
+.player-count{margin-top:16px;font-size:.9rem;opacity:.7}
+.admin-link{margin-top:28px;font-size:0.78rem;color:rgba(255,255,255,0.3);cursor:pointer;letter-spacing:1px;text-transform:uppercase;border-bottom:1px solid rgba(255,255,255,0.15);padding-bottom:2px;transition:color .2s}
+.admin-link:hover{color:rgba(255,255,255,0.6)}
 
-/* ===== AVATARES ===== */
-.avatar-label{font-size:.85rem;opacity:.7;margin-bottom:12px;text-transform:uppercase;letter-spacing:1px}
-.avatar-grid{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;max-width:420px;margin-bottom:24px}
+/* AVATARES */
+.avatar-label{font-size:.85rem;opacity:.7;margin:20px 0 10px;text-transform:uppercase;letter-spacing:1px}
+.avatar-grid{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;max-width:420px;margin-bottom:20px}
 .avatar-opt{font-size:2rem;width:56px;height:56px;border-radius:50%;background:rgba(255,255,255,.1);border:3px solid transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;user-select:none}
 .avatar-opt:hover{transform:scale(1.15);background:rgba(255,255,255,.2)}
 .avatar-opt.selected{border-color:#E91E63;background:rgba(233,30,99,.25);transform:scale(1.2);box-shadow:0 0 16px rgba(233,30,99,.5)}
 
-/* ===== QUESTION ===== */
-.q-header{width:100%;max-width:900px;text-align:center;margin-bottom:20px}
-.q-progress{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+/* LOBBY */
+.lobby-players{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;max-width:700px;margin:0 auto 20px;min-height:60px}
+.lobby-player{background:rgba(255,255,255,0.12);border:2px solid rgba(255,255,255,0.25);border-radius:50px;padding:8px 20px;font-size:1rem;color:#fff;animation:popIn .3s ease}
+@keyframes popIn{from{transform:scale(0.5);opacity:0}to{transform:scale(1);opacity:1}}
+.lobby-count{font-size:1rem;color:rgba(255,255,255,0.7);margin-bottom:12px}
+.lobby-waiting{font-size:0.9rem;color:rgba(255,255,255,0.45);animation:blink 2s infinite}
+@keyframes blink{0%,100%{opacity:.45}50%{opacity:.9}}
+.admin-panel{background:rgba(0,0,0,0.35);border:2px solid #E91E63;border-radius:16px;padding:22px;max-width:500px;width:100%;margin-top:24px}
+.admin-panel-title{font-size:0.78rem;text-transform:uppercase;letter-spacing:2px;color:#E91E63;margin-bottom:14px}
+.green-btn{padding:16px 48px;background:linear-gradient(135deg,#26a65b,#1a7a42);border:none;color:#fff;font-size:1.1rem;font-weight:700;border-radius:12px;cursor:pointer;font-family:'Fredoka';transition:all .2s;box-shadow:0 4px 0 #1a7a42;width:100%}
+.green-btn:hover:not(:disabled){transform:translateY(-2px)}
+.green-btn:disabled{background:#333;box-shadow:none;cursor:not-allowed;color:#555}
+.admin-pass-input{width:100%;padding:12px 16px;border-radius:10px;border:2px solid rgba(255,255,255,0.2);background:rgba(255,255,255,0.08);color:#fff;font-size:1rem;font-family:'Poppins';margin-bottom:12px;box-sizing:border-box;outline:none}
+.admin-pass-input:focus{border-color:#E91E63}
+.err{color:#e21b3c;font-size:0.85rem;margin-top:6px;min-height:18px}
+
+/* QUESTION */
+.q-header{width:100%;max-width:900px;text-align:center;margin-bottom:16px}
+.q-progress{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
 .q-num{font-size:.9rem;opacity:.7}
 .q-bar{flex:1;margin:0 16px;height:8px;background:rgba(255,255,255,.2);border-radius:4px;overflow:hidden}
 .q-bar-fill{height:100%;background:#E91E63;border-radius:4px;transition:width .3s}
-.q-topic{font-size:.8rem;padding:6px 16px;background:rgba(255,255,255,.15);border-radius:20px;display:inline-block;margin-bottom:16px}
-.q-timer{width:80px;height:80px;border-radius:50%;background:rgba(0,0,0,.3);display:flex;align-items:center;justify-content:center;font-size:2rem;font-weight:800;font-family:'Fredoka';margin:0 auto 20px;border:4px solid #E91E63;transition:border-color .3s}
-.q-timer.warning{border-color:#ff6b35;animation:pulse .5s infinite}
-.q-timer.danger{border-color:#e21b3c;animation:pulse .3s infinite}
-@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
-.q-text{font-size:1.5rem;font-weight:700;line-height:1.4;max-width:800px;text-align:center;margin-bottom:30px;text-shadow:2px 2px 0 rgba(0,0,0,.2)}
-
+.q-topic{font-size:.8rem;padding:6px 16px;background:rgba(255,255,255,.15);border-radius:20px;display:inline-block;margin-bottom:12px}
+.q-timer{width:80px;height:80px;border-radius:50%;background:rgba(0,0,0,.3);display:flex;align-items:center;justify-content:center;font-size:2rem;font-weight:800;font-family:'Fredoka';margin:0 auto 16px;border:4px solid #E91E63;transition:border-color .3s}
+.q-timer.warning{border-color:#ff6b35;animation:tpulse .5s infinite}
+.q-timer.danger{border-color:#e21b3c;animation:tpulse .3s infinite}
+@keyframes tpulse{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
+.q-text{font-size:1.5rem;font-weight:700;line-height:1.4;max-width:800px;text-align:center;margin-bottom:26px;text-shadow:2px 2px 0 rgba(0,0,0,.2)}
 .answers{display:grid;grid-template-columns:1fr 1fr;gap:14px;width:100%;max-width:900px}
-.answer-btn{padding:22px 20px;border:none;border-radius:12px;color:#fff;font-size:1.15rem;font-weight:700;cursor:pointer;font-family:'Poppins';transition:all .2s;text-align:left;display:flex;align-items:center;gap:14px;box-shadow:0 5px 0 rgba(0,0,0,.25);position:relative;overflow:hidden}
+.answer-btn{padding:22px 20px;border:none;border-radius:12px;color:#fff;font-size:1.15rem;font-weight:700;cursor:pointer;font-family:'Poppins';transition:all .2s;text-align:left;display:flex;align-items:center;gap:14px;position:relative;overflow:hidden}
 .answer-btn:hover{transform:translateY(-2px);filter:brightness(1.1)}
-.answer-btn:active{transform:translateY(2px);box-shadow:0 2px 0 rgba(0,0,0,.25)}
 .answer-btn.disabled{pointer-events:none;opacity:.6}
-.answer-btn.correct{animation:correctPulse .6s;box-shadow:0 0 30px rgba(38,166,91,.6)}
-.answer-btn.wrong{opacity:.4;transform:scale(.95)}
-@keyframes correctPulse{0%{transform:scale(1)}50%{transform:scale(1.05)}100%{transform:scale(1)}}
+.answer-btn.correct{animation:cpulse .6s;box-shadow:0 0 30px rgba(38,166,91,.7)!important}
+.answer-btn.wrong{opacity:.35;transform:scale(.95)}
+@keyframes cpulse{0%{transform:scale(1)}50%{transform:scale(1.04)}100%{transform:scale(1)}}
 .a0{background:#e21b3c}.a1{background:#1368ce}.a2{background:#d89e00}.a3{background:#26a65b}.a4{background:#9c27b0}.a5{background:#f57c00}
 .answer-shape{font-size:1.5rem;flex-shrink:0;width:30px;text-align:center}
 .answer-text{flex:1}
 
-/* ===== RESULT (after each question) ===== */
+/* ADMIN VIEW — respuestas solo formas (sin texto, como el proyector Kahoot) */
+.admin-answers{display:grid;grid-template-columns:1fr 1fr;gap:14px;width:100%;max-width:700px}
+.admin-ans{padding:30px 20px;border:none;border-radius:12px;color:#fff;font-size:2.5rem;display:flex;align-items:center;justify-content:center;opacity:0.9}
+.admin-ans.correct-reveal{animation:cpulse .6s;box-shadow:0 0 40px rgba(38,166,91,.8)!important;opacity:1}
+.admin-ans.wrong-reveal{opacity:.3}
+.answer-count{font-size:0.8rem;margin-top:6px;text-align:center;opacity:.7}
+
+/* RESULT */
 .result-icon{font-size:5rem;margin-bottom:10px}
 .result-text{font-size:2rem;font-weight:800;font-family:'Fredoka'}
 .result-points{font-size:1.2rem;margin-top:8px;opacity:.8}
 .result-streak{font-size:1rem;margin-top:4px;color:#ffd700}
-.next-btn{margin-top:30px;padding:16px 50px;background:#fff;color:#46178F;border:none;border-radius:12px;font-size:1.1rem;font-weight:700;cursor:pointer;font-family:'Fredoka';box-shadow:0 5px 0 rgba(0,0,0,.2);transition:all .2s}
+.next-btn{margin-top:28px;padding:16px 50px;background:#fff;color:#46178F;border:none;border-radius:12px;font-size:1.1rem;font-weight:700;cursor:pointer;font-family:'Fredoka';box-shadow:0 5px 0 rgba(0,0,0,.2);transition:all .2s}
 .next-btn:hover{transform:translateY(-2px)}
 
-/* ===== LEADERBOARD ===== */
-.lb-title{font-family:'Fredoka';font-size:2.5rem;margin-bottom:30px}
-.lb-list{width:100%;max-width:500px}
-.lb-entry{display:flex;align-items:center;gap:16px;padding:14px 20px;margin-bottom:8px;border-radius:12px;background:rgba(255,255,255,.1);animation:slideIn .4s ease backwards;font-weight:600}
-.lb-entry:nth-child(1){background:linear-gradient(90deg,#ffd700,#f0c000);color:#333;font-size:1.2rem}
+/* LEADERBOARD */
+.lb-title{font-family:'Fredoka';font-size:2.5rem;margin-bottom:28px}
+.lb-list{width:100%;max-width:520px;padding:0;list-style:none}
+.lb-entry{display:flex;align-items:center;gap:14px;padding:14px 20px;margin-bottom:8px;border-radius:12px;background:rgba(255,255,255,.1);animation:slideIn .4s ease backwards;font-weight:600}
+.lb-entry:nth-child(1){background:linear-gradient(90deg,#ffd700,#f0c000);color:#333;font-size:1.15rem}
 .lb-entry:nth-child(2){background:linear-gradient(90deg,#c0c0c0,#a8a8a8);color:#333}
 .lb-entry:nth-child(3){background:linear-gradient(90deg,#cd7f32,#b5651d);color:#fff}
 @keyframes slideIn{from{opacity:0;transform:translateX(-30px)}to{opacity:1;transform:translateX(0)}}
@@ -82,56 +103,36 @@ body{font-family:'Poppins',sans-serif;background:#46178F;color:#fff;min-height:1
 .lb-name{flex:1}
 .lb-score{font-weight:800;font-family:'Fredoka'}
 
-/* ===== PODIUM ===== */
-.podium-title{font-family:'Fredoka';font-size:2.5rem;margin-bottom:10px}
-.podium-sub{opacity:.7;margin-bottom:40px}
-.podium{display:flex;align-items:flex-end;gap:12px;margin-bottom:40px}
-.podium-place{display:flex;flex-direction:column;align-items:center;border-radius:12px 12px 0 0;padding:16px 24px 20px;min-width:110px;animation:podiumRise .8s ease backwards}
+/* PODIUM */
+.podium-title{font-family:'Fredoka';font-size:2.5rem;margin-bottom:8px}
+.podium-sub{opacity:.7;margin-bottom:36px}
+.podium{display:flex;align-items:flex-end;gap:12px;margin-bottom:36px}
+.podium-place{display:flex;flex-direction:column;align-items:center;border-radius:12px 12px 0 0;padding:16px 24px 20px;min-width:110px;animation:podRise .8s ease backwards}
 .podium-place:nth-child(1){background:#c0c0c0;height:160px;animation-delay:.3s}
 .podium-place:nth-child(2){background:#ffd700;height:200px;animation-delay:.6s}
 .podium-place:nth-child(3){background:#cd7f32;height:130px;animation-delay:.9s}
-@keyframes podiumRise{from{height:0;opacity:0}to{opacity:1}}
-.podium-medal{font-size:2.5rem}
-.podium-name{font-weight:700;font-size:.95rem;color:#333;margin-top:8px}
-.podium-pts{font-size:.85rem;color:#555;font-weight:600}
+@keyframes podRise{from{height:0;opacity:0}to{opacity:1}}
+.podium-name{font-weight:700;font-size:.9rem;color:#333;margin-top:6px}
+.podium-pts{font-size:.8rem;color:#555;font-weight:600}
 
-/* ===== REPORT ===== */
-.report{width:100%;max-width:700px;margin-top:20px}
-.report-title{font-size:1.3rem;font-weight:700;margin-bottom:16px;text-align:center}
-.report-topic{background:rgba(255,255,255,.1);border-radius:12px;padding:16px 20px;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between}
-.topic-name{font-weight:600}
-.topic-bar{flex:1;margin:0 16px;height:10px;background:rgba(255,255,255,.15);border-radius:5px;overflow:hidden}
+/* REPORT */
+.report{width:100%;max-width:700px;margin-top:16px}
+.report-title{font-size:1.3rem;font-weight:700;margin-bottom:14px;text-align:center}
+.report-topic{background:rgba(255,255,255,.1);border-radius:12px;padding:14px 18px;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between}
+.topic-bar{flex:1;margin:0 14px;height:10px;background:rgba(255,255,255,.15);border-radius:5px;overflow:hidden}
 .topic-fill{height:100%;border-radius:5px;transition:width 1s ease}
 .topic-pct{font-weight:800;font-family:'Fredoka';min-width:50px;text-align:right}
-.report-download{margin-top:24px;padding:14px 40px;background:#26a65b;border:none;color:#fff;border-radius:12px;font-size:1rem;font-weight:700;cursor:pointer;font-family:'Poppins';box-shadow:0 4px 0 #1a7a42;transition:all .2s}
+.report-download{padding:14px 36px;background:#26a65b;border:none;color:#fff;border-radius:12px;font-size:1rem;font-weight:700;cursor:pointer;font-family:'Poppins';box-shadow:0 4px 0 #1a7a42;transition:all .2s}
 .report-download:hover{transform:translateY(-2px)}
 .report-actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:20px}
 
-.confetti{position:fixed;top:-10px;width:12px;height:12px;border-radius:2px;animation:confettiFall linear forwards;z-index:9999;pointer-events:none}
-@keyframes confettiFall{0%{transform:translateY(0) rotate(0)}100%{transform:translateY(110vh) rotate(720deg)}}
-
-/* SALA DE ESPERA */
-.lobby-code{font-size:3rem;font-weight:900;color:#E91E63;letter-spacing:8px;margin:20px 0 8px;font-family:'Fredoka'}
-.lobby-label{font-size:0.9rem;color:rgba(255,255,255,0.6);text-transform:uppercase;letter-spacing:2px;margin-bottom:24px}
-.lobby-players{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;max-width:600px;margin:0 auto 24px;min-height:60px}
-.lobby-player{background:rgba(255,255,255,0.12);border:2px solid rgba(255,255,255,0.25);border-radius:50px;padding:8px 20px;font-size:1rem;font-family:'Poppins';color:#fff;animation:popIn .3s ease}
-@keyframes popIn{from{transform:scale(0.5);opacity:0}to{transform:scale(1);opacity:1}}
-.lobby-count{font-size:1rem;color:rgba(255,255,255,0.7);margin-bottom:20px}
-.lobby-waiting{font-size:0.95rem;color:rgba(255,255,255,0.5);margin-top:12px;animation:pulse 2s infinite}
-@keyframes pulse{0%,100%{opacity:0.5}50%{opacity:1}}
-.admin-panel{background:rgba(0,0,0,0.3);border:2px solid #E91E63;border-radius:16px;padding:20px;max-width:480px;margin:20px auto 0}
-.admin-title{font-size:0.8rem;text-transform:uppercase;letter-spacing:2px;color:#E91E63;margin-bottom:14px;font-family:'Poppins'}
-.admin-start-btn{padding:16px 48px;background:linear-gradient(135deg,#26a65b,#1a7a42);border:none;color:#fff;font-size:1.1rem;font-weight:700;border-radius:12px;cursor:pointer;font-family:'Fredoka';transition:all .2s;box-shadow:0 4px 0 #1a7a42;width:100%}
-.admin-start-btn:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 6px 0 #1a7a42}
-.admin-start-btn:disabled{background:#333;box-shadow:none;cursor:not-allowed;color:#666}
-.admin-pass-input{width:100%;padding:12px 16px;border-radius:10px;border:2px solid rgba(255,255,255,0.2);background:rgba(255,255,255,0.08);color:#fff;font-size:1rem;font-family:'Poppins';margin-bottom:12px;box-sizing:border-box;outline:none}
-.admin-pass-input:focus{border-color:#E91E63}
-.admin-error{color:#e21b3c;font-size:0.85rem;margin-top:8px;min-height:20px}
+.confetti{position:fixed;top:-10px;width:12px;height:12px;border-radius:2px;animation:cfFall linear forwards;z-index:9999;pointer-events:none}
+@keyframes cfFall{0%{transform:translateY(0) rotate(0)}100%{transform:translateY(110vh) rotate(720deg)}}
 
 @media(max-width:600px){
   .welcome-title{font-size:2rem}
   .q-text{font-size:1.2rem}
-  .answers{grid-template-columns:1fr;gap:10px}
+  .answers,.admin-answers{grid-template-columns:1fr;gap:10px}
   .answer-btn{padding:16px;font-size:1rem}
   .podium-place{min-width:80px;padding:12px 16px}
 }
@@ -139,75 +140,101 @@ body{font-family:'Poppins',sans-serif;background:#46178F;color:#fff;min-height:1
 </head>
 <body>
 
-<!-- SCREEN 1: WELCOME -->
+<!-- ══ SCREEN: WELCOME (JUGADOR) ══ -->
 <div class="screen active" id="screenWelcome">
   <div class="welcome-logo">🧠</div>
   <div class="welcome-title">Quiz Avon PDC</div>
   <div class="welcome-sub">¡Demuestra cuánto sabes del proyecto!</div>
   <input type="text" class="name-input" id="playerName" placeholder="Escribe tu nombre..." maxlength="20" autocomplete="off">
-
-  <div class="avatar-label" style="margin-top:24px">Elige tu avatar</div>
+  <div class="avatar-label">Elige tu avatar</div>
   <div class="avatar-grid" id="avatarGrid"></div>
-
   <button class="start-btn" id="startBtn" onclick="joinLobby()" disabled>¡Unirme!</button>
   <div class="player-count" id="playerCount"></div>
-  <div style="margin-top:28px">
-    <span onclick="showAdminLogin()" style="font-size:0.78rem;color:rgba(255,255,255,0.3);cursor:pointer;letter-spacing:1px;text-transform:uppercase;border-bottom:1px solid rgba(255,255,255,0.15);padding-bottom:2px;transition:color .2s" onmouseover="this.style.color='rgba(255,255,255,0.6)'" onmouseout="this.style.color='rgba(255,255,255,0.3)'">⚙ Acceso administrador</span>
-  </div>
+  <span class="admin-link" onclick="showAdminLogin()">⚙ Acceso administrador</span>
 </div>
 
-<!-- SCREEN ADMIN LOGIN -->
+<!-- ══ SCREEN: ADMIN LOGIN ══ -->
 <div class="screen" id="screenAdminLogin">
-  <div style="font-size:3rem;margin-bottom:12px">🔐</div>
-  <div class="welcome-title" style="font-size:1.8rem;margin-bottom:6px">Panel Administrador</div>
-  <div class="welcome-sub" style="margin-bottom:32px">Ingresa tu contraseña para gestionar el quiz</div>
-  <input type="password" class="name-input" id="adminLoginPass" placeholder="Contraseña..." autocomplete="off" onkeydown="if(event.key==='Enter') submitAdminLogin()">
-  <button class="start-btn" style="margin-top:16px" onclick="submitAdminLogin()">Ingresar</button>
-  <div id="adminLoginError" style="margin-top:14px;color:#e21b3c;font-size:0.9rem;min-height:20px"></div>
-  <span onclick="showScreen('screenWelcome')" style="margin-top:24px;font-size:0.85rem;color:rgba(255,255,255,0.4);cursor:pointer" onmouseover="this.style.color='rgba(255,255,255,0.7)'" onmouseout="this.style.color='rgba(255,255,255,0.4)'">← Volver</span>
+  <div style="font-size:3rem;margin-bottom:14px">🔐</div>
+  <div class="welcome-title" style="font-size:1.9rem;margin-bottom:6px">Administrador</div>
+  <div class="welcome-sub" style="margin-bottom:28px">Acceso exclusivo para el host del quiz</div>
+  <input type="password" class="name-input" id="adminLoginPass" placeholder="Contraseña..." autocomplete="off"
+    onkeydown="if(event.key==='Enter') submitAdminLogin()">
+  <button class="start-btn" style="margin-top:16px" onclick="submitAdminLogin()">Entrar</button>
+  <div id="adminLoginError" style="margin-top:12px;color:#e21b3c;font-size:.9rem;min-height:20px"></div>
+  <span onclick="showScreen('screenWelcome')" style="margin-top:22px;font-size:.85rem;color:rgba(255,255,255,.4);cursor:pointer" onmouseover="this.style.color='rgba(255,255,255,.7)'" onmouseout="this.style.color='rgba(255,255,255,.4)'">← Volver</span>
+</div>
 
-<!-- SCREEN 1B: LOBBY (sala de espera) -->
+<!-- ══ SCREEN: LOBBY (JUGADOR — sala de espera) ══ -->
 <div class="screen" id="screenLobby">
-  <div class="welcome-logo">⏳</div>
-  <div class="welcome-title" style="font-size:1.6rem">Sala de Espera</div>
-  <div class="lobby-label">Jugadores conectados</div>
+  <div class="welcome-logo" style="font-size:3rem">⏳</div>
+  <div class="welcome-title" style="font-size:1.8rem">Sala de Espera</div>
+  <div style="font-size:.85rem;color:rgba(255,255,255,.55);text-transform:uppercase;letter-spacing:2px;margin:10px 0 22px">Jugadores conectados</div>
   <div class="lobby-players" id="lobbyPlayers"></div>
   <div class="lobby-count" id="lobbyCount">0 jugadores listos</div>
-  <div class="lobby-waiting" id="lobbyWaiting">Esperando que el administrador inicie el juego...</div>
+  <div class="lobby-waiting">Esperando que el administrador inicie el quiz...</div>
+</div>
 
-  <!-- Panel Admin (oculto hasta ingresar contraseña) -->
-  <div class="admin-panel" id="adminPanel">
-    <div class="admin-title">🔐 Panel Administrador</div>
-    <div id="adminLocked">
-      <input type="password" class="admin-pass-input" id="adminPass" placeholder="Contraseña de admin..." autocomplete="off">
-      <button class="admin-start-btn" onclick="unlockAdmin()">Verificar</button>
-      <div class="admin-error" id="adminError"></div>
-    </div>
-    <div id="adminUnlocked" style="display:none">
-      <button class="admin-start-btn" id="adminStartBtn" onclick="adminStartGame()" disabled>
-        🚀 Iniciar Quiz (mín. 1 jugador)
-      </button>
-      <div style="margin-top:10px;font-size:0.85rem;color:rgba(255,255,255,0.5)">Todos los jugadores conectados iniciarán al mismo tiempo</div>
-    </div>
+<!-- ══ SCREEN: ADMIN LOBBY ══ -->
+<div class="screen" id="screenAdminLobby">
+  <div class="welcome-logo" style="font-size:3rem;animation:none">🎮</div>
+  <div class="welcome-title" style="font-size:1.8rem">Panel Host</div>
+  <div style="font-size:.85rem;color:rgba(255,255,255,.55);text-transform:uppercase;letter-spacing:2px;margin:10px 0 22px">Jugadores conectados</div>
+  <div class="lobby-players" id="adminLobbyPlayers"></div>
+  <div class="lobby-count" id="adminLobbyCount">0 jugadores listos</div>
+  <div class="admin-panel">
+    <div class="admin-panel-title">🚀 Iniciar cuando estén todos</div>
+    <button class="green-btn" id="adminStartBtn" onclick="adminLaunch()" disabled>
+      Iniciar Quiz
+    </button>
+    <div style="margin-top:10px;font-size:.82rem;color:rgba(255,255,255,.4);text-align:center">Todos los jugadores arrancan al mismo tiempo</div>
   </div>
 </div>
 
-<!-- SCREEN ADMIN MONITOR -->
-<div class="screen" id="screenAdminMonitor">
-  <div style="font-size:3rem;margin-bottom:8px">📊</div>
-  <div class="welcome-title" style="font-size:1.6rem;margin-bottom:6px">Quiz en curso</div>
-  <div class="welcome-sub" style="margin-bottom:28px">Los jugadores están respondiendo...</div>
-  <div class="admin-panel" style="width:100%;max-width:500px">
-    <div class="admin-title">👥 Jugadores en sesión</div>
-    <div class="lobby-players" id="monitorPlayers" style="min-height:60px"></div>
-    <div class="lobby-count" id="monitorCount" style="margin:12px 0 0"></div>
+<!-- ══ SCREEN: ADMIN VIEW (VE LAS PREGUNTAS COMO PROYECTOR) ══ -->
+<div class="screen" id="screenAdminView">
+  <div class="q-header">
+    <div class="q-progress">
+      <span class="q-num" id="aQNum"></span>
+      <div class="q-bar"><div class="q-bar-fill" id="aQBarFill"></div></div>
+      <span class="q-num" id="aQTopic"></span>
+    </div>
   </div>
-  <button class="admin-start-btn" onclick="adminReset()" style="margin-top:24px;max-width:300px;background:linear-gradient(135deg,#e21b3c,#a8132d);box-shadow:0 4px 0 #a8132d">
+  <div class="q-timer" id="aQTimer">15</div>
+  <div class="q-text" id="aQText"></div>
+  <!-- Solo muestra formas/colores, sin texto (como el proyector real) -->
+  <div class="admin-answers" id="adminAnswers"></div>
+  <div style="margin-top:18px;font-size:.82rem;color:rgba(255,255,255,.4)" id="adminAnswerCount">0 han respondido</div>
+</div>
+
+<!-- ══ SCREEN: ADMIN RESULT (entre preguntas) ══ -->
+<div class="screen" id="screenAdminResult">
+  <div class="q-text" style="font-size:1.1rem;opacity:.7;margin-bottom:8px" id="aResultQuestion"></div>
+  <div style="font-family:'Fredoka';font-size:2rem;margin-bottom:24px;color:#26a65b">✅ Respuesta correcta:</div>
+  <div style="font-size:1.6rem;font-weight:700;background:rgba(38,166,91,.2);border:2px solid #26a65b;border-radius:14px;padding:16px 32px;margin-bottom:28px;text-align:center;max-width:600px" id="aCorrectAnswer"></div>
+  <!-- Mini leaderboard -->
+  <div style="width:100%;max-width:480px">
+    <div style="font-size:.8rem;text-transform:uppercase;letter-spacing:1px;opacity:.5;margin-bottom:12px">Top jugadores</div>
+    <ul class="lb-list" id="aLbMini"></ul>
+  </div>
+  <button class="green-btn" style="max-width:300px;margin-top:20px" onclick="adminNextQuestion()">
+    Siguiente pregunta →
+  </button>
+</div>
+
+<!-- ══ SCREEN: ADMIN FINAL ══ -->
+<div class="screen" id="screenAdminFinal">
+  <div class="podium-title">🏆 ¡Quiz Finalizado!</div>
+  <div class="podium" id="adminPodium"></div>
+  <div style="width:100%;max-width:500px">
+    <ul class="lb-list" id="adminFinalLb"></ul>
+  </div>
+  <button class="green-btn" style="max-width:320px;margin-top:28px" onclick="adminReset()">
     🔄 Nueva sesión
   </button>
 </div>
 
-<!-- SCREEN 2: QUESTION -->
+<!-- ══ SCREEN: QUESTION (JUGADOR) ══ -->
 <div class="screen" id="screenQuestion">
   <div class="q-header">
     <div class="q-progress">
@@ -222,23 +249,24 @@ body{font-family:'Poppins',sans-serif;background:#46178F;color:#fff;min-height:1
   <div class="answers" id="answers"></div>
 </div>
 
-<!-- SCREEN 3: RESULT -->
+<!-- ══ SCREEN: RESULT (JUGADOR) ══ -->
 <div class="screen" id="screenResult">
   <div class="result-icon" id="resultIcon"></div>
   <div class="result-text" id="resultText"></div>
   <div class="result-points" id="resultPoints"></div>
   <div class="result-streak" id="resultStreak"></div>
-  <button class="next-btn" onclick="nextQuestion()">Siguiente →</button>
+  <div style="margin-top:14px;font-size:.9rem;opacity:.6" id="resultCorrect"></div>
+  <div class="lobby-waiting" style="margin-top:20px">Esperando que el host avance...</div>
 </div>
 
-<!-- SCREEN 4: LEADERBOARD -->
+<!-- ══ SCREEN: LEADERBOARD (JUGADOR) ══ -->
 <div class="screen" id="screenLeaderboard">
   <div class="lb-title">🏆 Tabla de Posiciones</div>
-  <div class="lb-list" id="lbList"></div>
-  <button class="next-btn" style="margin-top:30px" onclick="continueFromLB()">Continuar →</button>
+  <ul class="lb-list" id="lbList"></ul>
+  <div class="lobby-waiting" style="margin-top:20px">Esperando al host...</div>
 </div>
 
-<!-- SCREEN 5: FINAL -->
+<!-- ══ SCREEN: FINAL (JUGADOR) ══ -->
 <div class="screen" id="screenFinal">
   <div class="podium-title">🎉 ¡Resultados Finales!</div>
   <div class="podium-sub" id="finalSub"></div>
@@ -246,201 +274,70 @@ body{font-family:'Poppins',sans-serif;background:#46178F;color:#fff;min-height:1
   <div class="report" id="report"></div>
   <div class="report-actions">
     <button class="report-download" onclick="downloadReport()">📥 Descargar Reporte</button>
-    <button class="next-btn" onclick="resetGame()">🔄 Jugar de nuevo</button>
   </div>
 </div>
 
 <script>
-// ===== AVATARES =====
+// ══════════════════════════════════════════════
+//  AVATARES
+// ══════════════════════════════════════════════
 const AVATARS = ['💄','💅','🌸','✨','🧴','🪞','💋','🌺','💐','🧖‍♀️','💎','🎀','🌷','🧼','🫧','👑','🌹','💆‍♀️','🪷','🧽'];
 let selectedAvatar = AVATARS[0];
-
-(function initAvatars(){
+(function(){
   const grid = document.getElementById('avatarGrid');
-  AVATARS.forEach((av, i) => {
-    const btn = document.createElement('div');
-    btn.className = 'avatar-opt' + (i===0?' selected':'');
-    btn.textContent = av;
-    btn.onclick = () => {
-      document.querySelectorAll('.avatar-opt').forEach(b=>b.classList.remove('selected'));
-      btn.classList.add('selected');
-      selectedAvatar = av;
+  AVATARS.forEach((av,i)=>{
+    const b = document.createElement('div');
+    b.className='avatar-opt'+(i===0?' selected':'');
+    b.textContent=av;
+    b.onclick=()=>{
+      document.querySelectorAll('.avatar-opt').forEach(x=>x.classList.remove('selected'));
+      b.classList.add('selected'); selectedAvatar=av;
     };
-    grid.appendChild(btn);
+    grid.appendChild(b);
   });
 })();
 
-// ===== LOBBY / SALA DE ESPERA =====
-const LOBBY_KEY   = 'kahootAvonLobby';
-const LOBBY_START = 'kahootAvonStart';
-const ADMIN_PASS  = 'PDC2026';
-
-let lobbyInterval = null;
-let startCheckInterval = null;
-let isAdmin = false;
-
-function joinLobby(){
-  const name = document.getElementById('playerName').value.trim();
-  if(!name) return;
-  player = name;
-
-  // Limpiar lobby previo si es el primer jugador en unirse tras un reset
-  // (si no hay señal de inicio activa, es sesión nueva)
-  const existingStart = localStorage.getItem(LOBBY_START);
-  if(!existingStart){
-    localStorage.removeItem(LOBBY_KEY); // limpia sesión anterior
-  }
-
-  const lobby = JSON.parse(localStorage.getItem(LOBBY_KEY)||'[]');
-  const entry = { name, avatar: selectedAvatar };
-  if(!lobby.find(p => p.name === name)) lobby.push(entry);
-  localStorage.setItem(LOBBY_KEY, JSON.stringify(lobby));
-  localStorage.removeItem(LOBBY_START);
-
-  showScreen('screenLobby');
-  updateLobbyUI();
-  lobbyInterval = setInterval(updateLobbyUI, 1000);
-  startCheckInterval = setInterval(checkStart, 500);
-}
-
-function updateLobbyUI(){
-  const lobby = JSON.parse(localStorage.getItem(LOBBY_KEY)||'[]');
-  const container = document.getElementById('lobbyPlayers');
-  container.innerHTML = lobby.map(p => {
-    const av  = p.avatar || '💄';
-    const nm  = p.name   || p;
-    const isMe = nm === player;
-    return `<div class="lobby-player">${av} ${nm}${isMe?' (tú)':''}</div>`;
-  }).join('');
-  document.getElementById('lobbyCount').textContent =
-    `${lobby.length} jugador${lobby.length!==1?'es':''} listo${lobby.length!==1?'s':''}`;
-
-  const btn = document.getElementById('adminStartBtn');
-  if(btn) btn.disabled = lobby.length < 1;
-}
-
-function checkStart(){
-  const signal = localStorage.getItem(LOBBY_START);
-  if(signal === 'GO'){
-    clearInterval(lobbyInterval);
-    clearInterval(startCheckInterval);
-    startGame();
-  }
-}
-
-function showAdminLogin(){
-  showScreen('screenAdminLogin');
-  setTimeout(()=>document.getElementById('adminLoginPass').focus(), 300);
-}
-
-function submitAdminLogin(){
-  const pass = document.getElementById('adminLoginPass').value;
-  const err  = document.getElementById('adminLoginError');
-  if(pass === ADMIN_PASS){
-    isAdmin = true;
-    document.getElementById('adminLoginPass').value = '';
-    err.textContent = '';
-    // Limpiar lobby para nueva sesión
-    localStorage.removeItem(LOBBY_KEY);
-    localStorage.removeItem(LOBBY_START);
-    // Ir directo al lobby como admin (sin registrarse como jugador)
-    showScreen('screenLobby');
-    // Desbloquear panel admin directamente
-    document.getElementById('adminLocked').style.display   = 'none';
-    document.getElementById('adminUnlocked').style.display = 'block';
-    document.getElementById('lobbyWaiting').style.display  = 'none';
-    updateLobbyUI();
-    lobbyInterval = setInterval(updateLobbyUI, 1000);
-  } else {
-    err.textContent = '❌ Contraseña incorrecta';
-    document.getElementById('adminLoginPass').value = '';
-    document.getElementById('adminLoginPass').focus();
-  }
-}
-
-function unlockAdmin(){
-  const pass = document.getElementById('adminPass').value;
-  const err  = document.getElementById('adminError');
-  if(pass === ADMIN_PASS){
-    isAdmin = true;
-    document.getElementById('adminLocked').style.display   = 'none';
-    document.getElementById('adminUnlocked').style.display = 'block';
-    err.textContent = '';
-    updateLobbyUI();
-  } else {
-    err.textContent = '❌ Contraseña incorrecta';
-    document.getElementById('adminPass').value = '';
-  }
-}
-
-function adminStartGame(){
-  localStorage.setItem(LOBBY_START, 'GO');
-  clearInterval(lobbyInterval);
-  clearInterval(startCheckInterval);
-  // Admin no juega — muestra pantalla de monitoreo
-  showScreen('screenAdminMonitor');
-  // Actualizar monitor periódicamente
-  const monitorInterval = setInterval(() => {
-    const lobby = JSON.parse(localStorage.getItem(LOBBY_KEY)||'[]');
-    const container = document.getElementById('monitorPlayers');
-    if(container) container.innerHTML = lobby.map(p =>
-      `<div class="lobby-player">${p.avatar||'💄'} ${p.name||p}</div>`
-    ).join('');
-    const cnt = document.getElementById('monitorCount');
-    if(cnt) cnt.textContent = `${lobby.length} jugador${lobby.length!==1?'es':''} registrado${lobby.length!==1?'s':''}`;
-    if(!document.getElementById('screenAdminMonitor').classList.contains('active'))
-      clearInterval(monitorInterval);
-  }, 1500);
-}
-
-function adminReset(){
-  localStorage.removeItem(LOBBY_KEY);
-  localStorage.removeItem(LOBBY_START);
-  isAdmin = false;
-  // Resetear panel admin para próxima vez
-  document.getElementById('adminLocked').style.display   = 'block';
-  document.getElementById('adminUnlocked').style.display = 'none';
-  document.getElementById('adminPass').value = '';
-  document.getElementById('adminError').textContent = '';
-  document.getElementById('lobbyWaiting').style.display  = '';
-  showScreen('screenWelcome');
-}
-
-// ===== QUESTIONS DATABASE =====
+// ══════════════════════════════════════════════
+//  PREGUNTAS
+// ══════════════════════════════════════════════
 const QUESTIONS = [
-  // TEMA: Modelo Avon
   {q:"¿Qué es Avon?",o:["Empresa de cosméticos por venta directa","Banco digital","Supermercado online","Red social"],c:0,t:"Modelo Avon"},
   {q:"¿Cómo se le llama a la persona que vende productos Avon?",o:["Representante","Empleada","Socia","Distribuidora"],c:0,t:"Modelo Avon"},
-  {q:"¿Cada cuánto tiempo aproximadamente hay una campaña Avon?",o:["Cada 2 semanas","Cada mes","Cada 3 meses","Cada semana"],c:0,t:"Modelo Avon"},
+  {q:"¿Cada cuánto tiempo hay una campaña Avon?",o:["Cada 2 semanas","Cada mes","Cada 3 meses","Cada semana"],c:0,t:"Modelo Avon"},
   {q:"¿Cuántas campañas hay aproximadamente en un año?",o:["12 campañas","26 campañas","19 campañas","52 campañas"],c:2,t:"Modelo Avon"},
   {q:"¿Qué es la fecha de reparto?",o:["Cuando Avon entrega los productos","Cuando la representante paga","Cuando se hace el pedido","Cuando se cierra la campaña"],c:0,t:"Modelo Avon"},
-
-  // TEMA: Tramos de Mora
   {q:"¿Qué significa PD en cobranza Avon?",o:["Past Due (Vencido)","Pago Directo","Producto Devuelto","Plazo Definido"],c:0,t:"Tramos de Mora"},
   {q:"¿Cuántos días de mora tiene una cuenta en PD1 (A1)?",o:["1 a 19 días","1 a 45 días","20 a 38 días","1 a 10 días"],c:0,t:"Tramos de Mora"},
   {q:"¿Qué estatus tiene una cuenta con más de 180 días sin pagar?",o:["M - Morosidad","C - Cobro","A3 - Alerta","R - Recuperación"],c:0,t:"Tramos de Mora"},
   {q:"¿Qué es una cuenta A0?",o:["Cuenta al día, solo recordatorio","Cuenta con 30 días de mora","Cuenta cancelada","Cuenta nueva sin pedidos"],c:0,t:"Tramos de Mora"},
-  {q:"¿Cuál es el flujo correcto de los estatus de mora?",o:["A0 → A1 → A2 → A3 → C → M → R","A → B → C → D → E","PD1 → PD2 → PD3 → Final","Nuevo → Medio → Viejo → Cerrado"],c:0,t:"Tramos de Mora"},
-  {q:"¿En qué tramo de mora el agente tiene MÁS impacto para recuperar?",o:["Early Stage (PD1-PD3)","Late Stage (M y R)","Preventiva (A0)","Estatus B"],c:0,t:"Tramos de Mora"},
-
-  // TEMA: Convenio de Pago
+  {q:"¿Cuál es el flujo correcto de los estatus de mora?",o:["A0→A1→A2→A3→C→M→R","A→B→C→D→E","PD1→PD2→PD3→Final","Nuevo→Medio→Viejo→Cerrado"],c:0,t:"Tramos de Mora"},
+  {q:"¿En qué tramo el agente tiene MÁS impacto para recuperar?",o:["Early Stage (PD1-PD3)","Late Stage (M y R)","Preventiva (A0)","Estatus B"],c:0,t:"Tramos de Mora"},
   {q:"¿Qué es un convenio de pago?",o:["Un alivio financiero para pagar su factura pendiente","Un descuento automático","Una multa por no pagar","Un préstamo nuevo"],c:0,t:"Convenio de Pago"},
-  {q:"¿Cuál es el porcentaje máximo de convenio que se le puede otorgar a una representante?",o:["40% de su factura","30% de su factura","50% de su factura","No hay límite"],c:0,t:"Convenio de Pago"},
+  {q:"¿Cuál es el porcentaje máximo de convenio que se le puede otorgar?",o:["40% de su factura","30% de su factura","50% de su factura","No hay límite"],c:0,t:"Convenio de Pago"},
   {q:"¿Cuánto tiempo máximo puede durar un convenio de pago?",o:["6 meses","1 año","3 meses","Sin límite"],c:0,t:"Convenio de Pago"},
   {q:"¿Cuál es la primera etapa de un convenio de pago?",o:["Validación de datos","Firma del convenio","Evaluación financiera","Cobro judicial"],c:0,t:"Convenio de Pago"},
-
-  // TEMA: Script de Cobro
   {q:"¿Cuántos pasos tiene el Script Oficial de Cobro?",o:["12 pasos","5 pasos","8 pasos","20 pasos"],c:0,t:"Script de Cobro"},
-  {q:"¿Qué paso del script es OBLIGATORIO y nunca debe omitirse?",o:["Ítem regulatorio (aviso de grabación)","Despedida","Actualizar datos","Sondear razón de mora"],c:0,t:"Script de Cobro"},
-  {q:"Si el cliente dice 'No tengo dinero', ¿qué debes hacer según el script?",o:["Preguntar para cuándo tendría disponibilidad","Colgar y llamar después","Ofrecer un descuento","Amenazar con consecuencias legales"],c:0,t:"Script de Cobro"},
+  {q:"¿Qué paso del script NUNCA debe omitirse?",o:["Ítem regulatorio (aviso de grabación)","Despedida","Actualizar datos","Sondear razón de mora"],c:0,t:"Script de Cobro"},
+  {q:"Si el cliente dice 'No tengo dinero', ¿qué debes hacer?",o:["Preguntar para cuándo tendría disponibilidad","Colgar y llamar después","Ofrecer un descuento","Amenazar con consecuencias legales"],c:0,t:"Script de Cobro"},
   {q:"¿Qué código de tipificación significa 'Promesa de Pago'?",o:["PP","AP","PI","ND"],c:0,t:"Script de Cobro"},
   {q:"¿Qué debes ofrecer SIEMPRE primero antes de negociar un abono?",o:["El pago total","Un descuento","Un plazo de 3 meses","Cambio de producto"],c:0,t:"Script de Cobro"},
 ];
 
-// Shuffle questions
 function shuffle(arr){for(let i=arr.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]];}return arr;}
 
-// ===== GAME STATE =====
+// ══════════════════════════════════════════════
+//  CLAVES localStorage
+// ══════════════════════════════════════════════
+const LB_KEY       = 'kahootAvonLB';
+const LOBBY_KEY    = 'kahootAvonLobby';
+const SIGNAL_KEY   = 'kahootAvonSignal';  // señales del host → jugadores
+// Señales posibles: 'GO', 'NEXT:{qIdx}', 'SHOW_LB', 'FINISH'
+
+const ADMIN_PASS   = 'PDC2026';
+
+// ══════════════════════════════════════════════
+//  ESTADO
+// ══════════════════════════════════════════════
 let player = '';
 let currentQ = 0;
 let score = 0;
@@ -448,740 +345,692 @@ let streak = 0;
 let timer = null;
 let timeLeft = 15;
 let gameQuestions = [];
-let answers = []; // {topic, correct, time}
-const LB_KEY = 'kahootAvonLeaderboard';
-
-// ===== INIT =====
-const nameInput = document.getElementById('playerName');
-nameInput.addEventListener('input', () => {
-  document.getElementById('startBtn').disabled = nameInput.value.trim().length < 2;
-});
-nameInput.addEventListener('keydown', e => { if(e.key==='Enter'&&nameInput.value.trim().length>=2) startGame(); });
-
-// Show player count
-const lb = JSON.parse(localStorage.getItem(LB_KEY)||'[]');
-if(lb.length>0) document.getElementById('playerCount').textContent = `🏆 ${lb.length} jugador${lb.length>1?'es':''} han participado`;
+let answers = [];
+let isAdmin = false;
+let lobbyPollInterval = null;
+let signalPollInterval = null;
+let adminTimerInterval = null;
 
 function showScreen(id){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
 }
 
-// ===== START GAME =====
-function startGame(){
-  player = nameInput.value.trim();
-  if(!player) return;
-  score = 0; streak = 0; currentQ = 0; answers = [];
-  gameQuestions = shuffle([...QUESTIONS]).slice(0,15); // 15 random questions
-  showScreen('screenQuestion');
-  loadQuestion();
+// ══════════════════════════════════════════════
+//  INIT WELCOME
+// ══════════════════════════════════════════════
+const nameInput = document.getElementById('playerName');
+nameInput.addEventListener('input',()=>{
+  document.getElementById('startBtn').disabled = nameInput.value.trim().length < 2;
+});
+nameInput.addEventListener('keydown',e=>{
+  if(e.key==='Enter'&&nameInput.value.trim().length>=2) joinLobby();
+});
+(function(){
+  const lb=JSON.parse(localStorage.getItem(LB_KEY)||'[]');
+  if(lb.length) document.getElementById('playerCount').textContent=`🏆 ${lb.length} jugador${lb.length>1?'es':''} han participado`;
+})();
+
+// ══════════════════════════════════════════════
+//  ADMIN LOGIN
+// ══════════════════════════════════════════════
+function showAdminLogin(){
+  showScreen('screenAdminLogin');
+  setTimeout(()=>document.getElementById('adminLoginPass').focus(),300);
 }
 
-// ===== LOAD QUESTION =====
-function loadQuestion(){
-  const q = gameQuestions[currentQ];
-  document.getElementById('qNum').textContent = `${currentQ+1} / ${gameQuestions.length}`;
-  document.getElementById('qBarFill').style.width = `${((currentQ)/gameQuestions.length)*100}%`;
-  document.getElementById('qScore').textContent = `⭐ ${score}`;
-  document.getElementById('qTopic').textContent = q.t;
-  document.getElementById('qText').textContent = q.q;
+function submitAdminLogin(){
+  const pass=document.getElementById('adminLoginPass').value;
+  const err=document.getElementById('adminLoginError');
+  if(pass===ADMIN_PASS){
+    isAdmin=true;
+    document.getElementById('adminLoginPass').value='';
+    err.textContent='';
+    // Limpiar sesión anterior
+    localStorage.removeItem(LOBBY_KEY);
+    localStorage.removeItem(SIGNAL_KEY);
+    // Ir al lobby admin
+    showScreen('screenAdminLobby');
+    startAdminLobbyPoll();
+  } else {
+    err.textContent='❌ Contraseña incorrecta';
+    document.getElementById('adminLoginPass').value='';
+    document.getElementById('adminLoginPass').focus();
+  }
+}
 
-  const allShapes = ['▲','◆','●','■','★','♥','⬟','⬡'];
-  const allColors = [
-    {cls:'a0', shadow:'#a8132d'},
-    {cls:'a1', shadow:'#0e4a9a'},
-    {cls:'a2', shadow:'#a07500'},
-    {cls:'a3', shadow:'#1a7a42'},
-    {cls:'a4', shadow:'#7b1fa2'},
-    {cls:'a5', shadow:'#e65100'},
+// ══════════════════════════════════════════════
+//  LOBBY ADMIN — ve jugadores conectarse
+// ══════════════════════════════════════════════
+function startAdminLobbyPoll(){
+  updateAdminLobby();
+  lobbyPollInterval=setInterval(updateAdminLobby,1000);
+}
+
+function updateAdminLobby(){
+  const lobby=JSON.parse(localStorage.getItem(LOBBY_KEY)||'[]');
+  const cont=document.getElementById('adminLobbyPlayers');
+  cont.innerHTML=lobby.map(p=>`<div class="lobby-player">${p.avatar||'💄'} ${p.name||p}</div>`).join('');
+  document.getElementById('adminLobbyCount').textContent=`${lobby.length} jugador${lobby.length!==1?'es':''} listo${lobby.length!==1?'s':''}`;
+  document.getElementById('adminStartBtn').disabled=lobby.length<1;
+}
+
+// ══════════════════════════════════════════════
+//  LOBBY JUGADOR — espera señal GO
+// ══════════════════════════════════════════════
+function joinLobby(){
+  const name=document.getElementById('playerName').value.trim();
+  if(!name) return;
+  player=name;
+
+  // Si no hay señal activa, limpiar lobby anterior (primera persona en entrar)
+  if(!localStorage.getItem(SIGNAL_KEY)){
+    localStorage.removeItem(LOBBY_KEY);
+  }
+  const lobby=JSON.parse(localStorage.getItem(LOBBY_KEY)||'[]');
+  if(!lobby.find(p=>p.name===name)) lobby.push({name,avatar:selectedAvatar});
+  localStorage.setItem(LOBBY_KEY,JSON.stringify(lobby));
+
+  showScreen('screenLobby');
+  updatePlayerLobby();
+  lobbyPollInterval=setInterval(updatePlayerLobby,1000);
+  signalPollInterval=setInterval(checkSignal,600);
+
+  // Activar audio en tap del usuario
+  if(!audioCtx) audioCtx=new(window.AudioContext||window.webkitAudioContext)();
+  else if(audioCtx.state==='suspended') audioCtx.resume();
+}
+
+function updatePlayerLobby(){
+  const lobby=JSON.parse(localStorage.getItem(LOBBY_KEY)||'[]');
+  const cont=document.getElementById('lobbyPlayers');
+  cont.innerHTML=lobby.map(p=>{
+    const nm=p.name||p; const av=p.avatar||'💄';
+    return `<div class="lobby-player">${av} ${nm}${nm===player?' (tú)':''}</div>`;
+  }).join('');
+  document.getElementById('lobbyCount').textContent=`${lobby.length} jugador${lobby.length!==1?'es':''} listo${lobby.length!==1?'s':''}`;
+}
+
+function checkSignal(){
+  const sig=localStorage.getItem(SIGNAL_KEY);
+  if(!sig) return;
+  if(sig==='GO'){
+    clearInterval(lobbyPollInterval);
+    clearInterval(signalPollInterval);
+    startPlayerGame();
+  } else if(sig.startsWith('NEXT:')){
+    const idx=parseInt(sig.split(':')[1]);
+    if(currentQ===idx) return; // ya estamos en esta pregunta
+    clearInterval(timer);
+    currentQ=idx;
+    loadPlayerQuestion();
+    showScreen('screenQuestion');
+  } else if(sig==='SHOW_LB'){
+    clearInterval(timer);
+    showPlayerLeaderboard();
+  } else if(sig==='FINISH'){
+    clearInterval(timer);
+    showPlayerFinal();
+  }
+}
+
+// ══════════════════════════════════════════════
+//  ADMIN — LANZAR QUIZ
+// ══════════════════════════════════════════════
+function adminLaunch(){
+  clearInterval(lobbyPollInterval);
+  // Guardar preguntas seleccionadas en localStorage para que todos usen las mismas
+  gameQuestions=shuffle([...QUESTIONS]).slice(0,15);
+  localStorage.setItem('kahootAvonQuestions',JSON.stringify(gameQuestions));
+  currentQ=0;
+  localStorage.setItem(SIGNAL_KEY,'GO');
+  showScreen('screenAdminView');
+  startMusic();
+  adminShowQuestion();
+}
+
+function adminShowQuestion(){
+  const q=gameQuestions[currentQ];
+  // Actualizar vista admin
+  document.getElementById('aQNum').textContent=`${currentQ+1} / ${gameQuestions.length}`;
+  document.getElementById('aQBarFill').style.width=`${(currentQ/gameQuestions.length)*100}%`;
+  document.getElementById('aQTopic').textContent=q.t;
+  document.getElementById('aQText').textContent=q.q;
+
+  const allShapes=['▲','◆','●','■','★','♥','⬟','⬡'];
+  const allColors=[
+    {cls:'a0',shadow:'#a8132d'},{cls:'a1',shadow:'#0e4a9a'},
+    {cls:'a2',shadow:'#a07500'},{cls:'a3',shadow:'#1a7a42'},
+    {cls:'a4',shadow:'#7b1fa2'},{cls:'a5',shadow:'#e65100'},
   ];
-  // Mezclar y tomar 4 colores y 4 formas distintas cada pregunta
-  const shuffledColors = shuffle([...allColors]).slice(0,4);
-  const shuffledShapes = shuffle([...allShapes]).slice(0,4);
+  const sColors=shuffle([...allColors]).slice(0,4);
+  const sShapes=shuffle([...allShapes]).slice(0,4);
+  // Guardar para que jugadores usen el mismo orden
+  localStorage.setItem('kahootAvonOrder_'+currentQ,JSON.stringify({colors:sColors,shapes:sShapes}));
 
-  // Shuffle answers but track correct
-  const indices = [0,1,2,3];
-  shuffle(indices);
+  const aDiv=document.getElementById('adminAnswers');
+  aDiv.innerHTML=q.o.map((_,i)=>`
+    <div class="admin-ans ${sColors[i].cls}" style="box-shadow:0 5px 0 ${sColors[i].shadow}" id="aAns${i}">
+      ${sShapes[i]}
+    </div>
+  `).join('');
+  document.getElementById('adminAnswerCount').textContent='0 han respondido';
 
-  const answersDiv = document.getElementById('answers');
-  answersDiv.innerHTML = indices.map((idx,i) => `
-    <button class="answer-btn ${shuffledColors[i].cls}" style="box-shadow:0 5px 0 ${shuffledColors[i].shadow}" onclick="selectAnswer(${i},${idx===q.c})" id="ans${i}" data-idx="${idx}">
-      <span class="answer-shape">${shuffledShapes[i]}</span>
+  // Timer admin
+  timeLeft=15;
+  const timerEl=document.getElementById('aQTimer');
+  timerEl.textContent=timeLeft;
+  timerEl.className='q-timer';
+  clearInterval(adminTimerInterval);
+  adminTimerInterval=setInterval(()=>{
+    timeLeft--;
+    timerEl.textContent=timeLeft;
+    if(timeLeft<=5) timerEl.className='q-timer danger';
+    else if(timeLeft<=10) timerEl.className='q-timer warning';
+    if(timeLeft<=3&&timeLeft>0) sfxUrgent();
+    else if(timeLeft<=5&&timeLeft>3) sfxCountdown();
+    if(timeLeft<=0){
+      clearInterval(adminTimerInterval);
+      adminRevealAnswer();
+    }
+  },1000);
+
+  // Señal a jugadores
+  localStorage.setItem(SIGNAL_KEY,'NEXT:'+currentQ);
+}
+
+function adminRevealAnswer(){
+  stopMusic();
+  const q=gameQuestions[currentQ];
+  const orderRaw=localStorage.getItem('kahootAvonOrder_'+currentQ);
+  const order=orderRaw?JSON.parse(orderRaw):{colors:[{cls:'a0'},{cls:'a1'},{cls:'a2'},{cls:'a3'}],shapes:[]};
+  // Mostrar cuál era la correcta en vista admin
+  q.o.forEach((_,i)=>{
+    const el=document.getElementById('aAns'+i);
+    if(!el) return;
+    if(i===q.c) el.classList.add('correct-reveal');
+    else el.classList.add('wrong-reveal');
+  });
+}
+
+function adminNextQuestion(){
+  currentQ++;
+  if(currentQ>=gameQuestions.length){
+    // Fin
+    localStorage.setItem(SIGNAL_KEY,'FINISH');
+    stopMusic();
+    sfxFanfare();
+    showScreen('screenAdminFinal');
+    showAdminFinal();
+    return;
+  }
+  // Mostrar leaderboard cada 5 preguntas
+  if(currentQ%5===0){
+    localStorage.setItem(SIGNAL_KEY,'SHOW_LB');
+    showScreen('screenAdminLbMid');
+  } else {
+    startMusic();
+    showScreen('screenAdminView');
+    adminShowQuestion();
+  }
+}
+
+// ══════════════════════════════════════════════
+//  ADMIN RESULT (entre preguntas)
+// ══════════════════════════════════════════════
+// El admin ve la pantalla adminResult directamente tras el timer
+// Necesitamos override del timer para ir ahí
+// Ya manejado: adminRevealAnswer() lleva a adminResult después de 1.5s
+
+// Al final del adminRevealAnswer, mostrar pantalla de resultado admin
+function adminShowResult(){
+  const q=gameQuestions[currentQ];
+  showScreen('screenAdminResult');
+  document.getElementById('aResultQuestion').textContent=q.q;
+  document.getElementById('aCorrectAnswer').textContent=q.o[q.c];
+  // Mini leaderboard
+  const lb=JSON.parse(localStorage.getItem(LB_KEY)||'[]');
+  const sorted=[...lb].sort((a,b)=>b.score-a.score);
+  const medals=['🥇','🥈','🥉'];
+  document.getElementById('aLbMini').innerHTML=sorted.slice(0,5).map((p,i)=>`
+    <li class="lb-entry" style="animation-delay:${i*.08}s">
+      <span class="lb-pos">${medals[i]||i+1}</span>
+      <span style="font-size:1.2rem">${p.avatar||'💄'}</span>
+      <span class="lb-name">${p.name}</span>
+      <span class="lb-score">${p.score.toLocaleString()}</span>
+    </li>
+  `).join('');
+}
+
+function showAdminFinal(){
+  const lb=JSON.parse(localStorage.getItem(LB_KEY)||'[]');
+  const sorted=[...lb].sort((a,b)=>b.score-a.score);
+  const top3=sorted.slice(0,3);
+  const order=top3.length>=2?[top3[1],top3[0],top3[2]].filter(Boolean):top3;
+  const medals=top3.length>=2?['🥈','🥇','🥉']:['🥇','🥈','🥉'];
+  document.getElementById('adminPodium').innerHTML=order.map((p,i)=>`
+    <div class="podium-place">
+      <div style="font-size:2.5rem">${p.avatar||medals[i]}</div>
+      <div style="font-size:1.3rem">${medals[i]}</div>
+      <div class="podium-name">${p.name}</div>
+      <div class="podium-pts">${p.score.toLocaleString()} pts</div>
+    </div>
+  `).join('');
+  const mds=['🥇','🥈','🥉'];
+  document.getElementById('adminFinalLb').innerHTML=sorted.slice(0,8).map((p,i)=>`
+    <li class="lb-entry" style="animation-delay:${i*.07}s">
+      <span class="lb-pos">${mds[i]||i+1}</span>
+      <span style="font-size:1.2rem">${p.avatar||'💄'}</span>
+      <span class="lb-name">${p.name}</span>
+      <span class="lb-score">${p.score.toLocaleString()}</span>
+    </li>
+  `).join('');
+  launchConfetti();
+}
+
+function adminReset(){
+  localStorage.removeItem(LOBBY_KEY);
+  localStorage.removeItem(SIGNAL_KEY);
+  localStorage.removeItem('kahootAvonQuestions');
+  isAdmin=false; currentQ=0; gameQuestions=[];
+  showScreen('screenWelcome');
+}
+
+// ══════════════════════════════════════════════
+//  JUGADOR — JUEGO
+// ══════════════════════════════════════════════
+function startPlayerGame(){
+  score=0; streak=0; currentQ=0; answers=[];
+  // Cargar las mismas preguntas que usó el admin
+  const stored=localStorage.getItem('kahootAvonQuestions');
+  gameQuestions=stored?JSON.parse(stored):shuffle([...QUESTIONS]).slice(0,15);
+  showScreen('screenQuestion');
+  loadPlayerQuestion();
+  startMusic();
+  // Seguir escuchando señales del host
+  signalPollInterval=setInterval(checkSignal,600);
+}
+
+function loadPlayerQuestion(){
+  const q=gameQuestions[currentQ];
+  document.getElementById('qNum').textContent=`${currentQ+1} / ${gameQuestions.length}`;
+  document.getElementById('qBarFill').style.width=`${(currentQ/gameQuestions.length)*100}%`;
+  document.getElementById('qScore').textContent=`⭐ ${score}`;
+  document.getElementById('qTopic').textContent=q.t;
+  document.getElementById('qText').textContent=q.q;
+
+  // Usar el mismo orden de colores/formas que definió el admin
+  const orderRaw=localStorage.getItem('kahootAvonOrder_'+currentQ);
+  const allShapes=['▲','◆','●','■','★','♥','⬟','⬡'];
+  const allColors=[
+    {cls:'a0',shadow:'#a8132d'},{cls:'a1',shadow:'#0e4a9a'},
+    {cls:'a2',shadow:'#a07500'},{cls:'a3',shadow:'#1a7a42'},
+    {cls:'a4',shadow:'#7b1fa2'},{cls:'a5',shadow:'#e65100'},
+  ];
+  let sColors,sShapes;
+  if(orderRaw){
+    const o=JSON.parse(orderRaw);
+    sColors=o.colors; sShapes=o.shapes;
+  } else {
+    sColors=shuffle([...allColors]).slice(0,4);
+    sShapes=shuffle([...allShapes]).slice(0,4);
+  }
+
+  const indices=[0,1,2,3]; // orden fijo — el admin ya mezcló las preguntas
+  const answersDiv=document.getElementById('answers');
+  answersDiv.innerHTML=indices.map((idx,i)=>`
+    <button class="answer-btn ${sColors[i].cls}" style="box-shadow:0 5px 0 ${sColors[i].shadow}"
+      onclick="selectAnswer(${i},${idx===q.c})" id="ans${i}" data-idx="${idx}">
+      <span class="answer-shape">${sShapes[i]}</span>
       <span class="answer-text">${q.o[idx]}</span>
     </button>
   `).join('');
 
-  // Start timer
-  timeLeft = 15;
-  const timerEl = document.getElementById('qTimer');
-  timerEl.textContent = timeLeft;
-  timerEl.className = 'q-timer';
-
+  timeLeft=15;
+  const timerEl=document.getElementById('qTimer');
+  timerEl.textContent=timeLeft; timerEl.className='q-timer';
   clearInterval(timer);
-  timer = setInterval(() => {
+  timer=setInterval(()=>{
     timeLeft--;
-    timerEl.textContent = timeLeft;
-    if(timeLeft<=5) timerEl.className = 'q-timer danger';
-    else if(timeLeft<=10) timerEl.className = 'q-timer warning';
-    if(timeLeft<=0){ clearInterval(timer); timeUp(); }
-  }, 1000);
+    timerEl.textContent=timeLeft;
+    if(timeLeft<=5) timerEl.className='q-timer danger';
+    else if(timeLeft<=10) timerEl.className='q-timer warning';
+    if(timeLeft<=3&&timeLeft>0) sfxUrgent();
+    else if(timeLeft<=5&&timeLeft>3) sfxCountdown();
+    if(timeLeft<=0){ clearInterval(timer); timeUpPlayer(); }
+  },1000);
 }
 
-// ===== SELECT ANSWER =====
-function selectAnswer(btnIdx, isCorrect){
+function selectAnswer(btnIdx,isCorrect){
   clearInterval(timer);
-  const btns = document.querySelectorAll('.answer-btn');
-  btns.forEach(b => b.classList.add('disabled'));
-
-  // Find correct button
-  const q = gameQuestions[currentQ];
-  btns.forEach(b => {
-    const idx = parseInt(b.dataset.idx);
-    if(idx === q.c) b.classList.add('correct');
+  const btns=document.querySelectorAll('.answer-btn');
+  btns.forEach(b=>b.classList.add('disabled'));
+  const q=gameQuestions[currentQ];
+  btns.forEach(b=>{
+    const idx=parseInt(b.dataset.idx);
+    if(idx===q.c) b.classList.add('correct');
     else b.classList.add('wrong');
   });
-
-  let points = 0;
+  let points=0;
   if(isCorrect){
-    points = Math.round(1000 * (timeLeft/15));
-    if(points < 100) points = 100;
-    score += points;
-    streak++;
-    if(streak >= 3) { score += 200; } // streak bonus
+    sfxCorrect();
+    points=Math.max(100,Math.round(1000*(timeLeft/15)));
+    score+=points; streak++;
+    if(streak>=3) score+=200;
   } else {
-    streak = 0;
+    sfxWrong();
+    streak=0;
   }
-
-  answers.push({topic: q.t, correct: isCorrect, time: 15-timeLeft, points});
-
-  setTimeout(() => showResult(isCorrect, points), 1200);
-}
-
-function timeUp(){
-  const btns = document.querySelectorAll('.answer-btn');
-  btns.forEach(b => b.classList.add('disabled'));
-  const q = gameQuestions[currentQ];
-  btns.forEach(b => {
-    const idx = parseInt(b.dataset.idx);
-    if(idx === q.c) b.classList.add('correct');
-    else b.classList.add('wrong');
-  });
-  streak = 0;
-  answers.push({topic: q.t, correct: false, time: 15, points: 0});
-  setTimeout(() => showResult(false, 0), 1200);
-}
-
-// ===== SHOW RESULT =====
-function showResult(correct, points){
+  answers.push({topic:q.t,correct:isCorrect,time:15-timeLeft,points});
+  // Guardar score parcial en LB para que admin lo vea
+  savePartialScore();
   showScreen('screenResult');
-  document.getElementById('resultIcon').textContent = correct ? '✅' : '❌';
-  document.getElementById('resultText').textContent = correct ? '¡Correcto!' : 'Incorrecto';
-  document.getElementById('resultText').style.color = correct ? '#26a65b' : '#e21b3c';
-  document.getElementById('resultPoints').textContent = correct ? `+${points} puntos` : 'Sin puntos';
-  document.getElementById('resultStreak').textContent = streak >= 3 ? `🔥 ¡Racha de ${streak}! +200 bonus` : streak >= 2 ? `🔥 Racha de ${streak}` : '';
+  showPlayerResult(isCorrect,points);
+  // Esperar señal del host para avanzar (checkSignal lo maneja)
 }
 
-// ===== NEXT QUESTION =====
-function nextQuestion(){
-  currentQ++;
-  // Show leaderboard every 5 questions
-  if(currentQ % 5 === 0 && currentQ < gameQuestions.length){
-    showLeaderboard();
-  } else if(currentQ >= gameQuestions.length){
-    endGame();
-  } else {
-    showScreen('screenQuestion');
-    loadQuestion();
-  }
+function timeUpPlayer(){
+  const q=gameQuestions[currentQ];
+  const btns=document.querySelectorAll('.answer-btn');
+  btns.forEach(b=>{b.classList.add('disabled');const idx=parseInt(b.dataset.idx);if(idx===q.c)b.classList.add('correct');else b.classList.add('wrong');});
+  streak=0;
+  answers.push({topic:q.t,correct:false,time:15,points:0});
+  savePartialScore();
+  showScreen('screenResult');
+  showPlayerResult(false,0);
 }
 
-// ===== LEADERBOARD =====
-function showLeaderboard(){
+function showPlayerResult(correct,points){
+  const q=gameQuestions[currentQ];
+  document.getElementById('resultIcon').textContent=correct?'✅':'❌';
+  document.getElementById('resultText').textContent=correct?'¡Correcto!':'Incorrecto';
+  document.getElementById('resultText').style.color=correct?'#26a65b':'#e21b3c';
+  document.getElementById('resultPoints').textContent=correct?`+${points} puntos`:'Sin puntos';
+  document.getElementById('resultStreak').textContent=streak>=3?`🔥 ¡Racha de ${streak}! +200 bonus`:streak>=2?`🔥 Racha de ${streak}`:'';
+  document.getElementById('resultCorrect').textContent=`Respuesta correcta: ${q.o[q.c]}`;
+}
+
+function savePartialScore(){
+  const lb=JSON.parse(localStorage.getItem(LB_KEY)||'[]');
+  const idx=lb.findIndex(p=>p.name===player);
+  if(idx>=0) lb[idx]={...lb[idx],score,avatar:selectedAvatar,date:new Date().toISOString()};
+  else lb.push({name:player,score,avatar:selectedAvatar,date:new Date().toISOString()});
+  localStorage.setItem(LB_KEY,JSON.stringify(lb));
+}
+
+function showPlayerLeaderboard(){
   showScreen('screenLeaderboard');
-  const lb = JSON.parse(localStorage.getItem(LB_KEY)||'[]');
-  const temp = [...lb, {name: player, score, avatar: selectedAvatar, date: new Date().toISOString()}];
-  temp.sort((a,b) => b.score - a.score);
-
-  const list = document.getElementById('lbList');
-  list.innerHTML = temp.slice(0,8).map((entry, i) => {
-    const isMe = entry.name === player && entry.score === score;
-    const medals = ['🥇','🥈','🥉'];
-    const av = entry.avatar || '💄';
-    return `<li class="lb-entry" style="animation-delay:${i*0.1}s;${isMe?'border:2px solid #E91E63;':''}">
+  const lb=JSON.parse(localStorage.getItem(LB_KEY)||'[]');
+  const sorted=[...lb].sort((a,b)=>b.score-a.score);
+  const medals=['🥇','🥈','🥉'];
+  document.getElementById('lbList').innerHTML=sorted.slice(0,8).map((entry,i)=>{
+    const isMe=entry.name===player;
+    return `<li class="lb-entry" style="animation-delay:${i*.1}s;${isMe?'border:2px solid #E91E63;':''}">
       <span class="lb-pos">${medals[i]||i+1}</span>
-      <span style="font-size:1.4rem">${av}</span>
-      <span class="lb-name">${entry.name} ${isMe?'(tú)':''}</span>
+      <span style="font-size:1.3rem">${entry.avatar||'💄'}</span>
+      <span class="lb-name">${entry.name}${isMe?' (tú)':''}</span>
       <span class="lb-score">${entry.score.toLocaleString()}</span>
     </li>`;
   }).join('');
 }
 
-function continueFromLB(){
-  if(currentQ >= gameQuestions.length) endGame();
-  else { showScreen('screenQuestion'); loadQuestion(); }
-}
-
-// ===== END GAME =====
-function endGame(){
-  // Save to leaderboard
-  const lb = JSON.parse(localStorage.getItem(LB_KEY)||'[]');
-  lb.push({name: player, score, avatar: selectedAvatar, date: new Date().toISOString(), answers: [...answers]});
-  localStorage.setItem(LB_KEY, JSON.stringify(lb));
-
-  showScreen('screenFinal');
-  launchConfetti();
-
-  // Podium
-  const sorted = [...lb].sort((a,b) => b.score - a.score);
-  const top3 = sorted.slice(0,3);
-  const podium = document.getElementById('podium');
-  const order = top3.length >= 2 ? [top3[1], top3[0], top3[2]].filter(Boolean) : top3;
-  const medals = top3.length >= 2 ? ['🥈','🥇','🥉'] : ['🥇','🥈','🥉'];
-
-  podium.innerHTML = order.map((p,i) => `
+function showPlayerFinal(){
+  stopMusic();
+  sfxFanfare();
+  const lb=JSON.parse(localStorage.getItem(LB_KEY)||'[]');
+  const sorted=[...lb].sort((a,b)=>b.score-a.score);
+  const top3=sorted.slice(0,3);
+  const order=top3.length>=2?[top3[1],top3[0],top3[2]].filter(Boolean):top3;
+  const medals=top3.length>=2?['🥈','🥇','🥉']:['🥇','🥈','🥉'];
+  document.getElementById('podium').innerHTML=order.map((p,i)=>`
     <div class="podium-place">
-      <div class="podium-medal" style="font-size:2.8rem">${p.avatar || medals[i] || ''}</div>
-      <div style="font-size:1.4rem">${medals[i]||''}</div>
+      <div style="font-size:2.5rem">${p.avatar||medals[i]}</div>
+      <div style="font-size:1.3rem">${medals[i]}</div>
       <div class="podium-name">${p.name}</div>
       <div class="podium-pts">${p.score.toLocaleString()} pts</div>
     </div>
   `).join('');
-
-  document.getElementById('finalSub').textContent = `${player}, obtuviste ${score.toLocaleString()} puntos`;
-
-  // Report by topic
-  const topics = {};
-  answers.forEach(a => {
-    if(!topics[a.topic]) topics[a.topic] = {correct:0, total:0};
+  const me=sorted.find(p=>p.name===player);
+  document.getElementById('finalSub').textContent=me?`${player}, obtuviste ${me.score.toLocaleString()} puntos`:'';
+  // Reporte por tema
+  const topics={};
+  answers.forEach(a=>{
+    if(!topics[a.topic]) topics[a.topic]={correct:0,total:0};
     topics[a.topic].total++;
     if(a.correct) topics[a.topic].correct++;
   });
-
-  const report = document.getElementById('report');
-  report.innerHTML = `<div class="report-title">📊 Reporte por Tema</div>` +
-    Object.entries(topics).map(([topic, data]) => {
-      const pct = Math.round((data.correct/data.total)*100);
-      const color = pct >= 80 ? '#26a65b' : pct >= 50 ? '#d89e00' : '#e21b3c';
+  document.getElementById('report').innerHTML=`<div class="report-title">📊 Tu reporte por tema</div>`+
+    Object.entries(topics).map(([topic,data])=>{
+      const pct=Math.round((data.correct/data.total)*100);
+      const color=pct>=80?'#26a65b':pct>=50?'#d89e00':'#e21b3c';
       return `<div class="report-topic">
-        <span class="topic-name">${topic}</span>
+        <span>${topic}</span>
         <div class="topic-bar"><div class="topic-fill" style="width:${pct}%;background:${color}"></div></div>
         <span class="topic-pct" style="color:${color}">${data.correct}/${data.total} (${pct}%)</span>
       </div>`;
     }).join('');
+  showScreen('screenFinal');
+  launchConfetti();
 }
 
-// ===== CONFETTI =====
-function launchConfetti(){
-  const colors = ['#e21b3c','#1368ce','#d89e00','#26a65b','#E91E63','#ffd700'];
-  for(let i=0;i<60;i++){
-    const c = document.createElement('div');
-    c.className = 'confetti';
-    c.style.left = Math.random()*100+'vw';
-    c.style.background = colors[Math.floor(Math.random()*colors.length)];
-    c.style.animationDuration = (2+Math.random()*3)+'s';
-    c.style.animationDelay = Math.random()*2+'s';
-    c.style.width = (8+Math.random()*8)+'px';
-    c.style.height = (8+Math.random()*8)+'px';
-    document.body.appendChild(c);
-    setTimeout(()=>c.remove(), 6000);
+// Admin avanza manualmente la pregunta
+function adminNextQuestion(){
+  clearInterval(adminTimerInterval);
+  currentQ++;
+  if(currentQ>=gameQuestions.length){
+    localStorage.setItem(SIGNAL_KEY,'FINISH');
+    stopMusic(); sfxFanfare();
+    showScreen('screenAdminFinal');
+    showAdminFinal();
+    return;
   }
+  startMusic();
+  showScreen('screenAdminView');
+  adminShowQuestion();
 }
 
-// ===== DOWNLOAD REPORT =====
-async function downloadReport(){
-  const btn = document.querySelector('.report-download');
-  btn.textContent = '⏳ Generando PDF...';
-  btn.disabled = true;
-
-  try {
-    const { PDFDocument, rgb, StandardFonts } = PDFLib;
-    const pdfDoc = await PDFDocument.create();
-
-    // Proteger con contraseña
-    pdfDoc.encrypt({
-      userPassword: '',
-      ownerPassword: 'AdminPdc',
-      permissions: {
-        printing: 'lowResolution',
-        copying: false,
-        modifying: false,
-      }
-    });
-
-    const font      = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
-    const fontReg   = await pdfDoc.embedFont(StandardFonts.Helvetica);
-    const pink      = rgb(0.914, 0.118, 0.388);
-    const navy      = rgb(0.039, 0.141, 0.447);
-    const dark      = rgb(0.15, 0.15, 0.15);
-    const white     = rgb(1, 1, 1);
-    const gray      = rgb(0.5, 0.5, 0.5);
-    const green     = rgb(0.149, 0.651, 0.357);
-    const yellow    = rgb(0.9, 0.6, 0.0);
-    const red       = rgb(0.886, 0.106, 0.235);
-
-    // ── PÁGINA 1: Resumen ──────────────────────────────────
-    let page = pdfDoc.addPage([595, 842]);
-    const W = 595, H = 842;
-
-    // Header fondo
-    page.drawRectangle({ x:0, y:H-90, width:W, height:90, color:navy });
-    page.drawText('REPORTE DE EVALUACIÓN', { x:30, y:H-42, size:22, font, color:white });
-    page.drawText('Quiz Avon PDC · '+new Date().toLocaleDateString('es-GT',{year:'numeric',month:'long',day:'numeric'}),
-      { x:30, y:H-65, size:10, font:fontReg, color:rgb(0.8,0.8,0.9) });
-
-    // Jugador
-    page.drawRectangle({ x:30, y:H-130, width:W-60, height:32, color:pink });
-    page.drawText('Jugador: '+player, { x:40, y:H-118, size:13, font, color:white });
-
-    // Puntaje grande
-    page.drawText('Puntaje Final', { x:30, y:H-175, size:11, font, color:gray });
-    page.drawText(score.toLocaleString()+' pts', { x:30, y:H-205, size:36, font, color:navy });
-
-    // Línea
-    page.drawLine({ start:{x:30,y:H-220}, end:{x:W-30,y:H-220}, thickness:1, color:rgb(0.85,0.85,0.85) });
-
-    // Resumen por tema
-    page.drawText('RESULTADOS POR TEMA', { x:30, y:H-245, size:13, font, color:navy });
-
-    const topics = {};
-    answers.forEach(a => {
-      if(!topics[a.topic]) topics[a.topic] = {correct:0,total:0};
-      topics[a.topic].total++;
-      if(a.correct) topics[a.topic].correct++;
-    });
-
-    let ty = H-275;
-    Object.entries(topics).forEach(([t,d]) => {
-      const pct = Math.round((d.correct/d.total)*100);
-      const estado = pct>=80 ? 'DOMINADO' : pct>=50 ? 'REPASAR' : 'REFORZAR';
-      const col    = pct>=80 ? green : pct>=50 ? yellow : red;
-
-      page.drawRectangle({ x:30, y:ty-22, width:W-60, height:30, color:rgb(0.97,0.97,0.97) });
-      page.drawText(t, { x:40, y:ty-10, size:11, font, color:dark });
-      page.drawText(`${d.correct}/${d.total} (${pct}%)`, { x:300, y:ty-10, size:11, font:fontReg, color:dark });
-      page.drawRectangle({ x:W-120, y:ty-20, width:85, height:24, color:col });
-      page.drawText(estado, { x:W-115, y:ty-10, size:9, font, color:white });
-      ty -= 40;
-    });
-
-    // Tabla de posiciones
-    const lb = JSON.parse(localStorage.getItem(LB_KEY)||'[]');
-    const sorted = [...lb].sort((a,b) => b.score - a.score);
-
-    ty -= 10;
-    page.drawLine({ start:{x:30,y:ty+10}, end:{x:W-30,y:ty+10}, thickness:1, color:rgb(0.85,0.85,0.85) });
-    ty -= 15;
-    page.drawText('TABLA DE POSICIONES (HISTÓRICO)', { x:30, y:ty, size:13, font, color:navy });
-    ty -= 25;
-
-    // Encabezado tabla
-    page.drawRectangle({ x:30, y:ty-18, width:W-60, height:24, color:navy });
-    page.drawText('Pos.', { x:40,  y:ty-10, size:9, font, color:white });
-    page.drawText('Nombre', { x:90,  y:ty-10, size:9, font, color:white });
-    page.drawText('Puntos', { x:350, y:ty-10, size:9, font, color:white });
-    page.drawText('Fecha',  { x:450, y:ty-10, size:9, font, color:white });
-    ty -= 40;
-
-    sorted.slice(0,10).forEach((p,i) => {
-      const bg = i%2===0 ? rgb(0.97,0.97,0.97) : white;
-      page.drawRectangle({ x:30, y:ty-16, width:W-60, height:22, color:bg });
-      const medal = i===0?'🥇 ':i===1?'🥈 ':i===2?'🥉 ':'';
-      page.drawText(`${i+1}`, { x:40, y:ty-8, size:10, font:fontReg, color:dark });
-      page.drawText(p.name.substring(0,28), { x:90, y:ty-8, size:10, font:fontReg, color:dark });
-      page.drawText(p.score.toLocaleString(), { x:350, y:ty-8, size:10, font:fontReg, color:dark });
-      page.drawText(new Date(p.date).toLocaleDateString('es-GT'), { x:450, y:ty-8, size:10, font:fontReg, color:dark });
-      ty -= 24;
-      if(ty < 60){ page = pdfDoc.addPage([595,842]); ty = H-60; }
-    });
-
-    // ── PÁGINA 2: Detalle pregunta a pregunta ──────────────
-    page = pdfDoc.addPage([595, 842]);
-    page.drawRectangle({ x:0, y:H-90, width:W, height:90, color:navy });
-    page.drawText('DETALLE POR PREGUNTA — '+player, { x:30, y:H-42, size:16, font, color:white });
-    page.drawText('Quiz Avon PDC', { x:30, y:H-65, size:10, font:fontReg, color:rgb(0.8,0.8,0.9) });
-
-    // Encabezado
-    ty = H-110;
-    page.drawRectangle({ x:30, y:ty-18, width:W-60, height:24, color:navy });
-    page.drawText('#',       { x:38,  y:ty-10, size:9, font, color:white });
-    page.drawText('Tema',    { x:60,  y:ty-10, size:9, font, color:white });
-    page.drawText('Resultado',{ x:220, y:ty-10, size:9, font, color:white });
-    page.drawText('Tiempo',  { x:350, y:ty-10, size:9, font, color:white });
-    page.drawText('Puntos',  { x:450, y:ty-10, size:9, font, color:white });
-    ty -= 36;
-
-    answers.forEach((a,i) => {
-      if(ty < 60){ page = pdfDoc.addPage([595,842]); ty = H-60; }
-      const bg = i%2===0 ? rgb(0.97,0.97,0.97) : white;
-      page.drawRectangle({ x:30, y:ty-16, width:W-60, height:22, color:bg });
-      page.drawText(`${i+1}`, { x:38, y:ty-8, size:9, font:fontReg, color:dark });
-      page.drawText(a.topic.substring(0,25), { x:60, y:ty-8, size:9, font:fontReg, color:dark });
-      const rc = a.correct ? green : red;
-      page.drawRectangle({ x:218, y:ty-14, width:80, height:18, color:rc });
-      page.drawText(a.correct?'CORRECTO':'INCORRECTO', { x:222, y:ty-8, size:8, font, color:white });
-      page.drawText(`${a.time}s`, { x:350, y:ty-8, size:9, font:fontReg, color:dark });
-      page.drawText(`${a.points}`, { x:450, y:ty-8, size:9, font:fontReg, color:dark });
-      ty -= 24;
-    });
-
-    // Footer
-    page.drawLine({ start:{x:30,y:50}, end:{x:W-30,y:50}, thickness:1, color:rgb(0.85,0.85,0.85) });
-    page.drawText('Generado por Hub de Capacitación Avon · Grupo PDC', { x:30, y:32, size:8, font:fontReg, color:gray });
-
-    // Descargar
-    const pdfBytes = await pdfDoc.save();
-    const blob = new Blob([pdfBytes], {type:'application/pdf'});
-    const url  = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = `Reporte_Quiz_${player}_${new Date().toISOString().split('T')[0]}.pdf`;
-    link.click();
-    URL.revokeObjectURL(url);
-
-  } catch(e) {
-    console.error(e);
-    alert('Error generando el PDF. Intenta de nuevo.');
-  }
-
-  btn.textContent = '📥 Descargar Reporte';
-  btn.disabled = false;
-}
-
-function resetGame(){
-  showScreen('screenWelcome');
-  nameInput.value = '';
-  document.getElementById('startBtn').disabled = true;
-  document.getElementById('startBtn').textContent = '¡Unirme!';
-  const lb = JSON.parse(localStorage.getItem(LB_KEY)||'[]');
-  document.getElementById('playerCount').textContent = `🏆 ${lb.length} jugador${lb.length>1?'es':''} han participado`;
-  // Limpiar lobby al reiniciar
-  localStorage.removeItem(LOBBY_KEY);
-  localStorage.removeItem(LOBBY_START);
+// Sobrescribir adminRevealAnswer para ir a adminResult
+const _origReveal=adminRevealAnswer;
+adminRevealAnswer=function(){
+  _origReveal();
   stopMusic();
+  setTimeout(()=>adminShowResult(),1500);
+};
+
+// ══════════════════════════════════════════════
+//  CONFETTI
+// ══════════════════════════════════════════════
+function launchConfetti(){
+  const colors=['#e21b3c','#1368ce','#d89e00','#26a65b','#E91E63','#ffd700'];
+  for(let i=0;i<70;i++){
+    const c=document.createElement('div');
+    c.className='confetti';
+    c.style.left=Math.random()*100+'vw';
+    c.style.background=colors[Math.floor(Math.random()*colors.length)];
+    c.style.animationDuration=(2+Math.random()*3)+'s';
+    c.style.animationDelay=Math.random()*2+'s';
+    c.style.width=(8+Math.random()*8)+'px';
+    c.style.height=(8+Math.random()*8)+'px';
+    document.body.appendChild(c);
+    setTimeout(()=>c.remove(),6000);
+  }
 }
 
-// ===== AUDIO ENGINE v2 — Composición original PDC Quiz =====
-// Inspirado en el estilo de quiz electrónico animado (tempo 128 BPM)
-// 100% Web Audio API, sin samples ni archivos externos
-let audioCtx = null;
-let musicPlaying = false;
-let muteState = false;
-let musicTimeout = null;
-let musicSection = 0; // alterna secciones A/B para variedad
+// ══════════════════════════════════════════════
+//  REPORTE PDF
+// ══════════════════════════════════════════════
+async function downloadReport(){
+  const btn=document.querySelector('.report-download');
+  btn.textContent='⏳ Generando PDF...'; btn.disabled=true;
+  try{
+    const {PDFDocument,rgb,StandardFonts}=PDFLib;
+    const pdfDoc=await PDFDocument.create();
+    pdfDoc.encrypt({userPassword:'',ownerPassword:'AdminPdc',permissions:{printing:'lowResolution',copying:false,modifying:false}});
+    const font=await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+    const fontReg=await pdfDoc.embedFont(StandardFonts.Helvetica);
+    const navy=rgb(.039,.141,.447),pink=rgb(.914,.118,.388),white=rgb(1,1,1),dark=rgb(.15,.15,.15),gray=rgb(.5,.5,.5);
+    const green=rgb(.149,.651,.357),yellow=rgb(.9,.6,0),red=rgb(.886,.106,.235);
+    let page=pdfDoc.addPage([595,842]);
+    const W=595,H=842;
+    page.drawRectangle({x:0,y:H-90,width:W,height:90,color:navy});
+    page.drawText('REPORTE DE EVALUACIÓN',{x:30,y:H-42,size:22,font,color:white});
+    page.drawText('Quiz Avon PDC · '+new Date().toLocaleDateString('es-GT',{year:'numeric',month:'long',day:'numeric'}),{x:30,y:H-65,size:10,font:fontReg,color:rgb(.8,.8,.9)});
+    page.drawRectangle({x:30,y:H-130,width:W-60,height:32,color:pink});
+    page.drawText('Jugador: '+player,{x:40,y:H-118,size:13,font,color:white});
+    page.drawText('Puntaje Final',{x:30,y:H-175,size:11,font,color:gray});
+    page.drawText(score.toLocaleString()+' pts',{x:30,y:H-205,size:36,font,color:navy});
+    page.drawLine({start:{x:30,y:H-220},end:{x:W-30,y:H-220},thickness:1,color:rgb(.85,.85,.85)});
+    page.drawText('RESULTADOS POR TEMA',{x:30,y:H-245,size:13,font,color:navy});
+    const topics={};
+    answers.forEach(a=>{if(!topics[a.topic])topics[a.topic]={correct:0,total:0};topics[a.topic].total++;if(a.correct)topics[a.topic].correct++;});
+    let ty=H-275;
+    Object.entries(topics).forEach(([t,d])=>{
+      const pct=Math.round((d.correct/d.total)*100);
+      const estado=pct>=80?'DOMINADO':pct>=50?'REPASAR':'REFORZAR';
+      const col=pct>=80?green:pct>=50?yellow:red;
+      page.drawRectangle({x:30,y:ty-22,width:W-60,height:30,color:rgb(.97,.97,.97)});
+      page.drawText(t,{x:40,y:ty-10,size:11,font,color:dark});
+      page.drawText(`${d.correct}/${d.total} (${pct}%)`,{x:300,y:ty-10,size:11,font:fontReg,color:dark});
+      page.drawRectangle({x:W-120,y:ty-20,width:85,height:24,color:col});
+      page.drawText(estado,{x:W-115,y:ty-10,size:9,font,color:white});
+      ty-=40;
+    });
+    const lb=JSON.parse(localStorage.getItem(LB_KEY)||'[]');
+    const sorted=[...lb].sort((a,b)=>b.score-a.score);
+    ty-=10;
+    page.drawLine({start:{x:30,y:ty+10},end:{x:W-30,y:ty+10},thickness:1,color:rgb(.85,.85,.85)});
+    ty-=15;
+    page.drawText('TABLA DE POSICIONES',{x:30,y:ty,size:13,font,color:navy}); ty-=25;
+    page.drawRectangle({x:30,y:ty-18,width:W-60,height:24,color:navy});
+    page.drawText('Pos.',{x:40,y:ty-10,size:9,font,color:white});
+    page.drawText('Nombre',{x:90,y:ty-10,size:9,font,color:white});
+    page.drawText('Puntos',{x:350,y:ty-10,size:9,font,color:white});
+    page.drawText('Fecha',{x:450,y:ty-10,size:9,font,color:white});
+    ty-=40;
+    sorted.slice(0,10).forEach((p,i)=>{
+      if(ty<60){page=pdfDoc.addPage([595,842]);ty=H-60;}
+      const bg=i%2===0?rgb(.97,.97,.97):white;
+      page.drawRectangle({x:30,y:ty-16,width:W-60,height:22,color:bg});
+      page.drawText(`${i+1}`,{x:40,y:ty-8,size:10,font:fontReg,color:dark});
+      page.drawText(p.name.substring(0,28),{x:90,y:ty-8,size:10,font:fontReg,color:dark});
+      page.drawText(p.score.toLocaleString(),{x:350,y:ty-8,size:10,font:fontReg,color:dark});
+      page.drawText(new Date(p.date).toLocaleDateString('es-GT'),{x:450,y:ty-8,size:10,font:fontReg,color:dark});
+      ty-=24;
+    });
+    page=pdfDoc.addPage([595,842]);
+    page.drawRectangle({x:0,y:H-90,width:W,height:90,color:navy});
+    page.drawText('DETALLE POR PREGUNTA — '+player,{x:30,y:H-42,size:16,font,color:white});
+    ty=H-110;
+    page.drawRectangle({x:30,y:ty-18,width:W-60,height:24,color:navy});
+    ['#','Tema','Resultado','Tiempo','Puntos'].forEach((h,i)=>{
+      page.drawText(h,{x:[38,60,220,350,450][i],y:ty-10,size:9,font,color:white});
+    });
+    ty-=36;
+    answers.forEach((a,i)=>{
+      if(ty<60){page=pdfDoc.addPage([595,842]);ty=H-60;}
+      const bg=i%2===0?rgb(.97,.97,.97):white;
+      page.drawRectangle({x:30,y:ty-16,width:W-60,height:22,color:bg});
+      page.drawText(`${i+1}`,{x:38,y:ty-8,size:9,font:fontReg,color:dark});
+      page.drawText(a.topic.substring(0,25),{x:60,y:ty-8,size:9,font:fontReg,color:dark});
+      const rc=a.correct?green:red;
+      page.drawRectangle({x:218,y:ty-14,width:80,height:18,color:rc});
+      page.drawText(a.correct?'CORRECTO':'INCORRECTO',{x:222,y:ty-8,size:8,font,color:white});
+      page.drawText(`${a.time}s`,{x:350,y:ty-8,size:9,font:fontReg,color:dark});
+      page.drawText(`${a.points}`,{x:450,y:ty-8,size:9,font:fontReg,color:dark});
+      ty-=24;
+    });
+    page.drawLine({start:{x:30,y:50},end:{x:W-30,y:50},thickness:1,color:rgb(.85,.85,.85)});
+    page.drawText('Generado por Hub de Capacitación Avon · Grupo PDC',{x:30,y:32,size:8,font:fontReg,color:gray});
+    const pdfBytes=await pdfDoc.save();
+    const blob=new Blob([pdfBytes],{type:'application/pdf'});
+    const url=URL.createObjectURL(blob);
+    const link=document.createElement('a');
+    link.href=url; link.download=`Reporte_Quiz_${player}_${new Date().toISOString().split('T')[0]}.pdf`;
+    link.click(); URL.revokeObjectURL(url);
+  }catch(e){console.error(e);alert('Error generando PDF.');}
+  btn.textContent='📥 Descargar Reporte'; btn.disabled=false;
+}
 
+// ══════════════════════════════════════════════
+//  AUDIO ENGINE v2 — Composición original 128 BPM
+// ══════════════════════════════════════════════
+let audioCtx=null,musicPlaying=false,muteState=false,musicTimeout=null,musicSection=0;
 function getCtx(){
-  if(!audioCtx) audioCtx = new (window.AudioContext||window.webkitAudioContext)();
+  if(!audioCtx) audioCtx=new(window.AudioContext||window.webkitAudioContext)();
   if(audioCtx.state==='suspended') audioCtx.resume();
   return audioCtx;
 }
-
-// ── Utilidades de síntesis ──────────────────────────────────
-function note(ctx, freq, type, when, dur, vol, attack=0.008, release=0.06){
-  const o = ctx.createOscillator();
-  const g = ctx.createGain();
-  o.connect(g); g.connect(ctx.destination);
-  o.type = type;
-  o.frequency.setValueAtTime(freq, when);
-  g.gain.setValueAtTime(0, when);
-  g.gain.linearRampToValueAtTime(vol, when + attack);
-  g.gain.setValueAtTime(vol, when + dur - release);
-  g.gain.linearRampToValueAtTime(0, when + dur);
-  o.start(when); o.stop(when + dur + 0.01);
+function note(ctx,freq,type,when,dur,vol,attack=0.008,release=0.06){
+  const o=ctx.createOscillator(),g=ctx.createGain();
+  o.connect(g);g.connect(ctx.destination);o.type=type;
+  o.frequency.setValueAtTime(freq,when);
+  g.gain.setValueAtTime(0,when);g.gain.linearRampToValueAtTime(vol,when+attack);
+  g.gain.setValueAtTime(vol,when+dur-release);g.gain.linearRampToValueAtTime(0,when+dur);
+  o.start(when);o.stop(when+dur+.01);
 }
-
-function chord(ctx, freqs, type, when, dur, vol){
-  freqs.forEach(f => note(ctx, f, type, when, dur, vol/freqs.length));
+function chord(ctx,freqs,type,when,dur,vol){freqs.forEach(f=>note(ctx,f,type,when,dur,vol/freqs.length));}
+function kick(ctx,when){
+  const o=ctx.createOscillator(),g=ctx.createGain();
+  o.connect(g);g.connect(ctx.destination);o.type='sine';
+  o.frequency.setValueAtTime(180,when);o.frequency.exponentialRampToValueAtTime(40,when+.08);
+  g.gain.setValueAtTime(.5,when);g.gain.exponentialRampToValueAtTime(.001,when+.25);
+  o.start(when);o.stop(when+.3);
 }
-
-function kick(ctx, when){
-  // Bombo: sine con pitch rápido hacia abajo
-  const o = ctx.createOscillator();
-  const g = ctx.createGain();
-  o.connect(g); g.connect(ctx.destination);
-  o.type = 'sine';
-  o.frequency.setValueAtTime(180, when);
-  o.frequency.exponentialRampToValueAtTime(40, when + 0.08);
-  g.gain.setValueAtTime(0.5, when);
-  g.gain.exponentialRampToValueAtTime(0.001, when + 0.25);
-  o.start(when); o.stop(when + 0.3);
+function snare(ctx,when){
+  const bufSize=ctx.sampleRate*.1,buf=ctx.createBuffer(1,bufSize,ctx.sampleRate);
+  const data=buf.getChannelData(0);for(let i=0;i<bufSize;i++)data[i]=(Math.random()*2-1);
+  const src=ctx.createBufferSource();src.buffer=buf;
+  const g=ctx.createGain(),f=ctx.createBiquadFilter();f.type='highpass';f.frequency.value=1800;
+  src.connect(f);f.connect(g);g.connect(ctx.destination);
+  g.gain.setValueAtTime(.22,when);g.gain.exponentialRampToValueAtTime(.001,when+.15);
+  src.start(when);src.stop(when+.15);note(ctx,220,'triangle',when,.08,.12);
 }
-
-function snare(ctx, when){
-  // Caja: noise + tono
-  const bufSize = ctx.sampleRate * 0.1;
-  const buf = ctx.createBuffer(1, bufSize, ctx.sampleRate);
-  const data = buf.getChannelData(0);
-  for(let i=0;i<bufSize;i++) data[i]=(Math.random()*2-1);
-  const src = ctx.createBufferSource();
-  src.buffer = buf;
-  const g = ctx.createGain();
-  const f = ctx.createBiquadFilter();
-  f.type = 'highpass'; f.frequency.value = 1800;
-  src.connect(f); f.connect(g); g.connect(ctx.destination);
-  g.gain.setValueAtTime(0.22, when);
-  g.gain.exponentialRampToValueAtTime(0.001, when + 0.15);
-  src.start(when); src.stop(when + 0.15);
-  // tono de caja
-  note(ctx, 220, 'triangle', when, 0.08, 0.12);
+function hihat(ctx,when,vol=.08){
+  const bufSize=ctx.sampleRate*.04,buf=ctx.createBuffer(1,bufSize,ctx.sampleRate);
+  const data=buf.getChannelData(0);for(let i=0;i<bufSize;i++)data[i]=(Math.random()*2-1);
+  const src=ctx.createBufferSource();src.buffer=buf;
+  const g=ctx.createGain(),f=ctx.createBiquadFilter();f.type='highpass';f.frequency.value=7000;
+  src.connect(f);f.connect(g);g.connect(ctx.destination);
+  g.gain.setValueAtTime(vol,when);g.gain.exponentialRampToValueAtTime(.001,when+.04);
+  src.start(when);src.stop(when+.05);
 }
-
-function hihat(ctx, when, vol=0.08){
-  const bufSize = ctx.sampleRate * 0.04;
-  const buf = ctx.createBuffer(1, bufSize, ctx.sampleRate);
-  const data = buf.getChannelData(0);
-  for(let i=0;i<bufSize;i++) data[i]=(Math.random()*2-1);
-  const src = ctx.createBufferSource();
-  src.buffer = buf;
-  const g = ctx.createGain();
-  const f = ctx.createBiquadFilter();
-  f.type = 'highpass'; f.frequency.value = 7000;
-  src.connect(f); f.connect(g); g.connect(ctx.destination);
-  g.gain.setValueAtTime(vol, when);
-  g.gain.exponentialRampToValueAtTime(0.001, when + 0.04);
-  src.start(when); src.stop(when + 0.05);
+const N={C3:130.8,D3:146.8,E3:164.8,F3:174.6,G3:196,A3:220,B3:246.9,C4:261.6,D4:293.7,E4:329.6,F4:349.2,G4:392,A4:440,B4:493.9,C5:523.3,D5:587.3,E5:659.3,F5:698.5,G5:784,A5:880,B5:987.8,C6:1047};
+const BPM=128,B=60/BPM,H=B/2,Q=B/4,BAR=B*4;
+function sectionA(ctx,t){
+  [N.C3,N.C3,N.G3,N.G3,N.A3,N.A3,N.F3,N.F3].forEach((f,i)=>{note(ctx,f,'sawtooth',t+i*H,H*.7,.18);note(ctx,f*2,'sawtooth',t+i*H,H*.3,.06);});
+  let mt=t;[[N.C5,H],[N.E5,H],[N.G5,H],[N.C6,H],[N.B5,H],[N.G5,H],[N.A5,B],[0,H],[N.F5,H],[N.A5,H],[N.C5,B],[0,H],[N.G5,H],[N.E5,H],[N.C5,B+H],[0,0]].forEach(([f,d])=>{if(f>0)note(ctx,f,'square',mt,d*.8,.14);mt+=d;});
+  chord(ctx,[N.C4,N.E4,N.G4],'sine',t,BAR,.07);chord(ctx,[N.A3,N.C4,N.E4],'sine',t+BAR,BAR,.07);
+  for(let i=0;i<8;i++){kick(ctx,t+i*B);if(i%2===1)snare(ctx,t+i*B);hihat(ctx,t+i*B,.07);hihat(ctx,t+i*B+H,.05);}
 }
-
-// ── Frecuencias de notas ────────────────────────────────────
-const N = {
-  C3:130.8,D3:146.8,E3:164.8,F3:174.6,G3:196,A3:220,B3:246.9,
-  C4:261.6,D4:293.7,E4:329.6,F4:349.2,G4:392,A4:440,B4:493.9,
-  C5:523.3,D5:587.3,E5:659.3,F5:698.5,G5:784,A5:880,B5:987.8,
-  C6:1047
-};
-
-// BPM 128 → 1 beat = 0.469s → 1/8 = 0.234s → 1/16 = 0.117s
-const BPM = 128;
-const B = 60/BPM;       // 1 beat
-const H = B/2;          // corchea
-const Q = B/4;          // semicorchea
-const BAR = B*4;        // 1 compás
-
-// ── Sección A: melodía principal animada ───────────────────
-function sectionA(ctx, t){
-  // Bajo pulsante (pattern de 2 compases)
-  const bassNotes = [N.C3,N.C3,N.G3,N.G3,N.A3,N.A3,N.F3,N.F3];
-  bassNotes.forEach((f,i) => {
-    note(ctx,f,'sawtooth', t+i*H, H*0.7, 0.18);
-    note(ctx,f*2,'sawtooth', t+i*H, H*0.3, 0.06); // armónico
-  });
-
-  // Melodía principal (2 compases)
-  const mel = [
-    [N.C5,H],[N.E5,H],[N.G5,H],[N.C6,H],
-    [N.B5,H],[N.G5,H],[N.A5,B],[0,H],
-    [N.F5,H],[N.A5,H],[N.C5,B],[0,H],
-    [N.G5,H],[N.E5,H],[N.C5,B+H],[0,0]
-  ];
-  let mt=t;
-  mel.forEach(([f,d])=>{
-    if(f>0) note(ctx,f,'square',mt,d*0.8,0.14);
-    mt+=d;
-  });
-
-  // Pad de acordes (color armónico)
-  chord(ctx,[N.C4,N.E4,N.G4],'sine',t,BAR,0.07);
-  chord(ctx,[N.A3,N.C4,N.E4],'sine',t+BAR,BAR,0.07);
-
-  // Batería (2 compases = 8 beats)
-  for(let i=0;i<8;i++){
-    kick(ctx, t+i*B);
-    if(i%2===1) snare(ctx, t+i*B);
-    hihat(ctx, t+i*B, 0.07);
-    hihat(ctx, t+i*B+H, 0.05);
-  }
+function sectionB(ctx,t){
+  [N.F3,N.F3,N.G3,N.A3,N.C3,N.C3,N.G3,N.G3].forEach((f,i)=>note(ctx,f,'sawtooth',t+i*H,H*.65,.18));
+  let mt=t;[[N.G5,Q],[N.G5,Q],[N.A5,H],[N.C6,H],[N.B5,Q],[N.A5,Q],[N.G5,H],[N.E5,H],[N.F5,Q],[N.G5,Q],[N.A5,H],[N.C5,B],[0,H],[N.E5,H],[N.D5,H],[N.C5,B+H],[0,0]].forEach(([f,d])=>{if(f>0)note(ctx,f,'square',mt,d*.75,.15);mt+=d;});
+  [N.C5,N.E5,N.G5,N.C6,N.G5,N.E5,N.C5,N.E5].forEach((f,i)=>note(ctx,f,'triangle',t+i*H,H*.5,.06));
+  for(let i=0;i<8;i++){kick(ctx,t+i*B);if(i===2||i===3||i===6||i===7)kick(ctx,t+i*B+H);if(i%2===1)snare(ctx,t+i*B);hihat(ctx,t+i*B,.08);hihat(ctx,t+i*B+H,.06);hihat(ctx,t+i*B+H+Q,.04);}
 }
-
-// ── Sección B: puente más intenso ──────────────────────────
-function sectionB(ctx, t){
-  // Bajo con más movimiento
-  const bassB = [N.F3,N.F3,N.G3,N.A3,N.C3,N.C3,N.G3,N.G3];
-  bassB.forEach((f,i)=>{
-    note(ctx,f,'sawtooth',t+i*H,H*0.65,0.18);
-  });
-
-  // Melodía B (más energética, saltos)
-  const melB = [
-    [N.G5,Q],[N.G5,Q],[N.A5,H],
-    [N.C6,H],[N.B5,Q],[N.A5,Q],
-    [N.G5,H],[N.E5,H],
-    [N.F5,Q],[N.G5,Q],[N.A5,H],
-    [N.C5,B],[0,H],
-    [N.E5,H],[N.D5,H],
-    [N.C5,B+H],[0,0]
-  ];
-  let mt=t;
-  melB.forEach(([f,d])=>{
-    if(f>0) note(ctx,f,'square',mt,d*0.75,0.15);
-    mt+=d;
-  });
-
-  // Arpeggio de relleno
-  [N.C5,N.E5,N.G5,N.C6,N.G5,N.E5,N.C5,N.E5].forEach((f,i)=>{
-    note(ctx,f,'triangle',t+i*H,H*0.5,0.06);
-  });
-
-  // Batería con más energía — doble kick en beat 3
-  for(let i=0;i<8;i++){
-    kick(ctx, t+i*B);
-    if(i===2||i===3||i===6||i===7) kick(ctx, t+i*B+H); // doble
-    if(i%2===1) snare(ctx, t+i*B);
-    hihat(ctx, t+i*B, 0.08);
-    hihat(ctx, t+i*B+H, 0.06);
-    hihat(ctx, t+i*B+H+Q, 0.04); // hi-hat extra
-  }
-}
-
-// ── Loop principal ──────────────────────────────────────────
-const SECTION_DUR = BAR * 2 * 1000; // 2 compases en ms
-
+const SECTION_DUR=BAR*2*1000;
 function playMusicLoop(){
-  if(muteState || !musicPlaying) return;
-  const ctx = getCtx();
-  if(musicSection % 2 === 0) sectionA(ctx, ctx.currentTime + 0.05);
-  else sectionB(ctx, ctx.currentTime + 0.05);
+  if(muteState||!musicPlaying) return;
+  const ctx=getCtx();
+  if(musicSection%2===0) sectionA(ctx,ctx.currentTime+.05);
+  else sectionB(ctx,ctx.currentTime+.05);
   musicSection++;
-  musicTimeout = setTimeout(playMusicLoop, SECTION_DUR - 30);
+  musicTimeout=setTimeout(playMusicLoop,SECTION_DUR-30);
 }
+function startMusic(){if(muteState)return;musicSection=0;musicPlaying=true;playMusicLoop();}
+function stopMusic(){musicPlaying=false;if(musicTimeout)clearTimeout(musicTimeout);musicTimeout=null;}
+function sfxCorrect(){if(muteState)return;const ctx=getCtx(),t=ctx.currentTime;[[N.C5,0],[N.E5,.08],[N.G5,.16],[N.C6,.26]].forEach(([f,s])=>{note(ctx,f,'sine',t+s,.18,.28,.005,.1);note(ctx,f*2,'sine',t+s,.1,.06,.005,.08);});note(ctx,N.C6,'sine',t+.45,.4,.2,.005,.3);}
+function sfxWrong(){if(muteState)return;const ctx=getCtx(),t=ctx.currentTime;note(ctx,320,'sawtooth',t,.1,.22,.005,.05);note(ctx,270,'sawtooth',t+.1,.1,.22,.005,.05);note(ctx,220,'sawtooth',t+.2,.18,.18,.005,.1);}
+function sfxCountdown(){if(muteState)return;const ctx=getCtx();note(ctx,1200,'square',ctx.currentTime,.04,.15,.002,.02);note(ctx,600,'square',ctx.currentTime,.04,.08,.002,.02);}
+function sfxUrgent(){if(muteState)return;const ctx=getCtx();note(ctx,1400,'square',ctx.currentTime,.05,.2,.002,.02);note(ctx,700,'square',ctx.currentTime,.05,.1,.002,.02);}
+function sfxFanfare(){if(muteState)return;const ctx=getCtx(),t=ctx.currentTime;[[N.C5,0,H],[N.C5,H,Q],[N.G5,H+Q,H+Q]].forEach(([f,s,d])=>note(ctx,f,'square',t+s,d*.85,.2));[[N.E5,B*1.5,H],[N.G5,B*1.5+H,H],[N.C6,B*1.5+B,H+Q]].forEach(([f,s,d])=>note(ctx,f,'square',t+s,d*.85,.2));const remate=[N.C5,N.E5,N.G5,N.C6,N.C6*1.26,N.C6*1.587];remate.forEach((f,i)=>note(ctx,f,'sine',t+B*3+i*Q,H,.22,.005,.12));chord(ctx,[N.C4,N.E4,N.G4,N.C5],'sine',t+B*3+remate.length*Q,B*2,.15);[0,B*.5,B,B*1.5].forEach(s=>kick(ctx,t+s));}
 
-function startMusic(){
-  if(muteState) return;
-  musicSection = 0;
-  musicPlaying = true;
-  playMusicLoop();
-}
-
-function stopMusic(){
-  musicPlaying = false;
-  if(musicTimeout) clearTimeout(musicTimeout);
-  musicTimeout = null;
-}
-
-// ── Efectos de sonido ───────────────────────────────────────
-function sfxCorrect(){
-  if(muteState) return;
-  const ctx = getCtx();
-  const t = ctx.currentTime;
-  // Jingle ascendente con brillo
-  [[N.C5,0],[N.E5,0.08],[N.G5,0.16],[N.C6,0.26]].forEach(([f,s])=>{
-    note(ctx,f,'sine',t+s,0.18,0.28,0.005,0.1);
-    note(ctx,f*2,'sine',t+s,0.1,0.06,0.005,0.08); // brillo
-  });
-  // Chime final
-  note(ctx,N.C6,'sine',t+0.45,0.4,0.2,0.005,0.3);
-}
-
-function sfxWrong(){
-  if(muteState) return;
-  const ctx = getCtx();
-  const t = ctx.currentTime;
-  // Descenso cromático disonante
-  note(ctx,320,'sawtooth',t,0.1,0.22,0.005,0.05);
-  note(ctx,270,'sawtooth',t+0.1,0.1,0.22,0.005,0.05);
-  note(ctx,220,'sawtooth',t+0.2,0.18,0.18,0.005,0.1);
-  // ruido suave
-  const buf = ctx.createBuffer(1,ctx.sampleRate*0.15,ctx.sampleRate);
-  const d = buf.getChannelData(0);
-  for(let i=0;i<d.length;i++) d[i]=(Math.random()*2-1)*0.3;
-  const src=ctx.createBufferSource(); src.buffer=buf;
-  const g=ctx.createGain(); const f=ctx.createBiquadFilter();
-  f.type='lowpass'; f.frequency.value=800;
-  src.connect(f); f.connect(g); g.connect(ctx.destination);
-  g.gain.setValueAtTime(0.15,t+0.2);
-  g.gain.exponentialRampToValueAtTime(0.001,t+0.35);
-  src.start(t+0.2); src.stop(t+0.4);
-}
-
-function sfxCountdown(){
-  if(muteState) return;
-  const ctx = getCtx();
-  // Tick metálico
-  note(ctx,1200,'square',ctx.currentTime,0.04,0.15,0.002,0.02);
-  note(ctx,600,'square',ctx.currentTime,0.04,0.08,0.002,0.02);
-}
-
-function sfxUrgent(){
-  // Tick urgente para los últimos 3 segundos
-  if(muteState) return;
-  const ctx = getCtx();
-  note(ctx,1400,'square',ctx.currentTime,0.05,0.2,0.002,0.02);
-  note(ctx,700,'square',ctx.currentTime,0.05,0.1,0.002,0.02);
-}
-
-function sfxFanfare(){
-  if(muteState) return;
-  const ctx = getCtx();
-  const t = ctx.currentTime;
-  // Fanfarria original de 3 partes: llamada, respuesta, remate
-  // Llamada
-  [[N.C5,0,H],[N.C5,H,Q],[N.G5,H+Q,H+Q]].forEach(([f,s,d])=>
-    note(ctx,f,'square',t+s,d*0.85,0.2));
-  // Respuesta
-  [[N.E5,B*1.5,H],[N.G5,B*1.5+H,H],[N.C6,B*1.5+B,H+Q]].forEach(([f,s,d])=>
-    note(ctx,f,'square',t+s,d*0.85,0.2));
-  // Remate glorioso
-  const remate = [N.C5,N.E5,N.G5,N.C6,N.E6||N.C6*1.26,N.G6||N.C6*1.587];
-  remate.forEach((f,i)=>
-    note(ctx,f,'sine',t+B*3+i*Q,H,0.22,0.005,0.12));
-  // Acorde final sostenido
-  chord(ctx,[N.C4,N.E4,N.G4,N.C5],'sine',t+B*3+remate.length*Q,B*2,0.15);
-  // Bombo de celebración
-  [0,B*0.5,B,B*1.5].forEach(s=>kick(ctx,t+s));
-  kick(ctx,t+B*3+remate.length*Q);
-}
-
-// Botón mute flotante
-const muteBtn = document.createElement('button');
-muteBtn.id = 'muteBtn';
-muteBtn.textContent = '🔊';
-muteBtn.title = 'Silenciar / Activar música';
-muteBtn.style.cssText = 'position:fixed;bottom:20px;right:20px;z-index:9999;background:rgba(255,255,255,0.15);border:2px solid rgba(255,255,255,0.3);color:#fff;font-size:1.4rem;width:48px;height:48px;border-radius:50%;cursor:pointer;backdrop-filter:blur(4px);transition:all .2s';
-muteBtn.onclick = () => {
-  muteState = !muteState;
-  muteBtn.textContent = muteState ? '🔇' : '🔊';
-  if(muteState) stopMusic();
-  else if(document.getElementById('screenQuestion').classList.contains('active')) startMusic();
-};
+// Botón mute
+const muteBtn=document.createElement('button');
+muteBtn.textContent='🔊';
+muteBtn.style.cssText='position:fixed;bottom:20px;right:20px;z-index:9999;background:rgba(255,255,255,.15);border:2px solid rgba(255,255,255,.3);color:#fff;font-size:1.4rem;width:48px;height:48px;border-radius:50%;cursor:pointer;backdrop-filter:blur(4px);transition:all .2s';
+muteBtn.onclick=()=>{muteState=!muteState;muteBtn.textContent=muteState?'🔇':'🔊';if(muteState)stopMusic();else if(musicPlaying)startMusic();};
 document.body.appendChild(muteBtn);
-
-// Hooks en funciones existentes
-const _origStartGame = startGame;
-startGame = function(){
-  if(!audioCtx){
-    audioCtx = new (window.AudioContext||window.webkitAudioContext)();
-  } else if(audioCtx.state==='suspended'){
-    audioCtx.resume();
-  }
-  _origStartGame();
-  startMusic();
-};
-
-const _origSelectAnswer = selectAnswer;
-selectAnswer = function(btnIdx, isCorrect){
-  if(isCorrect) sfxCorrect(); else sfxWrong();
-  _origSelectAnswer(btnIdx, isCorrect);
-};
-
-const _origEndGame = endGame;
-endGame = function(){
-  stopMusic();
-  sfxFanfare();
-  _origEndGame();
-};
-
-// Cuenta regresiva sonora mejorada
-const _origLoadQ = loadQuestion;
-loadQuestion = function(){
-  _origLoadQ();
-  let lastTick = null;
-  const tickInterval = setInterval(() => {
-    if(timeLeft <= 0){ clearInterval(tickInterval); return; }
-    if(timeLeft !== lastTick){
-      if(timeLeft <= 3) sfxUrgent();
-      else if(timeLeft <= 5) sfxCountdown();
-      lastTick = timeLeft;
-    }
-  }, 200);
-};
 </script>
 </body>
 </html>
