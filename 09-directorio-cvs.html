@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/x-icon" href="favicon.ico">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Directorio CVs CARD · Hub Avon PDC</title>
+<style>
+:root {
+  --bg: #0F0E1A; --bg2: #1A1830; --surface: #1E1B36; --surface2: #28244A;
+  --border: #2E2A52; --text: #E8E6F0; --text-muted: #9B97B8;
+  --avon: #E91E63; --avon-deep: #C2185B; --pdc: #0A2472; --gold: #F5A623;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+.header {
+  background: linear-gradient(135deg, var(--avon) 0%, var(--pdc) 100%);
+  padding: 32px 24px; text-align: center; position: relative; overflow: hidden;
+}
+.header::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+  background: radial-gradient(circle at 20% 50%, rgba(255,255,255,0.1) 0%, transparent 50%);
+}
+.header h1 { font-size: 1.8rem; font-weight: 800; position: relative; z-index: 1; }
+.header p { font-size: 0.95rem; opacity: 0.85; margin-top: 6px; position: relative; z-index: 1; }
+.back-btn {
+  position: absolute; left: 20px; top: 50%; transform: translateY(-50%);
+  background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3);
+  color: white; padding: 10px 18px; border-radius: 10px; cursor: pointer;
+  font-size: 0.9rem; font-weight: 600; text-decoration: none; z-index: 2; transition: all 0.3s;
+}
+.back-btn:hover { background: rgba(255,255,255,0.25); }
+
+.stats { display: flex; gap: 16px; justify-content: center; padding: 24px; flex-wrap: wrap; }
+.stat-box { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 16px 28px; text-align: center; min-width: 110px; }
+.stat-num { font-size: 2rem; font-weight: 800; color: var(--avon); }
+.stat-label { font-size: 0.78rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-top: 2px; }
+
+/* BÚSQUEDA */
+.search-bar { padding: 0 24px 20px; max-width: 600px; margin: 0 auto; }
+.search-input {
+  width: 100%; padding: 14px 20px 14px 48px; border-radius: 12px;
+  border: 2px solid var(--border); background: var(--surface);
+  color: var(--text); font-size: 1rem; outline: none; transition: border .3s;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%239B97B8' stroke-width='2'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.35-4.35'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: 16px center;
+}
+.search-input:focus { border-color: var(--avon); }
+.search-input::placeholder { color: var(--text-muted); }
+
+/* FILTROS */
+.filters { padding: 0 24px 24px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+.filter-btn {
+  padding: 8px 18px; border-radius: 25px; border: 2px solid var(--border);
+  background: var(--surface); color: var(--text-muted); cursor: pointer;
+  font-size: 0.88rem; font-weight: 600; transition: all 0.3s; display: flex; align-items: center; gap: 6px;
+}
+.filter-btn:hover, .filter-btn.active { border-color: var(--avon); color: white; background: rgba(233,30,99,0.15); }
+.filter-btn.active { box-shadow: 0 0 14px rgba(233,30,99,0.3); }
+
+.container { max-width: 1200px; margin: 0 auto; padding: 0 24px 60px; }
+
+/* SECCIÓN POR PAÍS */
+.country-section { margin-bottom: 36px; animation: fadeIn 0.4s ease; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+.country-header {
+  display: flex; align-items: center; gap: 14px; margin-bottom: 18px;
+  padding: 14px 20px; background: var(--surface); border-radius: 12px;
+  border-left: 4px solid var(--avon); position: sticky; top: 0; z-index: 10;
+}
+.country-flag { font-size: 1.8rem; }
+.country-header h2 { font-size: 1.2rem; font-weight: 700; }
+.country-supervisor { font-size: 0.85rem; color: var(--text-muted); margin-left: 4px; }
+.country-count { margin-left: auto; font-size: 0.82rem; color: var(--text-muted); background: var(--bg); padding: 4px 14px; border-radius: 20px; white-space: nowrap; }
+
+/* GRID DE CARDS */
+.cv-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 16px; }
+
+.cv-card {
+  background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
+  padding: 20px; transition: all 0.3s; position: relative; overflow: hidden;
+}
+.cv-card::before {
+  content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 3px;
+  background: linear-gradient(90deg, var(--avon), var(--gold));
+}
+.cv-card:hover { border-color: var(--avon); transform: translateY(-3px); box-shadow: 0 8px 25px rgba(233,30,99,0.15); }
+
+.cv-card-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 14px; gap: 10px; }
+.cv-name { font-size: 1.05rem; font-weight: 700; color: var(--gold); line-height: 1.3; }
+.modelo-badge {
+  font-size: 0.72rem; font-weight: 700; padding: 3px 10px; border-radius: 12px;
+  white-space: nowrap; flex-shrink: 0;
+}
+.modelo-experiencia { background: rgba(233,30,99,0.2); color: #ff6b9d; }
+.modelo-mostrador { background: rgba(245,166,35,0.2); color: #f5a623; }
+.modelo-selfservice { background: rgba(99,179,237,0.2); color: #63b3ed; }
+
+.cv-row { display: flex; gap: 8px; margin-bottom: 8px; font-size: 0.88rem; align-items: flex-start; }
+.cv-icon { width: 18px; text-align: center; flex-shrink: 0; margin-top: 1px; }
+.cv-label { color: var(--text-muted); min-width: 70px; flex-shrink: 0; }
+.cv-value { color: var(--text); font-weight: 500; word-break: break-word; }
+.cv-value a { color: var(--avon); text-decoration: none; }
+.cv-value a:hover { text-decoration: underline; }
+
+.horario-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-top: 12px; }
+.horario-item {
+  background: var(--bg); border-radius: 8px; padding: 8px; text-align: center;
+  border: 1px solid var(--border);
+}
+.horario-dia { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 3px; }
+.horario-hora { font-size: 0.78rem; font-weight: 600; color: var(--text); }
+.horario-hora.cerrado { color: #e53e3e; }
+
+.obs-box {
+  margin-top: 12px; padding: 10px 14px; background: rgba(245,166,35,0.08);
+  border-left: 3px solid var(--gold); border-radius: 0 8px 8px 0;
+  font-size: 0.83rem; color: var(--text-muted); font-style: italic;
+}
+
+.no-results { text-align: center; padding: 60px 20px; color: var(--text-muted); }
+.no-results .emoji { font-size: 3rem; display: block; margin-bottom: 12px; }
+
+@media (max-width: 768px) {
+  .header h1 { font-size: 1.3rem; }
+  .back-btn { position: static; transform: none; margin-bottom: 12px; display: inline-block; }
+  .cv-grid { grid-template-columns: 1fr; }
+  .stats { gap: 8px; }
+  .stat-box { padding: 12px 16px; min-width: 90px; }
+  .country-header { position: static; }
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <a class="back-btn" href="index.html">← Inicio</a>
+  <h1>📍 Directorio CVs CARD</h1>
+  <p>Centros de Ventas Avon · Región CARD 2025</p>
+</div>
+
+<div class="stats">
+  <div class="stat-box"><div class="stat-num" id="totalCVs">0</div><div class="stat-label">Centros de Venta</div></div>
+  <div class="stat-box"><div class="stat-num" id="totalPaises">6</div><div class="stat-label">Países</div></div>
+  <div class="stat-box"><div class="stat-num" id="totalExp">0</div><div class="stat-label">Experiencia</div></div>
+  <div class="stat-box"><div class="stat-num" id="totalMost">0</div><div class="stat-label">Mostrador</div></div>
+</div>
+
+<div class="search-bar">
+  <input type="text" class="search-input" id="searchInput" placeholder="Buscar por centro, ciudad, administrador..." oninput="renderAll()">
+</div>
+
+<div class="filters" id="filters">
+  <button class="filter-btn active" data-pais="TODOS" onclick="setFilter('TODOS')">🌎 Todos</button>
+  <button class="filter-btn" data-pais="GT" onclick="setFilter('GT')">🇬🇹 Guatemala</button>
+  <button class="filter-btn" data-pais="ES" onclick="setFilter('ES')">🇸🇻 El Salvador</button>
+  <button class="filter-btn" data-pais="HO" onclick="setFilter('HO')">🇭🇳 Honduras</button>
+  <button class="filter-btn" data-pais="NI" onclick="setFilter('NI')">🇳🇮 Nicaragua</button>
+  <button class="filter-btn" data-pais="PA" onclick="setFilter('PA')">🇵🇦 Panamá</button>
+  <button class="filter-btn" data-pais="RD" onclick="setFilter('RD')">🇩🇴 Rep. Dom.</button>
+</div>
+
+<div class="container" id="mainContainer"></div>
+
+<script>
+const PAISES = {
+  GT: { nombre: 'Guatemala', flag: '🇬🇹', supervisor: 'Jeimy Medrano' },
+  ES: { nombre: 'El Salvador', flag: '🇸🇻', supervisor: 'Hugo Mendoza' },
+  HO: { nombre: 'Honduras', flag: '🇭🇳', supervisor: 'Sara Velásquez' },
+  NI: { nombre: 'Nicaragua', flag: '🇳🇮', supervisor: 'Junieska López' },
+  PA: { nombre: 'Panamá', flag: '🇵🇦', supervisor: 'ZULEIKA RODRIGUEZ' },
+  RD: { nombre: 'Rep. Dominicana', flag: '🇩🇴', supervisor: 'Miguelina Caraballo' },
+};
+
+const CVS = [
+  // ── GUATEMALA ──
+  { pais:'GT', nombre:'CVZ 4 · Centro Comercial', modelo:'Experiencia', ubicacion:'Capital - Guatemala', admin:'Gabriela Laguardia', email:'gabriela.laguardia@la.avon.com', direccion:'6ª Av. 0-60, Zona 4, Planta Alta, CC Zona 4', telefonos:'2335-2518 / 2335-2515', lv:'8:30 am - 6:00 pm', sab:'9:00 am - 2:00 pm', dom:'10:00 am - 2:00 pm', pos:'7 POS', obs:'4 Neonet USB no funcionan' },
+  { pais:'GT', nombre:'CVZ7 · Tikal', modelo:'Mostrador', ubicacion:'Capital - Guatemala', admin:'Michelle Ramírez', email:'michell.ramirez@la.avon.com', direccion:'Calz. San Juan 30-00, Zona 7, locales 4, 5 y 6, CC Tikal', telefonos:'2474-2931 / 2474-2932', lv:'9:00 am - 6:00 pm', sab:'9:00 am - 2:00 pm', dom:'9:00 am - 1:00 pm', pos:'2 POS', obs:'Funcionan todos' },
+  { pais:'GT', nombre:'CVZ11 · Pacific', modelo:'Experiencia', ubicacion:'Capital - Guatemala', admin:'Gabriela Zamora', email:'gabriela.zamora1@la.avon.com', direccion:'Calz. Aguilar Batres 32-10, Zona 11, CC Pacific Center', telefonos:'2476-3610 / 2476-3620', lv:'10:00 am - 8:00 pm', sab:'9:00 am - 8:00 pm', dom:'10:00 am - 7:00 pm', pos:'5 POS', obs:'3 Neonet no funcionan' },
+  { pais:'GT', nombre:'CVZ12 · Petapa', modelo:'Mostrador', ubicacion:'Capital - Guatemala', admin:'Estuardo Tajivoy', email:'estuardo.tajiboy@la.avon.com', direccion:'Av. Petapa 47-79, Zona 12, Loc. 18, 19 y 20, CC Plaza Grecia', telefonos:'2477-7283 / 2477-7284', lv:'8:00 am - 6:00 pm', sab:'9:00 am - 1:00 pm', dom:'9:00 am - 1:00 pm', pos:'4 POS', obs:'2 Neonet USB no funcionan' },
+  { pais:'GT', nombre:'CVZ17 · Metro Norte', modelo:'Mostrador', ubicacion:'Capital - Guatemala', admin:'Axel Vasquez', email:'axel.vasquez@la.avon.com', direccion:'Km. 5.1 C.C. Metro Norte, Zona 17', telefonos:'2256-0748 / 2256-0679', lv:'9:00 am - 8:00 pm', sab:'9:00 am - 8:00 pm', dom:'10:00 am - 6:00 pm', pos:'6 POS', obs:'4 Neonet USB no funcionan' },
+  { pais:'GT', nombre:'CVZ21 · Xela (Interior)', modelo:'Mostrador', ubicacion:'Quetzaltenango', admin:'Yesenia Velasquez', email:'yeseniadelrosario.velasquez@la.avon.com', direccion:'17 Avenida 3-17 Zona 3, CC Plaza Atlantis, Quetzaltenango', telefonos:'7761-4132', lv:'9:00 am - 6:00 pm', sab:'9:00 am - 3:30 pm', dom:'CERRADO', pos:'2 POS', obs:'Funcionan todos' },
+  { pais:'GT', nombre:'CVZ5 · Outlet (Oficinas Centrales)', modelo:'Self Service', ubicacion:'Capital - Guatemala', admin:'Kevin López', email:'Kevin.lopez@la.avon.com', direccion:'Calzada Roosevelt 11-08, Zona 2 de Mixco, Colonia Cotio', telefonos:'7761-4132', lv:'9:00 am - 6:00 pm', sab:'9:00 am - 12:30 pm', dom:'CERRADO', pos:'3 POS', obs:'Funciona solo 1 Neonet' },
+  // ── EL SALVADOR ──
+  { pais:'ES', nombre:'CVZ3 · Santa Ana', modelo:'Mostrador', ubicacion:'Santa Ana', admin:'Josue Guillen', email:'josue.guillen@la.avon.com', direccion:'Avenida Independencia Sur, Bo. Nuevo Santa Ana', telefonos:'2440-9708 / 2440-7365', lv:'8:00 am - 5:00 pm', sab:'9:00 am - 5:00 pm', dom:'9:00 am - 2:00 pm', pos:'2 POS', obs:'POS Agrícola NO se usa', maps:'https://goo.gl/maps/6aBEPfe2tsuDnot66' },
+  { pais:'ES', nombre:'CVA5 · Santa Tecla', modelo:'Mostrador', ubicacion:'La Libertad', admin:'Carlos Solorzano', email:'carlos.solorzano@la.avon.com', direccion:'4ª Calle Ote. Nº 2-7, locales 1 y 2, Costado Norte Colegio Santa Inés, Santa Tecla', telefonos:'2534-9953', lv:'8:00 am - 5:00 pm', sab:'9:00 am - 5:00 pm', dom:'9:00 am - 2:00 pm', pos:'1 POS', obs:'', maps:'https://goo.gl/maps/72vC3kM8rgbvd8bS6' },
+  { pais:'ES', nombre:'CVZ1 · Salvador del Mundo', modelo:'Experiencia', ubicacion:'Capital - San Salvador', admin:'Laura Najarro', email:'laura.najarro@la.avon.com', direccion:'Alameda Roosevelt y 61 Av. Nte. #3030, San Salvador', telefonos:'2506-0068 / 2506-0095', lv:'8:00 am - 5:00 pm', sab:'9:00 am - 5:00 pm', dom:'9:00 am - 2:00 pm', pos:'2 POS', obs:'Solo 1 POS en funcionamiento', maps:'https://goo.gl/maps/Y1bcwoe8JVUccEV47' },
+  { pais:'ES', nombre:'CVZ8 · Centro Histórico', modelo:'Mostrador', ubicacion:'Capital - San Salvador', admin:'Elizabeth Oviedo', email:'elizabeth.bautista@la.avon.com', direccion:'1ª Calle Poniente y 1ª Ave Nte #210, San Salvador', telefonos:'2281-2113', lv:'8:00 am - 5:00 pm', sab:'9:00 am - 5:00 pm', dom:'9:00 am - 2:00 pm', pos:'2 POS', obs:'', maps:'https://goo.gl/maps/j2FYhs5LFKYpX1Jw5' },
+  { pais:'ES', nombre:'CVZ11 · Lourdes', modelo:'Mostrador', ubicacion:'La Libertad', admin:'Elsa Campos', email:'elsa.campos@la.avon.com', direccion:'C.C. Metrocentro Lourdes, Local 11 y 12, Km 24 1/2, Lourdes Colón', telefonos:'2346-5814 / 2506-0018', lv:'8:30 am - 5:00 pm', sab:'9:00 am - 5:00 pm', dom:'9:00 am - 2:00 pm', pos:'1 POS', obs:'' },
+  { pais:'ES', nombre:'CVZ2 · Soyapango', modelo:'Mostrador', ubicacion:'Capital - San Salvador', admin:'Hector Ramirez', email:'hector.ramirez@la.avon.com', direccion:'4ª Calle Ote. Nº 2-7, locales 1 y 2, Santa Tecla', telefonos:'2277-3316 / 2506-0057', lv:'8:00 am - 5:00 pm', sab:'9:00 am - 5:00 pm', dom:'9:00 am - 2:00 pm', pos:'3 POS', obs:'POS Agrícola NO se usa' },
+  // ── HONDURAS ──
+  { pais:'HO', nombre:'CVZ1 · San Pedro Sula Centro', modelo:'Mostrador', ubicacion:'Casco San Pedro Sula', admin:'Patricia Lara', email:'patricia.lara@la.avon.com', direccion:'Edificio Chalet, 1er. Nivel, local #2 Bo. El Centro, 3Ave. 1Cll. San Pedro Sula', telefonos:'2507-1122 / 2518-1875', lv:'8:00 am - 6:00 pm', sab:'9:00 am - 4:00 pm', dom:'9:00 am - 4:00 pm', pos:'2 POS', obs:'1 alámbrico, 1 inalámbrico' },
+  { pais:'HO', nombre:'CVZ2 · La Granja', modelo:'Mostrador', ubicacion:'Comayagüela', admin:'Claudia Medina', email:'claudia.medina@la.avon.com', direccion:'C.C. Plaza La Granja, Nivel B, Local #19, Comayagüela D.C.', telefonos:'2225-2231 / 2225-3118', lv:'8:00 am - 5:00 pm', sab:'9:00 am - 4:00 pm', dom:'CERRADO', pos:'2 POS', obs:'2 inalámbricos' },
+  { pais:'HO', nombre:'CVZ5 · Tegucigalpa Centro', modelo:'Mostrador', ubicacion:'Casco Tegucigalpa', admin:'Sandra Espinal', email:'sandra.espinal@la.avon.com', direccion:'Bo. El Centro, Contiguo Banco Atlántida, Frente a Fotografía Francesa', telefonos:'2238-9295 / 2238-9297', lv:'8:00 am - 6:00 pm', sab:'9:00 am - 4:00 pm', dom:'9:00 am - 4:00 pm', pos:'3 POS', obs:'1 alámbrico, 2 inalámbricos' },
+  { pais:'HO', nombre:'CVZ6 · La Metropolitana', modelo:'Mostrador', ubicacion:'Casco Tegucigalpa', admin:'Glendy Nattaren', email:'Pendiente', direccion:'Gran Central Metropolitana de Transportes, Local NF 170, Frente a Viana', telefonos:'2507-1130', lv:'8:00 am - 6:00 pm', sab:'9:00 am - 4:00 pm', dom:'9:00 am - 4:00 pm', pos:'2 POS', obs:'1 alámbrico, 1 inalámbrico' },
+  // ── NICARAGUA ──
+  { pais:'NI', nombre:'CVZ2 · Altamira', modelo:'Mostrador', ubicacion:'Capital - Managua', admin:'Eddy Flores', email:'eddy.flores@la.avon.com', direccion:'Altamira, de los semáforos Loselsa 2½ cuadras al norte, Managua', telefonos:'2270-5202 / 2270-4646', lv:'8:00 am - 5:30 pm', sab:'8:00 am - 4:00 pm', dom:'9:00 am - 3:00 pm', pos:'2 POS', obs:'POS BAC recientemente actualizado a unidad táctil' },
+  { pais:'NI', nombre:'CVZ3 · Montoya', modelo:'Mostrador', ubicacion:'Capital - Managua', admin:'Angie Pérez Zambrana', email:'angie.perez.zambrana@la.avon.com', direccion:'Semáforos Montoya 1½ cuadra al lago, Managua', telefonos:'2228-1186 / 2222-4957', lv:'8:00 am - 5:30 pm', sab:'8:00 am - 4:00 pm', dom:'9:00 am - 3:00 pm', pos:'2 POS', obs:'' },
+  { pais:'NI', nombre:'CVZ4 · América', modelo:'Mostrador', ubicacion:'Capital - Managua', admin:'Geovanni Cortez', email:'geovanny.francisco.cortez.mendoza@la.avon.com', direccion:'Semáforos Mercado Iván Montenegro, 250 vrs. abajo, Local B3, Managua', telefonos:'2289-1428', lv:'8:00 am - 5:30 pm', sab:'8:00 am - 4:00 pm', dom:'9:00 am - 3:00 pm', pos:'2 POS', obs:'' },
+  { pais:'NI', nombre:'CVZ5 · Zumen', modelo:'Experiencia', ubicacion:'Capital - Managua', admin:'Isamar Nahomara Rojas', email:'Isamar.nahomara.rojas@la.avon.com', direccion:'C.C. Zumen, mod. #1, frente al Centro Cívico, Managua', telefonos:'2253-9513 / 2253-9514', lv:'8:00 am - 5:30 pm', sab:'8:00 am - 4:00 pm', dom:'9:00 am - 3:00 pm', pos:'2 POS', obs:'POS Banpro solo funciona con energía eléctrica' },
+  { pais:'NI', nombre:'CVZ6 · Norte', modelo:'Mostrador', ubicacion:'Capital - Managua', admin:'Linda Isabel López', email:'linda.lopez@la.avon.com', direccion:'Km 5 Carretera Norte, Edificio 3F, contiguo Nabisco Cristal, Managua', telefonos:'2248-1707 / 2248-1709', lv:'8:00 am - 5:30 pm', sab:'8:00 am - 4:00 pm', dom:'9:00 am - 3:00 pm', pos:'2 POS', obs:'' },
+  { pais:'NI', nombre:'CVZ17 · Linda Vista', modelo:'Mostrador', ubicacion:'Capital - Managua', admin:'—', email:'cv.lindavista.nicaragua@la.avon.com', direccion:'C.C. Linda Vista, módulo #A4, Plaza Linda Vista', telefonos:'2266-7325', lv:'8:00 am - 5:30 pm', sab:'8:00 am - 4:00 pm', dom:'9:00 am - 3:00 pm', pos:'—', obs:'' },
+  { pais:'NI', nombre:'CVZ7 · León', modelo:'Mostrador', ubicacion:'León', admin:'Dadgling Baldizon', email:'dadglin.de.lourdes.baldizon.quintero.n.baldizo@la.avon.com', direccion:'Catedral de León ½ al norte / Parque Las Rosas 39.68 mts al este, B° Santa Ana', telefonos:'2311-0902', lv:'8:00 am - 5:30 pm', sab:'8:00 am - 4:00 pm', dom:'9:00 am - 3:00 pm', pos:'2 POS', obs:'POS BAC solo funciona con corriente. No le dan mantenimiento' },
+  { pais:'NI', nombre:'CVZ8 · Chinandega', modelo:'Mostrador', ubicacion:'Chinandega', admin:'Karla Flores', email:'karla.flores@la.avon.com', direccion:'Parque las Rosas, 75 varas al norte, contiguo Edificio Claro, B° Santa Ana', telefonos:'2341-8948', lv:'8:00 am - 5:30 pm', sab:'8:00 am - 4:00 pm', dom:'9:00 am - 3:00 pm', pos:'2 POS', obs:'POS Banpro bastante defazado' },
+  { pais:'NI', nombre:'CVZ9 · Estelí', modelo:'Mostrador', ubicacion:'Estelí', admin:'Yaradeyling Galeano', email:'yaradeyling.galeano@la.avon.com', direccion:'Contiguo a Banpro, costado este, Estelí', telefonos:'2713-2739', lv:'8:00 am - 5:30 pm', sab:'8:00 am - 4:00 pm', dom:'9:00 am - 3:00 pm', pos:'2 POS', obs:'' },
+  { pais:'NI', nombre:'CVZ10 · Matagalpa', modelo:'Experiencia', ubicacion:'Matagalpa', admin:'Yorling Chavarria', email:'yorling.chavarria@la.avon.com', direccion:'Del Parque Darío 1c al norte, Matagalpa', telefonos:'2772-4829', lv:'8:00 am - 5:30 pm', sab:'8:00 am - 4:00 pm', dom:'9:00 am - 3:00 pm', pos:'2 POS', obs:'' },
+  { pais:'NI', nombre:'CVZ14 · Masaya', modelo:'Mostrador', ubicacion:'Masaya', admin:'Yolanda Soza', email:'yolanda.soza@la.avon.com', direccion:'Frente a cuerpo de bomberos, costado sur, Masaya', telefonos:'2522-7357', lv:'8:00 am - 5:30 pm', sab:'8:00 am - 4:00 pm', dom:'9:00 am - 3:00 pm', pos:'2 POS', obs:'POS BAC se daña frecuentemente. No le dan mantenimiento' },
+  // ── PANAMÁ ──
+  { pais:'PA', nombre:'CVZ7 · Los Andes', modelo:'Experiencia', ubicacion:'Ciudad de Panamá', admin:'Evelyn Castillo', email:'evelincastillo.rhvital@la.avon.com', direccion:'CC Los Andes, Local F-27, Belisario Porras, San Miguelito', telefonos:'279-4624 / 237-9750', lv:'9:00 am - 6:00 pm', sab:'9:00 am - 2:00 pm', dom:'10:00 am - 5:00 pm', pos:'2 POS', obs:'POS inalámbrico, en ocasiones pierde señal' },
+  { pais:'PA', nombre:'CVZ9 · Albrook', modelo:'Mostrador', ubicacion:'Ciudad de Panamá', admin:'Sandra Phillips', email:'sandra.phillips@la.avon.com', direccion:'C.C. Albrook Mall, Planta Alta', telefonos:'279-4625 / 314-6864', lv:'10:00 am - 7:00 pm', sab:'10:00 am - 7:00 pm', dom:'10:00 am - 5:00 pm', pos:'2 POS', obs:'POS inalámbrico, en ocasiones pierde señal' },
+  { pais:'PA', nombre:'CVZ12 · Pueblos', modelo:'Mostrador', ubicacion:'Ciudad de Panamá', admin:'Shanida Campos', email:'shanida.campos@la.avon.com', direccion:'Local 10B, C.C. PH2 Pueblos', telefonos:'279-4626 / 217-7971', lv:'9:00 am - 6:00 pm', sab:'9:00 am - 2:00 pm', dom:'10:00 am - 5:00 pm', pos:'2 POS', obs:'POS inalámbrico, en ocasiones pierde señal' },
+  { pais:'PA', nombre:'CVZ14 · Westland', modelo:'Experiencia', ubicacion:'Provincia de Chorrera', admin:'Kelitza Murrell', email:'kelitza.murrell@la.avon.com', direccion:'CC Westland Mall, Calle Interamericana, La Chorrera', telefonos:'279-4628 / 251-2981', lv:'10:00 am - 7:00 pm', sab:'10:00 am - 7:00 pm', dom:'10:00 am - 5:00 pm', pos:'2 POS', obs:'POS inalámbrico, en ocasiones pierde señal' },
+  // ── REP. DOMINICANA ──
+  { pais:'RD', nombre:'CVZ1 · 27 de Febrero', modelo:'Self Service', ubicacion:'Capital - Santo Domingo', admin:'Skarlin Pérez Fortuna', email:'skarlin.perez1@la.avon.com', direccion:'Av. 27 de Febrero Esq. Av. Tiradentes, Plaza Merengue, 1er Nivel, Santo Domingo', telefonos:'809-683-1155 / 3444-2331', lv:'9:00 am - 6:00 pm', sab:'9:00 am - 1:00 pm', dom:'CERRADO', pos:'CARDNET (físico y virtual)', obs:'' },
+  { pais:'RD', nombre:'CVZ2 · Charles de Gaulle', modelo:'Self Service', ubicacion:'Capital - Santo Domingo', admin:'Justina Manzueta', email:'justina.manzueta@la.avon.com', direccion:'Av. Charles de Gaulle #266, Plaza Esmeralda, 1er Nivel, Santo Domingo Este', telefonos:'809-245-9441 / 3444-2320', lv:'9:00 am - 6:00 pm', sab:'9:00 am - 1:00 pm', dom:'CERRADO', pos:'CARDNET (físico y virtual)', obs:'' },
+  { pais:'RD', nombre:'CVZ3 · Herrera', modelo:'Self Service', ubicacion:'Capital - Santo Domingo', admin:'Carmen Gisselle Nin Núñez', email:'gisselle.nin@la.avon.com', direccion:'Av. Isabel Aguiar #98, Plaza Palmares, 1er nivel, Santo Domingo Oeste', telefonos:'809-534-1532 / 3444-2327', lv:'9:00 am - 6:00 pm', sab:'9:00 am - 1:00 pm', dom:'CERRADO', pos:'CARDNET (físico y virtual)', obs:'' },
+  { pais:'RD', nombre:'Outlet · Oficinas Centrales', modelo:'Self Service', ubicacion:'San Cristóbal', admin:'Angel Gerónimo Cruz', email:'angel.cruz@la.avon.com', direccion:'Av. Refinería, Zona Industrial de Haina, San Cristóbal', telefonos:'829-732-2305 / 3444-2305', lv:'8:00 am - 5:00 pm', sab:'CERRADO', dom:'CERRADO', pos:'CARDNET (físico y virtual)', obs:'' },
+];
+
+let filtroActivo = 'TODOS';
+
+function setFilter(pais) {
+  filtroActivo = pais;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.toggle('active', b.dataset.pais === pais));
+  renderAll();
+}
+
+function renderAll() {
+  const q = document.getElementById('searchInput').value.toLowerCase().trim();
+  const container = document.getElementById('mainContainer');
+
+  const filtered = CVS.filter(cv => {
+    const matchPais = filtroActivo === 'TODOS' || cv.pais === filtroActivo;
+    const matchQ = !q || [cv.nombre, cv.ubicacion, cv.admin, cv.direccion, cv.telefonos].some(f => f.toLowerCase().includes(q));
+    return matchPais && matchQ;
+  });
+
+  // Estadísticas
+  document.getElementById('totalCVs').textContent = filtered.length;
+  document.getElementById('totalExp').textContent = filtered.filter(c => c.modelo === 'Experiencia').length;
+  document.getElementById('totalMost').textContent = filtered.filter(c => c.modelo === 'Mostrador').length;
+
+  if (!filtered.length) {
+    container.innerHTML = `<div class="no-results"><span class="emoji">🔍</span>No se encontraron resultados para "<strong>${q}</strong>"</div>`;
+    return;
+  }
+
+  // Agrupar por país
+  const porPais = {};
+  filtered.forEach(cv => {
+    if (!porPais[cv.pais]) porPais[cv.pais] = [];
+    porPais[cv.pais].push(cv);
+  });
+
+  container.innerHTML = Object.entries(porPais).map(([pais, cvs]) => {
+    const info = PAISES[pais];
+    return `
+      <div class="country-section">
+        <div class="country-header">
+          <span class="country-flag">${info.flag}</span>
+          <div>
+            <h2>${info.nombre}</h2>
+            <span class="country-supervisor">Supervisor: ${info.supervisor}</span>
+          </div>
+          <span class="country-count">${cvs.length} centro${cvs.length !== 1 ? 's' : ''}</span>
+        </div>
+        <div class="cv-grid">
+          ${cvs.map(cv => renderCard(cv)).join('')}
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function renderCard(cv) {
+  const modeloClass = cv.modelo === 'Experiencia' ? 'modelo-experiencia' : cv.modelo === 'Self Service' ? 'modelo-selfservice' : 'modelo-mostrador';
+  const domClass = cv.dom === 'CERRADO' ? 'cerrado' : '';
+  const sabClass = cv.sab === 'CERRADO' ? 'cerrado' : '';
+
+  return `
+    <div class="cv-card">
+      <div class="cv-card-header">
+        <div class="cv-name">${cv.nombre}</div>
+        <span class="modelo-badge ${modeloClass}">${cv.modelo}</span>
+      </div>
+      <div class="cv-row"><span class="cv-icon">📍</span><span class="cv-label">Ubicación</span><span class="cv-value">${cv.ubicacion}</span></div>
+      <div class="cv-row"><span class="cv-icon">👤</span><span class="cv-label">Admin.</span><span class="cv-value">${cv.admin}</span></div>
+      <div class="cv-row"><span class="cv-icon">✉️</span><span class="cv-label">Correo</span><span class="cv-value"><a href="mailto:${cv.email}">${cv.email}</a></span></div>
+      <div class="cv-row"><span class="cv-icon">🏢</span><span class="cv-label">Dirección</span><span class="cv-value">${cv.direccion}${cv.maps ? ` <a href="${cv.maps}" target="_blank">🗺️</a>` : ''}</span></div>
+      <div class="cv-row"><span class="cv-icon">📞</span><span class="cv-label">Teléfonos</span><span class="cv-value">${cv.telefonos}</span></div>
+      <div class="cv-row"><span class="cv-icon">🖥️</span><span class="cv-label">POS</span><span class="cv-value">${cv.pos}</span></div>
+      <div class="horario-grid">
+        <div class="horario-item"><div class="horario-dia">Lun - Vie</div><div class="horario-hora">${cv.lv}</div></div>
+        <div class="horario-item"><div class="horario-dia">Sábado</div><div class="horario-hora ${sabClass}">${cv.sab}</div></div>
+        <div class="horario-item"><div class="horario-dia">Domingo</div><div class="horario-hora ${domClass}">${cv.dom}</div></div>
+      </div>
+      ${cv.obs ? `<div class="obs-box">⚠️ ${cv.obs}</div>` : ''}
+    </div>`;
+}
+
+renderAll();
+</script>
+</body>
+</html>
