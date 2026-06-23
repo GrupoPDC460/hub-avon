@@ -13,7 +13,7 @@ body{font-family:'Poppins',sans-serif;background:#46178F;color:#fff;min-height:1
 
 /* LOGIN INICIAL */
 #screenLogin{
-  position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;
+  position:fixed;inset:0;z-index:9999;display:none;align-items:center;justify-content:center;
   background:url('data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJTEUAAQEAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADb/2wBDAAMCAgMCAgMDAwMEAwMEBQgFBQQEBQoH8AgGCwsLCwsLCwwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAz/wAARCADIAMgDASIAAhEBAxEB/8QAHAABAAIDAQEBAAAAAAAAAAAAAAYHBAUICQP/xABIEAABAwMCBAMFBAcFBwUAAAABAAIDBAURBiExBxJBUWEicYGREzKhscEIFCNSYuHwFTNCQ3KCkqLR8RYkNGNzg5Oz0v/EABQBAQAAAAAAAAAAAAAAAAAAAAD/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwC4IiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiD/2Q==') center/cover no-repeat;
 }
 #screenLogin::before{content:'';position:absolute;inset:0;background:rgba(139,0,0,.72);backdrop-filter:blur(2px)}
@@ -202,15 +202,8 @@ body{font-family:'Poppins',sans-serif;background:#46178F;color:#fff;min-height:1
   <input type="text" class="name-input" id="playerName" placeholder="Escribe tu nombre..." maxlength="20" autocomplete="off">
   <div class="avatar-label">Elige tu avatar</div>
   <div class="avatar-grid" id="avatarGrid"></div>
-  <button class="start-btn" id="startBtn" onclick="joinLobby()" disabled>¡Unirme!</button>
+  <button class="start-btn" id="startBtn" onclick="joinLobby()" disabled>¡Comenzar práctica!</button>
   <div class="player-count" id="playerCount"></div>
-  <!-- Contraseña admin opcional — discreta -->
-  <div style="margin-top:22px;width:100%;max-width:320px">
-    <input type="password" id="hostPassInput" placeholder="Contraseña (solo host)..."
-      style="width:100%;padding:10px 16px;border-radius:10px;border:2px solid rgba(255,255,255,.12);background:rgba(255,255,255,.06);color:#fff;font-size:.9rem;font-family:'Poppins';text-align:center;outline:none;transition:border .2s"
-      onfocus="this.style.borderColor='rgba(233,30,99,.5)'" onblur="this.style.borderColor='rgba(255,255,255,.12)'"
-      onkeydown="if(event.key==='Enter'&&document.getElementById('playerName').value.trim().length>=2) joinLobby()">
-  </div>
 </div>
 
 <!-- ══ SCREEN: ADMIN LOGIN ══ -->
@@ -334,6 +327,7 @@ body{font-family:'Poppins',sans-serif;background:#46178F;color:#fff;min-height:1
   <div class="report" id="report"></div>
   <div class="report-actions">
     <button class="report-download" onclick="downloadReport()">📥 Descargar Reporte</button>
+    <button class="green-btn" style="max-width:300px;margin-top:14px" onclick="practiceAgain()">🔄 Practicar otra vez</button>
   </div>
 </div>
 
@@ -482,39 +476,20 @@ function joinLobby(){
   const name=document.getElementById('playerName').value.trim();
   if(!name) return;
   player=name;
+  isAdmin=false;
 
-  // Detectar si es el host por contraseña
-  const hostPass=document.getElementById('hostPassInput').value;
-  isAdmin=(hostPass===ADMIN_PASS);
-
-  // Si no hay señal activa, limpiar lobby anterior
-  if(!localStorage.getItem(SIGNAL_KEY)){
-    localStorage.removeItem(LOBBY_KEY);
-  }
-
-  // El host NO se registra como jugador en el lobby
-  if(!isAdmin){
-    const lobby=JSON.parse(localStorage.getItem(LOBBY_KEY)||'[]');
-    if(!lobby.find(p=>p.name===name)) lobby.push({name,avatar:selectedAvatar});
-    localStorage.setItem(LOBBY_KEY,JSON.stringify(lobby));
-  }
-
+  // Modo práctica individual: cada quien juega solo, sin sala de espera ni host.
   // Activar audio
   if(!audioCtx) audioCtx=new(window.AudioContext||window.webkitAudioContext)();
   else if(audioCtx.state==='suspended') audioCtx.resume();
 
-  if(isAdmin){
-    // Host: va directo al lobby admin con panel desbloqueado
-    localStorage.removeItem(SIGNAL_KEY);
-    localStorage.removeItem(LOBBY_KEY);
-    showScreen('screenAdminLobby');
-    startAdminLobbyPoll();
-  } else {
-    showScreen('screenLobby');
-    updatePlayerLobby();
-    lobbyPollInterval=setInterval(updatePlayerLobby,1000);
-    signalPollInterval=setInterval(checkSignal,600);
-  }
+  // Preparar preguntas frescas para esta práctica
+  gameQuestions=shuffle([...QUESTIONS]).slice(0,15);
+  localStorage.setItem('kahootAvonQuestions',JSON.stringify(gameQuestions));
+  // Limpiar cualquier orden de colores guardado de prácticas anteriores
+  for(let i=0;i<gameQuestions.length;i++) localStorage.removeItem('kahootAvonOrder_'+i);
+
+  startPlayerGame();
 }
 
 function updatePlayerLobby(){
@@ -690,7 +665,7 @@ function adminReset(){
   localStorage.removeItem(SIGNAL_KEY);
   localStorage.removeItem('kahootAvonQuestions');
   isAdmin=false; currentQ=0; gameQuestions=[];
-  document.getElementById('hostPassInput').value='';
+  var hp=document.getElementById('hostPassInput'); if(hp) hp.value='';
   showScreen('screenWelcome');
 }
 
@@ -699,14 +674,21 @@ function adminReset(){
 // ══════════════════════════════════════════════
 function startPlayerGame(){
   score=0; streak=0; currentQ=0; answers=[];
-  // Cargar las mismas preguntas que usó el admin
+  // Cargar las preguntas de esta práctica
   const stored=localStorage.getItem('kahootAvonQuestions');
   gameQuestions=stored?JSON.parse(stored):shuffle([...QUESTIONS]).slice(0,15);
   showScreen('screenQuestion');
   loadPlayerQuestion();
   startMusic();
-  // Seguir escuchando señales del host
-  signalPollInterval=setInterval(checkSignal,600);
+}
+
+function practiceAgain(){
+  try{ stopMusic(); }catch(e){}
+  // Nuevas preguntas mezcladas para otra ronda
+  gameQuestions=shuffle([...QUESTIONS]).slice(0,15);
+  localStorage.setItem('kahootAvonQuestions',JSON.stringify(gameQuestions));
+  for(let i=0;i<gameQuestions.length;i++) localStorage.removeItem('kahootAvonOrder_'+i);
+  startPlayerGame();
 }
 
 function loadPlayerQuestion(){
