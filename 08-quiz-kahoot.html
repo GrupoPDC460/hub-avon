@@ -143,6 +143,13 @@ body{font-family:'Poppins',sans-serif;background:#46178F;color:#fff;min-height:1
 /* PODIUM */
 .podium-title{font-family:'Fredoka';font-size:2.5rem;margin-bottom:8px}
 .podium-sub{opacity:.7;margin-bottom:36px}
+.grade-card{display:none;flex-direction:column;align-items:center;gap:6px;background:rgba(255,255,255,.1);border:2px solid rgba(255,255,255,.25);border-radius:24px;padding:26px 40px;margin-bottom:32px;backdrop-filter:blur(6px);box-shadow:0 12px 40px rgba(0,0,0,.25)}
+.grade-card.show{display:flex}
+.grade-emoji{font-size:3.4rem;line-height:1}
+.grade-score{font-family:'Fredoka';font-size:3.6rem;font-weight:700;line-height:1}
+.grade-frac{font-size:1.05rem;opacity:.85;font-weight:600}
+.grade-label{font-size:1.15rem;font-weight:700;margin-top:4px;letter-spacing:.5px}
+.grade-msg{font-size:.9rem;opacity:.8;max-width:300px;text-align:center;margin-top:2px}
 .podium{display:flex;align-items:flex-end;gap:12px;margin-bottom:36px}
 .podium-place{display:flex;flex-direction:column;align-items:center;border-radius:12px 12px 0 0;padding:16px 24px 20px;min-width:110px;animation:podRise .8s ease backwards}
 .podium-place:nth-child(1){background:#c0c0c0;height:160px;animation-delay:.3s}
@@ -323,6 +330,7 @@ body{font-family:'Poppins',sans-serif;background:#46178F;color:#fff;min-height:1
 <div class="screen" id="screenFinal">
   <div class="podium-title">🎉 ¡Resultados Finales!</div>
   <div class="podium-sub" id="finalSub"></div>
+  <div class="grade-card" id="gradeCard"></div>
   <div class="podium" id="podium"></div>
   <div class="report" id="report"></div>
   <div class="report-actions">
@@ -867,12 +875,32 @@ function showPlayerFinal(){
     // Host: ve el podio pero su puntaje no aparece
     document.getElementById('finalSub').textContent='¡Quiz finalizado! Resultados de los participantes:';
     document.getElementById('report').innerHTML='';
+    document.getElementById('gradeCard').classList.remove('show');
     // Ocultar botón de descarga para el host
     document.querySelector('.report-actions').style.display='none';
   } else {
     const me=sorted.find(p=>p.name===player);
     document.getElementById('finalSub').textContent=me?`${player}, obtuviste ${me.score.toLocaleString()} puntos`:'';
     document.querySelector('.report-actions').style.display='flex';
+
+    // ── NOTA / CALIFICACIÓN ──
+    const aciertos=answers.filter(a=>a.correct).length;
+    const totalP=answers.length||1;
+    const pctTotal=Math.round((aciertos/totalP)*100);
+    let emoji,label,msg,col;
+    if(pctTotal>=90){emoji='🏆';label='¡Excelente!';msg='Dominas el tema. ¡Sigue así!';col='#26a65b';}
+    else if(pctTotal>=70){emoji='🌟';label='¡Muy bien!';msg='Buen manejo del contenido, vas por buen camino.';col='#26a65b';}
+    else if(pctTotal>=50){emoji='👍';label='Aprobado';msg='Vas bien, repasa los temas con menor puntaje.';col='#d89e00';}
+    else{emoji='📚';label='A reforzar';msg='Practica de nuevo y repasa el material de capacitación.';col='#e21b3c';}
+    const gc=document.getElementById('gradeCard');
+    gc.style.borderColor=col;
+    gc.innerHTML=`<div class="grade-emoji">${emoji}</div>`+
+      `<div class="grade-score" style="color:${col}">${pctTotal}%</div>`+
+      `<div class="grade-frac">${aciertos} de ${totalP} respuestas correctas</div>`+
+      `<div class="grade-label" style="color:${col}">${label}</div>`+
+      `<div class="grade-msg">${msg}</div>`;
+    gc.classList.add('show');
+
     const topics={};
     answers.forEach(a=>{
       if(!topics[a.topic]) topics[a.topic]={correct:0,total:0};
@@ -1074,7 +1102,7 @@ function playMusicLoop(){
   musicSection++;
   musicTimeout=setTimeout(playMusicLoop,SECTION_DUR-30);
 }
-function startMusic(){if(muteState)return;musicSection=0;musicPlaying=true;playMusicLoop();}
+function startMusic(){/* música de fondo desactivada — solo efectos de sonido cortos */}
 function stopMusic(){musicPlaying=false;if(musicTimeout)clearTimeout(musicTimeout);musicTimeout=null;}
 function sfxCorrect(){if(muteState)return;const ctx=getCtx(),t=ctx.currentTime;[[N.C5,0],[N.E5,.08],[N.G5,.16],[N.C6,.26]].forEach(([f,s])=>{note(ctx,f,'sine',t+s,.18,.28,.005,.1);note(ctx,f*2,'sine',t+s,.1,.06,.005,.08);});note(ctx,N.C6,'sine',t+.45,.4,.2,.005,.3);}
 function sfxWrong(){if(muteState)return;const ctx=getCtx(),t=ctx.currentTime;note(ctx,320,'sawtooth',t,.1,.22,.005,.05);note(ctx,270,'sawtooth',t+.1,.1,.22,.005,.05);note(ctx,220,'sawtooth',t+.2,.18,.18,.005,.1);}
@@ -1085,8 +1113,9 @@ function sfxFanfare(){if(muteState)return;const ctx=getCtx(),t=ctx.currentTime;[
 // Botón mute
 const muteBtn=document.createElement('button');
 muteBtn.textContent='🔊';
+muteBtn.title='Activar/silenciar efectos de sonido';
 muteBtn.style.cssText='position:fixed;bottom:20px;right:20px;z-index:9999;background:rgba(255,255,255,.15);border:2px solid rgba(255,255,255,.3);color:#fff;font-size:1.4rem;width:48px;height:48px;border-radius:50%;cursor:pointer;backdrop-filter:blur(4px);transition:all .2s';
-muteBtn.onclick=()=>{muteState=!muteState;muteBtn.textContent=muteState?'🔇':'🔊';if(muteState)stopMusic();else if(musicPlaying)startMusic();};
+muteBtn.onclick=()=>{muteState=!muteState;muteBtn.textContent=muteState?'🔇':'🔊';};
 document.body.appendChild(muteBtn);
 
 // ===== LOGIN DE ACCESO AL QUIZ =====
