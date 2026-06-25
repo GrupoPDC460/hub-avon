@@ -309,7 +309,7 @@ body{font-family:'Poppins',sans-serif;background:#46178F;color:#fff;min-height:1
   <div class="result-points" id="resultPoints"></div>
   <div class="result-streak" id="resultStreak"></div>
   <div style="margin-top:14px;font-size:.9rem;opacity:.6" id="resultCorrect"></div>
-  <div class="lobby-waiting" style="margin-top:20px">Esperando que el host avance...</div>
+  <div class="lobby-waiting" style="margin-top:20px" id="resultCountdown">Siguiente pregunta en 3...</div>
 </div>
 
 <!-- ══ SCREEN: LEADERBOARD (JUGADOR) ══ -->
@@ -766,7 +766,7 @@ function selectAnswer(btnIdx,isCorrect){
   savePartialScore();
   showScreen('screenResult');
   showPlayerResult(isCorrect,points);
-  // Esperar señal del host para avanzar (checkSignal lo maneja)
+  startResultCountdown();
 }
 
 function timeUpPlayer(){
@@ -778,6 +778,7 @@ function timeUpPlayer(){
   savePartialScore();
   showScreen('screenResult');
   showPlayerResult(false,0);
+  startResultCountdown();
 }
 
 function showPlayerResult(correct,points){
@@ -788,6 +789,36 @@ function showPlayerResult(correct,points){
   document.getElementById('resultPoints').textContent=correct?`+${points} puntos`:'Sin puntos';
   document.getElementById('resultStreak').textContent=streak>=3?`🔥 ¡Racha de ${streak}! +200 bonus`:streak>=2?`🔥 Racha de ${streak}`:'';
   document.getElementById('resultCorrect').textContent=`Respuesta correcta: ${q.o[q.c]}`;
+}
+
+let resultCountdownInterval=null;
+function startResultCountdown(){
+  clearInterval(resultCountdownInterval);
+  var secs=3;
+  var lastQ=(currentQ>=gameQuestions.length-1);
+  var el=document.getElementById('resultCountdown');
+  var label=function(n){return lastQ?('Resultados en '+n+'...'):('Siguiente pregunta en '+n+'...')};
+  if(el)el.textContent=label(secs);
+  resultCountdownInterval=setInterval(function(){
+    secs--;
+    if(secs<=0){
+      clearInterval(resultCountdownInterval);
+      nextPlayerQuestion();
+    } else if(el){
+      el.textContent=label(secs);
+    }
+  },1000);
+}
+
+function nextPlayerQuestion(){
+  currentQ++;
+  if(currentQ>=gameQuestions.length){
+    showPlayerFinal();
+    return;
+  }
+  showScreen('screenQuestion');
+  loadPlayerQuestion();
+  startMusic();
 }
 
 function savePartialScore(){
