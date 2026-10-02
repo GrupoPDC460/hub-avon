@@ -6120,5 +6120,152 @@ window.addEventListener('scroll', function() {
 });
 </script>
 
+<!-- ===== Destinos de pago (anidado con Cuentas Bancarias) ===== -->
+<style>
+.pp-head { display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; margin-bottom:12px; }
+.pp-head h4 { margin-bottom:0 !important; }
+.pp-lock { background: var(--surface); color: var(--text-muted); border:1px solid var(--border); border-radius:8px; padding:7px 12px; font-size:12px; font-weight:700; cursor:pointer; font-family:inherit; transition: var(--transition); }
+.pp-lock:hover { border-color: var(--avon); color: var(--text); }
+.pp-lock.on { border-color: var(--orange); color: var(--orange); background: rgba(245,124,0,0.10); }
+.bank-dest { grid-column: 1 / -1; margin-top:8px; padding:8px 12px; border-radius:8px; background: rgba(233,30,99,0.06); border:1px dashed var(--border); font-size:12.5px; color: var(--text-muted); display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+.bank-dest strong { color: var(--avon); font-weight:800; }
+.bank-dest .dest-num { font-family:'Courier New',monospace; font-weight:700; color: var(--text); letter-spacing:.5px; }
+.bank-dest .dest-cur { font-size:10.5px; font-weight:800; padding:1px 7px; border-radius:10px; background: rgba(245,124,0,0.18); color: var(--orange); }
+.bank-dest-missing { opacity:.75; }
+.bank-dest-edit { background: rgba(245,124,0,0.07); }
+.bank-dest .dest-select { flex:1; min-width:190px; padding:7px 10px; border-radius:8px; border:1px solid var(--border); background: var(--bg-2); color: var(--text); font-size:12.5px; font-family:inherit; }
+.bank-row-extra { border-left:4px solid var(--avon); }
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+(function(){
+  const PP_SUPA_URL = 'https://fbhkkprnpabwapgetbad.supabase.co';
+  const PP_SUPA_KEY = 'sb_publishable_vl7RWFKvyBTJYVSYclo6EQ_Mt64ibRj';
+  const PP_ADMIN_PW = 'Avon2026'; // 🔑 Clave para editar los destinos de pago
+  const PP_PAIS_CODE = { 'Guatemala':'GT','El Salvador':'SV','Honduras':'HN','Nicaragua':'NI','Panamá':'PA','República Dominicana':'DO' };
+  const ppSb = window.supabase.createClient(PP_SUPA_URL, PP_SUPA_KEY);
+
+  let DEST = {};             // 'GT::Punto' -> {id, banco, cuenta, moneda, principal}
+  let CUENTAS_BY_PAIS = {};  // 'GT' -> [cuentas...]
+  let EXTRA = {};            // 'GT' -> [filas es_extra]
+  let LOADED = false;
+  let ADMIN = sessionStorage.getItem('ppAdmin') === '1';
+  let CUR = 'GT';
+
+  const esc = s => String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  const jsStr = s => String(s).replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+
+  function destHtml(key, punto) {
+    if (!LOADED) return '';
+    if (ADMIN) {
+      const cur = DEST[key + '::' + punto];
+      const opts = (CUENTAS_BY_PAIS[key] || []).map(a =>
+        `<option value="${a.id}" ${cur && cur.id===a.id ? 'selected':''}>${esc(a.banco)} · ${esc(a.cuenta)} (${esc(a.moneda)})${a.principal?' 👑':''}</option>`).join('');
+      return `<div class="bank-dest bank-dest-edit">
+        <span>💰 Cae en:</span>
+        <select class="dest-select" onchange="ppSetDestino('${jsStr(key)}','${jsStr(punto)}', this.value)">
+          <option value="">— sin asignar —</option>${opts}
+        </select>
+      </div>`;
+    }
+    const m = DEST[key + '::' + punto];
+    if (!m) return `<div class="bank-dest bank-dest-missing">💰 Cae en: — sin asignar —</div>`;
+    return `<div class="bank-dest">💰 Cae en: <strong>${esc(m.banco)}</strong> · <span class="dest-num">${esc(m.cuenta)}</span> <span class="dest-cur">${esc(m.moneda)}</span></div>`;
+  }
+
+  function rowHtml(key, name, min, note, isExtra) {
+    const isLimitless = min === 'Sin límite';
+    const noteHtml = note ? `<div class="bank-note">${esc(note)}</div>` : '';
+    return `<div class="bank-row${note ? ' bank-row-warning' : ''}${isExtra ? ' bank-row-extra' : ''}">
+      <div class="bank-row-left">
+        <span class="check">✓</span>
+        <span class="bank-name">${esc(name)}</span>
+      </div>
+      <div class="bank-min ${isLimitless ? 'bank-min-free' : ''}">${esc(min)}</div>
+      ${destHtml(key, name)}
+      ${noteHtml}
+    </div>`;
+  }
+
+  // Sobrescribe selectCountry conservando el render original + destinos
+  window.selectCountry = function(key) {
+    CUR = key;
+    document.querySelectorAll('.country-tab').forEach(t => t.classList.remove('active'));
+    const tab = document.querySelector(`.country-tab[data-country="${key}"]`);
+    if (tab) tab.classList.add('active');
+
+    const c = COUNTRIES[key];
+    const rows = c.banks.map(b => rowHtml(key, b.name, b.min, b.note, false));
+    (EXTRA[key] || []).forEach(r => rows.push(rowHtml(key, r.punto, '—', null, true)));
+
+    const lock = `<button class="pp-lock ${ADMIN?'on':''}" onclick="ppToggleAdmin()">${ADMIN ? '🔓 Editando destinos' : '🔒 Editar destinos'}</button>`;
+
+    document.getElementById('countryDetail').innerHTML = `
+      <div class="country-header">
+        <div class="country-flag-big">${getFlagImg(c.pais, 40)}</div>
+        <div class="country-name">
+          <h3>${c.name}</h3>
+          <div class="country-meta">
+            <span class="meta-chip meta-tel">☎ ${c.code}</span>
+            <span class="meta-chip meta-currency">💰 ${c.symbol} · ${c.currency} (${c.cc})</span>
+          </div>
+        </div>
+      </div>
+      <div class="pp-head">
+        <h4 style="font-size: 13px; font-weight: 800; color: var(--text-muted); letter-spacing: 1px;">BANCOS Y PUNTOS DE PAGO REFERENCIADOS · PAGO MÍNIMO</h4>
+        ${lock}
+      </div>
+      <div class="banks-list">
+        <div class="banks-list-header">
+          <div>Punto de pago</div>
+          <div style="text-align: right;">Pago mínimo</div>
+        </div>
+        ${rows.join('')}
+      </div>`;
+  };
+
+  window.ppToggleAdmin = function() {
+    if (ADMIN) { ADMIN = false; sessionStorage.removeItem('ppAdmin'); window.selectCountry(CUR); return; }
+    const pw = prompt('🔒 Clave para editar los destinos de pago:');
+    if (pw === null) return;
+    if (pw === PP_ADMIN_PW) { ADMIN = true; sessionStorage.setItem('ppAdmin','1'); window.selectCountry(CUR); }
+    else alert('Clave incorrecta');
+  };
+
+  window.ppSetDestino = async function(pais, punto, cuentaId) {
+    const { error } = await ppSb.from('hub_punto_cuenta')
+      .upsert({ pais, punto, cuenta_id: cuentaId || null, updated_at: new Date().toISOString() }, { onConflict: 'pais,punto' });
+    if (error) { alert('Error al guardar: ' + error.message); return; }
+    await loadDestinos();
+  };
+
+  async function loadDestinos() {
+    try {
+      const [pc, cu] = await Promise.all([
+        ppSb.from('hub_punto_cuenta').select('*').order('orden', { ascending: true }),
+        ppSb.from('hub_cuentas_bancarias').select('id,pais,banco,cuenta,moneda,principal').order('orden', { ascending: true })
+      ]);
+      const cuentas = cu.data || [];
+      const byId = {}; cuentas.forEach(a => byId[a.id] = a);
+      CUENTAS_BY_PAIS = {};
+      cuentas.forEach(a => { const code = PP_PAIS_CODE[a.pais]; if (!code) return; (CUENTAS_BY_PAIS[code] = CUENTAS_BY_PAIS[code] || []).push(a); });
+      DEST = {}; EXTRA = {};
+      (pc.data || []).forEach(r => {
+        const a = r.cuenta_id ? byId[r.cuenta_id] : null;
+        if (a) DEST[r.pais + '::' + r.punto] = a;
+        if (r.es_extra) (EXTRA[r.pais] = EXTRA[r.pais] || []).push(r);
+      });
+      LOADED = true;
+      if (document.getElementById('countryDetail')) window.selectCountry(CUR);
+    } catch (e) { console.error('Error cargando destinos de pago:', e); }
+  }
+
+  // Re-render inicial con destinos una vez cargada la data
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', loadDestinos);
+  else loadDestinos();
+})();
+</script>
+
 </body>
 </html>
