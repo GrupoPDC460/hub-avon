@@ -161,6 +161,68 @@ body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); co
   font-weight: 700; margin: 2px; letter-spacing: 0.5px;
   background: rgba(245,166,35,0.15); color: var(--gold); border: 1px solid rgba(245,166,35,0.3);
 }
+
+/* ===== Interactividad / Admin ===== */
+.admin-lock {
+  position: absolute; right: 20px; top: 50%; transform: translateY(-50%);
+  background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3);
+  color: #fff; padding: 10px 16px; border-radius: 10px; cursor: pointer;
+  font-size: 0.9rem; font-weight: 600; z-index: 2; transition: all .3s;
+}
+.admin-lock:hover { background: rgba(255,255,255,0.25); }
+.admin-banner {
+  display: none; align-items: center; gap: 14px; justify-content: center; flex-wrap: wrap;
+  margin: 0 24px 16px; padding: 12px 18px; border-radius: 12px;
+  background: linear-gradient(135deg, rgba(245,166,35,0.18), rgba(233,30,99,0.12));
+  border: 1px solid rgba(245,166,35,0.4); color: var(--text); font-weight: 600;
+}
+.admin-banner.on { display: flex; }
+.btn { border: none; border-radius: 10px; cursor: pointer; font-weight: 700; font-size: 0.85rem; padding: 9px 16px; transition: all .25s; font-family: inherit; }
+.btn-add { background: linear-gradient(135deg, var(--avon), var(--avon-deep)); color:#fff; }
+.btn-add:hover { box-shadow: 0 6px 18px rgba(233,30,99,0.35); transform: translateY(-1px); }
+.btn-ghost { background: var(--surface2); color: var(--text); border:1px solid var(--border); }
+.btn-ghost:hover { border-color: var(--avon); }
+.btn-save { background: linear-gradient(135deg, #34d399, #059669); color:#fff; }
+.btn-save:hover { box-shadow: 0 6px 18px rgba(16,185,129,0.35); }
+.add-bar { display:none; margin-bottom: 20px; justify-content:center; }
+.add-bar.on { display:flex; }
+
+.card-actions { display:none; gap:8px; margin-top:14px; flex-wrap:wrap; }
+.account-card.admin .card-actions { display:flex; }
+.mini-btn {
+  flex:1; min-width: 92px; border:1px solid var(--border); background: var(--bg);
+  color: var(--text-muted); border-radius:8px; padding:8px 6px; cursor:pointer;
+  font-size:0.78rem; font-weight:700; transition: all .2s; font-family:inherit;
+}
+.mini-btn:hover { color:#fff; border-color: var(--avon); }
+.mini-btn.crown.on { color: var(--gold); border-color: var(--gold); background: rgba(245,166,35,0.12); }
+
+.account-card.principal { border-color: var(--gold); box-shadow: 0 0 0 1px var(--gold), 0 8px 25px rgba(245,166,35,0.18); }
+.account-card.principal::before { background: linear-gradient(90deg, var(--gold), #ffd877); }
+.crown-badge { position:absolute; top:10px; right:12px; font-size:1.25rem; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5)); z-index:1; }
+.principal-pill {
+  display:inline-block; margin-left:8px; padding:2px 9px; border-radius:12px;
+  font-size:0.68rem; font-weight:800; letter-spacing:.5px; vertical-align: middle;
+  background: rgba(245,166,35,0.2); color: var(--gold); border:1px solid rgba(245,166,35,0.4);
+}
+
+.modal-overlay { display:none; position:fixed; inset:0; background: rgba(0,0,0,0.7); z-index: 1000; align-items:center; justify-content:center; padding:20px; }
+.modal-overlay.on { display:flex; }
+.modal { background: var(--surface); border:1px solid var(--border); border-radius:16px; padding: 26px; width:100%; max-width: 460px; max-height: 90vh; overflow-y:auto; box-shadow: 0 20px 60px rgba(0,0,0,0.6); }
+.modal h3 { color: var(--gold); font-size:1.2rem; margin-bottom:18px; }
+.field { margin-bottom:14px; }
+.field label { display:block; font-size:0.8rem; color: var(--text-muted); margin-bottom:6px; font-weight:600; }
+.field input, .field select { width:100%; padding:11px 12px; border-radius:9px; border:1px solid var(--border); background: var(--bg); color: var(--text); font-size:0.95rem; font-family:inherit; }
+.field input:focus, .field select:focus { outline:none; border-color: var(--avon); }
+.field.check { display:flex; align-items:center; gap:10px; }
+.field.check input { width:auto; }
+.field.check label { margin:0; }
+.modal-actions { display:flex; gap:10px; margin-top:20px; }
+.modal-actions .btn { flex:1; padding:12px; }
+.toast { position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(20px); background: var(--surface2); color:#fff; padding:12px 22px; border-radius:10px; border:1px solid var(--border); font-weight:600; z-index:1100; opacity:0; transition: all .3s; pointer-events:none; }
+.toast.on { opacity:1; transform:translateX(-50%) translateY(0); }
+.loading { text-align:center; padding:50px; color: var(--text-muted); font-size:1rem; }
+@media (max-width:768px){ .admin-lock{ position:static; transform:none; display:inline-block; margin-top:10px; } }
 </style>
 </head>
 <body>
@@ -169,6 +231,12 @@ body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); co
   <a href="index.html" class="back-btn">← Volver al Hub</a>
   <h1>🏦 Cuentas Bancarias</h1>
   <p>Archivo Maestro de Cuentas · Avon Centroamérica y Caribe</p>
+  <button class="admin-lock" id="adminLock" onclick="toggleAdmin()">🔒 Admin</button>
+</div>
+
+<div class="admin-banner" id="adminBanner">
+  <span>✏️ Modo edición activo — tus cambios se guardan para todo el equipo.</span>
+  <button class="btn btn-ghost" onclick="exitAdmin()">Salir del modo edición</button>
 </div>
 
 <div class="stats" id="stats"></div>
@@ -181,6 +249,7 @@ body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); co
 <div class="filters" id="filters"></div>
 
 <div class="container">
+  <div class="add-bar" id="addBar"><button class="btn btn-add" onclick="openModal()">➕ Agregar cuenta</button></div>
   <div id="content"></div>
 
   
@@ -220,35 +289,67 @@ body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); co
 <link rel="stylesheet" href="chatbot-styles.css">
 <script src="chatbot-assistant.js"></script>
 
+<!-- Modal de edición (solo admin) -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <h3 id="modalTitle">Agregar cuenta</h3>
+    <div class="field"><label>País</label>
+      <select id="f_pais">
+        <option>Guatemala</option><option>El Salvador</option><option>Honduras</option>
+        <option>Nicaragua</option><option>Panamá</option><option>República Dominicana</option>
+      </select>
+    </div>
+    <div class="field"><label>Sociedad</label><input id="f_sociedad" placeholder="Ej. PRODUCTOS AVON DE GUATEMALA"></div>
+    <div class="field"><label>Banco</label><input id="f_banco" placeholder="Ej. Banco Industrial"></div>
+    <div class="field"><label>Tipo</label><input id="f_tipo" value="Monetaria"></div>
+    <div class="field"><label>Moneda</label><input id="f_moneda" placeholder="Ej. GTQ, USD, HNL"></div>
+    <div class="field"><label>No. de cuenta</label><input id="f_cuenta" placeholder="Número de cuenta"></div>
+    <div class="field check"><input type="checkbox" id="f_principal"><label for="f_principal">👑 Marcar como cuenta principal</label></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal()">Cancelar</button>
+      <button class="btn btn-save" onclick="saveAccount()">Guardar</button>
+    </div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-const FLAGS = {
-  'Guatemala': 'gt', 'El Salvador': 'sv', 'Honduras': 'hn',
-  'Nicaragua': 'ni', 'Panamá': 'pa', 'República Dominicana': 'do'
-};
+// ===== Configuración =====
+const SUPABASE_URL = 'https://fbhkkprnpabwapgetbad.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_vl7RWFKvyBTJYVSYclo6EQ_Mt64ibRj';
+const TABLE = 'hub_cuentas_bancarias';
+const ADMIN_PASSWORD = 'Avon2026.'; // 🔑 Clave del panel de edición — cambiala aquí si querés otra
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+const FLAGS = { 'Guatemala':'gt','El Salvador':'sv','Honduras':'hn','Nicaragua':'ni','Panamá':'pa','República Dominicana':'do' };
+const PAIS_ORDER = ['Guatemala','El Salvador','Honduras','Nicaragua','Panamá','República Dominicana'];
 
 let ALL_DATA = [];
-let RESUMEN_DATA = [];
 let activeFilter = '';
 let activeTab = 'cuentas';
+let isAdmin = sessionStorage.getItem('cuentasAdmin') === '1';
+let editingId = null;
 
-fetch('cuentas_bancarias.json')
-  .then(r => r.json())
-  .then(data => {
-    if (Array.isArray(data)) { ALL_DATA = data; RESUMEN_DATA = []; }
-    else { ALL_DATA = data.cuentas || []; RESUMEN_DATA = data.resumen || []; }
-    render();
-  })
-  .catch(e => console.error('Error:', e));
+function esc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+async function loadData() {
+  document.getElementById('content').innerHTML = '<div class="loading">Cargando cuentas…</div>';
+  const { data, error } = await sb.from(TABLE).select('*').order('orden', { ascending: true });
+  if (error) { document.getElementById('content').innerHTML = '<div class="loading">⚠️ Error al cargar: ' + esc(error.message) + '</div>'; return; }
+  ALL_DATA = data || [];
+  render();
+}
 
 function switchTab(tab) {
-  activeTab = tab;
-  activeFilter = '';
+  activeTab = tab; activeFilter = '';
   document.getElementById('tabCuentas').classList.toggle('active', tab === 'cuentas');
   document.getElementById('tabResumen').classList.toggle('active', tab === 'resumen');
   render();
 }
 
 function render() {
+  updateAdminUI();
   if (activeTab === 'resumen') { renderResumen(); return; }
 
   const data = activeFilter ? ALL_DATA.filter(a => a.pais === activeFilter) : ALL_DATA;
@@ -258,90 +359,180 @@ function render() {
   document.getElementById('stats').innerHTML = `
     <div class="stat-box"><div class="stat-num">${data.length}</div><div class="stat-label">Cuentas</div></div>
     <div class="stat-box"><div class="stat-num">${paises.length}</div><div class="stat-label">Países</div></div>
-    <div class="stat-box"><div class="stat-num">${bancos.length}</div><div class="stat-label">Bancos</div></div>
-  `;
+    <div class="stat-box"><div class="stat-num">${bancos.length}</div><div class="stat-label">Bancos</div></div>`;
 
-  const allPaises = [...new Set(ALL_DATA.map(a => a.pais))];
+  const extra = [...new Set(ALL_DATA.map(a => a.pais))].filter(p => !PAIS_ORDER.includes(p));
+  const allPaises = PAIS_ORDER.filter(p => ALL_DATA.some(a => a.pais === p)).concat(extra);
   document.getElementById('filters').innerHTML = `
     <button class="filter-btn ${!activeFilter ? 'active' : ''}" onclick="setFilter('')">🌎 Todos</button>
     ${allPaises.map(p => `
-      <button class="filter-btn ${activeFilter === p ? 'active' : ''}" onclick="setFilter('${p}')">
-        <img src="https://flagcdn.com/w40/${FLAGS[p]||''}.png" alt="${p}"> ${p}
-      </button>
-    `).join('')}
-  `;
+      <button class="filter-btn ${activeFilter === p ? 'active' : ''}" onclick="setFilter('${p.replace(/'/g,"\\'")}')">
+        <img src="https://flagcdn.com/w40/${FLAGS[p]||''}.png" alt="${esc(p)}"> ${esc(p)}
+      </button>`).join('')}`;
+
+  const grouped = {};
+  data.forEach(a => { (grouped[a.pais] = grouped[a.pais] || []).push(a); });
+  const orderedPaises = allPaises.filter(p => grouped[p]).concat(Object.keys(grouped).filter(p => !allPaises.includes(p)));
 
   let html = '';
-  const grouped = {};
-  data.forEach(a => { if (!grouped[a.pais]) grouped[a.pais] = []; grouped[a.pais].push(a); });
-
-  for (const [pais, cuentas] of Object.entries(grouped)) {
+  for (const pais of orderedPaises) {
+    const cuentas = grouped[pais].slice().sort((a,b) => (b.principal?1:0)-(a.principal?1:0) || (a.orden-b.orden));
     const code = FLAGS[pais] || '';
     html += `
       <div class="country-section">
         <div class="country-header">
-          <img src="https://flagcdn.com/w80/${code}.png" alt="${pais}">
-          <h2>${pais}</h2>
+          <img src="https://flagcdn.com/w80/${code}.png" alt="${esc(pais)}">
+          <h2>${esc(pais)}</h2>
           <span class="count">${cuentas.length} cuenta${cuentas.length > 1 ? 's' : ''}</span>
         </div>
         <div class="accounts-grid">
-          ${cuentas.map(c => `
-            <div class="account-card">
-              <div class="bank-name">🏦 ${c.banco}</div>
-              <div class="account-row"><span class="icon">🏢</span><span class="label">Sociedad:</span><span class="value">${c.sociedad}</span></div>
-              <div class="account-row"><span class="icon">💳</span><span class="label">Tipo:</span><span class="value">${c.tipo}</span></div>
-              <div class="account-row"><span class="icon">💰</span><span class="label">Moneda:</span><span class="value">${c.moneda} <span class="currency-badge ${c.moneda === 'USD' ? 'usd' : 'local'}">${c.moneda}</span></span></div>
-              <div class="account-number">${c.cuenta}</div>
-            </div>
-          `).join('')}
+          ${cuentas.map(c => cardHtml(c)).join('')}
         </div>
-      </div>
-    `;
+      </div>`;
   }
-  document.getElementById('content').innerHTML = html;
+  document.getElementById('content').innerHTML = html || '<div class="loading">Sin cuentas.</div>';
+}
+
+function cardHtml(c) {
+  const isUsd = (c.moneda || '').toUpperCase() === 'USD';
+  return `
+    <div class="account-card ${c.principal ? 'principal' : ''} ${isAdmin ? 'admin' : ''}">
+      ${c.principal ? '<span class="crown-badge" title="Cuenta principal">👑</span>' : ''}
+      <div class="bank-name">🏦 ${esc(c.banco)} ${c.principal ? '<span class="principal-pill">PRINCIPAL</span>' : ''}</div>
+      <div class="account-row"><span class="icon">🏢</span><span class="label">Sociedad:</span><span class="value">${esc(c.sociedad)}</span></div>
+      <div class="account-row"><span class="icon">💳</span><span class="label">Tipo:</span><span class="value">${esc(c.tipo)}</span></div>
+      <div class="account-row"><span class="icon">💰</span><span class="label">Moneda:</span><span class="value">${esc(c.moneda)} <span class="currency-badge ${isUsd ? 'usd' : 'local'}">${esc(c.moneda)}</span></span></div>
+      <div class="account-number">${esc(c.cuenta)}</div>
+      <div class="card-actions">
+        <button class="mini-btn crown ${c.principal ? 'on' : ''}" onclick="togglePrincipal('${c.id}', ${c.principal ? 'false' : 'true'})">${c.principal ? '👑 Quitar' : '👑 Principal'}</button>
+        <button class="mini-btn" onclick="openModal('${c.id}')">✏️ Editar</button>
+        <button class="mini-btn" onclick="deleteAccount('${c.id}')">🗑️ Eliminar</button>
+      </div>
+    </div>`;
 }
 
 function renderResumen() {
-  const totalCuentas = RESUMEN_DATA.reduce((sum, r) => sum + parseInt(r.totalCuentas || 0), 0);
-  const totalBancos = RESUMEN_DATA.length;
-  const totalPaises = [...new Set(RESUMEN_DATA.flatMap(r => r.pais.split(', ')))].length;
+  const map = {};
+  ALL_DATA.forEach(a => {
+    const k = a.banco || '(sin banco)';
+    if (!map[k]) map[k] = { banco: k, paises: new Set(), monedas: new Set(), sociedades: new Set(), total: 0, principales: 0 };
+    map[k].paises.add(a.pais); if (a.moneda) map[k].monedas.add(a.moneda); if (a.sociedad) map[k].sociedades.add(a.sociedad);
+    map[k].total++; if (a.principal) map[k].principales++;
+  });
+  const arr = Object.values(map).sort((a,b) => b.total - a.total || a.banco.localeCompare(b.banco));
 
   document.getElementById('stats').innerHTML = `
-    <div class="stat-box"><div class="stat-num">${totalCuentas}</div><div class="stat-label">Cuentas Total</div></div>
-    <div class="stat-box"><div class="stat-num">${totalBancos}</div><div class="stat-label">Bancos</div></div>
-    <div class="stat-box"><div class="stat-num">${totalPaises}</div><div class="stat-label">Países</div></div>
-  `;
-
+    <div class="stat-box"><div class="stat-num">${ALL_DATA.length}</div><div class="stat-label">Cuentas Total</div></div>
+    <div class="stat-box"><div class="stat-num">${arr.length}</div><div class="stat-label">Bancos</div></div>
+    <div class="stat-box"><div class="stat-num">${new Set(ALL_DATA.map(a=>a.pais)).size}</div><div class="stat-label">Países</div></div>`;
   document.getElementById('filters').innerHTML = '';
 
   let html = '<div class="resumen-grid">';
-  RESUMEN_DATA.forEach(r => {
-    const monedas = r.monedas.split(', ').map(m => `<span class="moneda-tag">${m.trim()}</span>`).join(' ');
+  arr.forEach(r => {
+    const monedas = [...r.monedas].map(m => `<span class="moneda-tag">${esc(m)}</span>`).join(' ');
     html += `
       <div class="resumen-card">
-        <div class="resumen-banco">🏦 ${r.banco}</div>
-        <div class="resumen-row"><span class="r-icon">🌎</span><span class="r-label">País:</span><span class="r-value">${r.pais}</span></div>
+        <div class="resumen-banco">🏦 ${esc(r.banco)} ${r.principales ? `<span class="principal-pill">👑 ${r.principales}</span>` : ''}</div>
+        <div class="resumen-row"><span class="r-icon">🌎</span><span class="r-label">País:</span><span class="r-value">${esc([...r.paises].join(', '))}</span></div>
         <div class="resumen-row"><span class="r-icon">💰</span><span class="r-label">Monedas:</span><span class="r-value">${monedas}</span></div>
-        <div class="resumen-row"><span class="r-icon">🏢</span><span class="r-label">Sociedades:</span><span class="r-value">${r.sociedades}</span></div>
-        <div class="resumen-total">${r.totalCuentas} cuenta${parseInt(r.totalCuentas) > 1 ? 's' : ''}</div>
-      </div>
-    `;
+        <div class="resumen-row"><span class="r-icon">🏢</span><span class="r-label">Sociedades:</span><span class="r-value">${esc([...r.sociedades].join(', '))}</span></div>
+        <div class="resumen-total">${r.total} cuenta${r.total > 1 ? 's' : ''}</div>
+      </div>`;
   });
   html += '</div>';
   document.getElementById('content').innerHTML = html;
 }
 
 function setFilter(pais) {
-  activeFilter = pais;
-  render();
+  activeFilter = pais; render();
   document.getElementById('content').scrollIntoView({ behavior: 'smooth' });
 }
 
-// Scroll to top button
-window.addEventListener('scroll', function() {
-  var btn = document.getElementById('btnScrollTop');
-  if (btn) btn.classList.toggle('visible', window.scrollY > 300);
-});
+// ===== Admin =====
+function toggleAdmin() {
+  if (isAdmin) { exitAdmin(); return; }
+  const pw = prompt('🔒 Ingresá la clave de administrador:');
+  if (pw === null) return;
+  if (pw === ADMIN_PASSWORD) { isAdmin = true; sessionStorage.setItem('cuentasAdmin','1'); render(); showToast('✅ Modo edición activado'); }
+  else { showToast('❌ Clave incorrecta'); }
+}
+function exitAdmin() { isAdmin = false; sessionStorage.removeItem('cuentasAdmin'); render(); showToast('Modo edición desactivado'); }
+function updateAdminUI() {
+  document.getElementById('adminBanner').classList.toggle('on', isAdmin);
+  document.getElementById('addBar').classList.toggle('on', isAdmin && activeTab === 'cuentas');
+  document.getElementById('adminLock').textContent = isAdmin ? '🔓 Editando' : '🔒 Admin';
+}
+
+// ===== Modal / CRUD =====
+function openModal(id) {
+  editingId = id || null;
+  document.getElementById('modalTitle').textContent = id ? 'Editar cuenta' : 'Agregar cuenta';
+  const c = id ? ALL_DATA.find(x => x.id === id) : { pais: (activeFilter || 'Guatemala'), sociedad:'', banco:'', tipo:'Monetaria', moneda:'', cuenta:'', principal:false };
+  document.getElementById('f_pais').value = c.pais || 'Guatemala';
+  document.getElementById('f_sociedad').value = c.sociedad || '';
+  document.getElementById('f_banco').value = c.banco || '';
+  document.getElementById('f_tipo').value = c.tipo || 'Monetaria';
+  document.getElementById('f_moneda').value = c.moneda || '';
+  document.getElementById('f_cuenta').value = c.cuenta || '';
+  document.getElementById('f_principal').checked = !!c.principal;
+  document.getElementById('modalOverlay').classList.add('on');
+}
+function closeModal() { document.getElementById('modalOverlay').classList.remove('on'); editingId = null; }
+
+async function saveAccount() {
+  if (!isAdmin) return;
+  const rec = {
+    pais: document.getElementById('f_pais').value,
+    sociedad: document.getElementById('f_sociedad').value.trim(),
+    banco: document.getElementById('f_banco').value.trim(),
+    tipo: document.getElementById('f_tipo').value.trim(),
+    moneda: document.getElementById('f_moneda').value.trim().toUpperCase(),
+    cuenta: document.getElementById('f_cuenta').value.trim(),
+    principal: document.getElementById('f_principal').checked,
+    updated_at: new Date().toISOString()
+  };
+  if (!rec.banco || !rec.cuenta) { showToast('⚠️ Banco y No. de cuenta son obligatorios'); return; }
+  let error;
+  if (editingId) {
+    ({ error } = await sb.from(TABLE).update(rec).eq('id', editingId));
+  } else {
+    rec.orden = ALL_DATA.reduce((m,a) => Math.max(m, a.orden || 0), 0) + 1;
+    ({ error } = await sb.from(TABLE).insert(rec));
+  }
+  if (error) { showToast('❌ Error: ' + error.message); return; }
+  closeModal(); await loadData(); showToast(editingId ? '✅ Cuenta actualizada' : '✅ Cuenta agregada');
+}
+
+async function deleteAccount(id) {
+  if (!isAdmin) return;
+  const c = ALL_DATA.find(x => x.id === id);
+  if (!confirm('¿Eliminar la cuenta de ' + (c ? c.banco : '') + ' (' + (c ? c.cuenta : '') + ')?\nEsta acción no se puede deshacer.')) return;
+  const { error } = await sb.from(TABLE).delete().eq('id', id);
+  if (error) { showToast('❌ Error: ' + error.message); return; }
+  await loadData(); showToast('🗑️ Cuenta eliminada');
+}
+
+async function togglePrincipal(id, val) {
+  if (!isAdmin) return;
+  const bool = (val === true || val === 'true');
+  const { error } = await sb.from(TABLE).update({ principal: bool, updated_at: new Date().toISOString() }).eq('id', id);
+  if (error) { showToast('❌ Error: ' + error.message); return; }
+  await loadData(); showToast(bool ? '👑 Marcada como principal' : 'Quitada de principales');
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('on');
+  clearTimeout(t._h); t._h = setTimeout(() => t.classList.remove('on'), 2600);
+}
+
+// Cerrar modal con click fuera / Escape
+document.getElementById('modalOverlay').addEventListener('click', e => { if (e.target.id === 'modalOverlay') closeModal(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+// Botón subir
+window.addEventListener('scroll', function() { var b = document.getElementById('btnScrollTop'); if (b) b.classList.toggle('visible', window.scrollY > 300); });
+
+loadData();
 </script>
+
 </body>
 </html>
